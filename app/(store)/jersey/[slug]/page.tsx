@@ -3,13 +3,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChatButton } from "@/components/store/ChatButton";
 import { JerseyCard } from "@/components/store/JerseyCard";
+import { JerseyCustomizer } from "@/components/store/JerseyCustomizer";
 import { Price } from "@/components/store/Price";
-import { ProductGallery, type GalleryImage } from "@/components/store/ProductGallery";
-import { ProductPurchase } from "@/components/store/ProductPurchase";
 import { Badge } from "@/components/ui/Badge";
 import { ERA_LABELS, GENDER_LABELS, slugify, TYPE_LABELS, type CatalogueProduct } from "@/lib/catalogue";
 import { effectivePrice } from "@/lib/pricing";
-import { getActiveProducts, getProductBySlug } from "@/lib/products";
+import { getActiveProducts, getProductBadges, getProductBySlug, getStoreSettings } from "@/lib/products";
 import type { Product } from "@/types";
 
 // Every active product is prerendered at build time and refreshed at most every
@@ -35,14 +34,14 @@ export async function generateMetadata({ params }: PageProps<"/jersey/[slug]">):
 
 export default async function JerseyPage({ params }: PageProps<"/jersey/[slug]">) {
   const { slug } = await params;
-  const [product, all] = await Promise.all([getProductBySlug(slug), getActiveProducts()]);
+  const [product, all, settings] = await Promise.all([
+    getProductBySlug(slug),
+    getActiveProducts(),
+    getStoreSettings(),
+  ]);
   if (!product) notFound();
+  const badges = await getProductBadges(product.id);
 
-  const images: GalleryImage[] = [
-    { src: product.image_front, alt: `${product.name}, front view` },
-    ...(product.image_back ? [{ src: product.image_back, alt: `${product.name}, back view` }] : []),
-    ...product.gallery.map((src, i) => ({ src, alt: `${product.name}, photo ${i + 3}` })),
-  ];
   const onSale = effectivePrice(product) < product.price;
   const related = relatedProducts(product, all);
 
@@ -77,48 +76,41 @@ export default async function JerseyPage({ params }: PageProps<"/jersey/[slug]">
           </ol>
         </nav>
 
-        <div className="grid gap-6 md:grid-cols-2 md:gap-10 lg:gap-16">
-          <ProductGallery images={images} />
-
-          <div className="space-y-6">
+        <JerseyCustomizer
+          product={product}
+          badges={badges}
+          nameNumberFee={settings.name_number_fee}
+          header={
             <div className="space-y-2">
               {onSale && <Badge tone="brand">Sale</Badge>}
               <h1 className="font-display text-4xl leading-none tracking-wide md:text-5xl">{product.name}</h1>
               <p className="text-muted">{[product.club, product.season].filter(Boolean).join(" · ")}</p>
               <Price price={product.price} salePrice={product.sale_price} size="lg" />
             </div>
+          }
+        >
+          {product.description && <p className="leading-relaxed">{product.description}</p>}
 
-            <ProductPurchase
-              productId={product.id}
-              sizes={product.sizes}
-              outOfStockSizes={product.out_of_stock_sizes}
-              price={product.price}
-              salePrice={product.sale_price}
-            />
+          <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 border-t border-line pt-6 text-sm">
+            {details.map((d) => (
+              <div key={d.term} className="contents">
+                <dt className="text-muted">{d.term}</dt>
+                <dd>{d.value}</dd>
+              </div>
+            ))}
+          </dl>
 
-            {product.description && <p className="leading-relaxed">{product.description}</p>}
-
-            <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 border-t border-line pt-6 text-sm">
-              {details.map((d) => (
-                <div key={d.term} className="contents">
-                  <dt className="text-muted">{d.term}</dt>
-                  <dd>{d.value}</dd>
-                </div>
-              ))}
-            </dl>
-
-            <div className="rounded-2xl bg-surface p-4 text-sm">
-              <h2 className="mb-1 font-bold">Motor-park delivery</h2>
-              <p className="text-muted">
-                We send your order to the motor park you choose. The logistics company will call the phone
-                number you give us when it arrives. Bring your order number and a valid ID to pick it up.{" "}
-                <Link href="/delivery" className="text-ink underline underline-offset-4 hover:text-brand">
-                  Delivery fees
-                </Link>
-              </p>
-            </div>
+          <div className="rounded-2xl bg-surface p-4 text-sm">
+            <h2 className="mb-1 font-bold">Motor-park delivery</h2>
+            <p className="text-muted">
+              We send your order to the motor park you choose. The logistics company will call the phone
+              number you give us when it arrives. Bring your order number and a valid ID to pick it up.{" "}
+              <Link href="/delivery" className="text-ink underline underline-offset-4 hover:text-brand">
+                Delivery fees
+              </Link>
+            </p>
           </div>
-        </div>
+        </JerseyCustomizer>
 
         {related.length > 0 && (
           <section aria-labelledby="related-heading" className="mt-16">

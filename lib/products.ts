@@ -2,7 +2,7 @@ import "server-only";
 import { cache } from "react";
 import { CATALOGUE_PRODUCT_COLUMNS, type CatalogueProduct } from "./catalogue";
 import { createPublicClient } from "./supabase/public";
-import type { Product } from "@/types";
+import type { Badge, Product, Settings } from "@/types";
 
 /**
  * Public product reads for statically generated store pages. Errors are thrown
@@ -31,5 +31,30 @@ export const getProductBySlug = cache(async (slug: string): Promise<Product | nu
     .eq("is_active", true)
     .maybeSingle<Product>();
   if (error) throw new Error(`Loading product "${slug}" failed: ${error.message}`);
+  return data;
+});
+
+/** Active badges the customer may add to this product, cheapest first. */
+export const getProductBadges = cache(async (productId: string): Promise<Badge[]> => {
+  const { data, error } = await createPublicClient()
+    .from("product_badges")
+    .select("badges(id, name, image_url, price, position, is_active, created_at)")
+    .eq("product_id", productId)
+    .returns<{ badges: Badge | null }[]>();
+  if (error) throw new Error(`Loading badges failed: ${error.message}`);
+  return data
+    .map((row) => row.badges)
+    .filter((b): b is Badge => b !== null && b.is_active)
+    .sort((a, b) => a.price - b.price || a.name.localeCompare(b.name));
+});
+
+/** Public store settings (name/number fee, open/closed, announcement). */
+export const getStoreSettings = cache(async (): Promise<Pick<Settings, "name_number_fee" | "store_open" | "announcement">> => {
+  const { data, error } = await createPublicClient()
+    .from("settings")
+    .select("name_number_fee, store_open, announcement")
+    .eq("id", 1)
+    .single<Pick<Settings, "name_number_fee" | "store_open" | "announcement">>();
+  if (error) throw new Error(`Loading settings failed: ${error.message}`);
   return data;
 });

@@ -35,3 +35,22 @@ export function paystackFee(total: number): number {
 export function effectivePrice(p: { price: number; sale_price: number | null }): number {
   return p.sale_price !== null && p.sale_price < p.price ? p.sale_price : p.price;
 }
+
+/**
+ * Price of ONE jersey with its customisation. The name/number fee is charged once
+ * if either a name or a number is printed. Used for the live price on the product
+ * page and (with values from the DB) to recalculate every line at checkout.
+ */
+export function lineUnitPrice({
+  product,
+  nameNumberFee,
+  hasNameOrNumber,
+  badgePrice = 0,
+}: {
+  product: { price: number; sale_price: number | null };
+  nameNumberFee: number;
+  hasNameOrNumber: boolean;
+  badgePrice?: number;
+}): number {
+  return effectivePrice(product) + (hasNameOrNumber ? nameNumberFee : 0) + badgePrice;
+}
