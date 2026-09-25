@@ -132,7 +132,8 @@ secrets: Cloudflare dashboard → Workers → Settings → Variables and Secrets
 - [x] Spec finalised (v2: Cloudflare hosting, no paid WhatsApp, Telegram alerts, fee-inclusive pricing, crypto-ready payments)
 - [x] Most accounts created (Supabase, Paystack, Brevo, Zoho, GitHub, domain)
 - [x] Cloudflare account + wrangler login (workers.dev subdomain: `amioyeko13`)
-- [ ] Confirm: Telegram bot token + chat ID, Paystack test keys
+- [x] Paystack test keys (local + Cloudflare runtime secrets); test webhook URL set in Paystack
+- [ ] Confirm: Telegram bot token + chat ID
 - [x] **Phase 1 — Foundation** (done 2026-09-25)
   - [x] Scaffold (Next 16.3 + @opennextjs/cloudflare 1.20), strict TS, Tailwind v4, vitest, zod, zustand, @supabase/ssr
   - [x] `lib/pricing.ts`, `lib/delivery-zones.ts`, `lib/format.ts` + 91 passing tests
@@ -149,8 +150,13 @@ secrets: Cloudflare dashboard → Workers → Settings → Variables and Secrets
   - [x] `lib/customizer.ts`, `lib/validation.ts` (`cartLineSchema` for checkout), `lineUnitPrice` in `lib/pricing.ts`, with tests
   - [x] Migration 0004 (sample products' overlay positions) applied
   - [x] Owner checked customisation on a real phone (numbers like "01" now kept as typed)
-- [ ] **Phase 4 — Cart, checkout, Paystack** ← NEXT
-- [ ] Phase 5 — Notifications & newsletter
+- [x] **Phase 4 — Cart, checkout, Paystack** (done 2026-09-25)
+  - [x] Server-side pricing + vouchers (`lib/order-pricing.ts`, `lib/vouchers.ts`), `PaymentProvider` + Paystack + crypto stub, idempotent `markPaymentSuccessful` (`lib/payments/confirm.ts`)
+  - [x] Migration 0005 (`create_order()` transaction, `orders.attention_note`) applied
+  - [x] Cart page + drawer, checkout, order confirmation, `/track`; all API routes
+  - [x] All 5 test-card scenarios passed on the live site (APW-1007 success, 1008 declined, 1011 webhook confirmed before the redirect, 1010 voucher then "already used", tampered price ignored)
+  - [ ] Before launch: decide on Workers Paid ($5/mo) — checkout routes use 13–90 ms CPU vs the free plan's 10 ms (see Session log)
+- [ ] **Phase 5 — Notifications & newsletter** ← NEXT
 - [ ] Phase 6 — Admin
 - [ ] Phase 7 — Legal pages, SEO, launch
 - [ ] Post-launch — customer accounts (email magic link), wishlist, crypto
@@ -181,3 +187,11 @@ Update this checklist at the end of every session, and add a one-line note under
   out from under the sticky preview/bar. Checkout (Phase 4) must validate lines with
   `cartLineSchema` and price them with `lineUnitPrice` from DB values. Verified at 375px
   in preview and live on 4 products. Next: owner real-phone check, then Phase 4.
+- 2026-09-25 — Phase 4: cart/drawer/checkout/confirmation/track + all APIs. Paystack test
+  flows verified live with `wrangler tail`: webhook confirmed APW-1011 0.7 s before the browser
+  returned. CPU (from tail, steady state): browsing 3–9 ms; checkout page ~41 ms, confirmation
+  32 ms, quote up to 90 ms, /api/checkout 17 ms, webhook 13 ms — over the Free plan's 10 ms, but
+  all 60 requests succeeded. Owner to decide on Workers Paid before launch. Test data in DB:
+  orders APW-1001–1011 and voucher TEST-ONCE (delete before launch; payments/items cascade,
+  delete voucher_redemptions first). Phase 5 fills `lib/notify/index.ts` (`notifyOrderPaid`,
+  claim `notified_at` first). Next: Phase 5.
