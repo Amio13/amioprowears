@@ -5,7 +5,8 @@ background (knows TypeScript, not a professional developer). Explain non-obvious
 decisions briefly in plain language, and prefer simple, boring solutions over clever ones.
 
 The full product spec lives in `docs/SPEC.md`. Read it before starting any phase.
-This file holds the rules that apply to every session.
+This file holds the rules that apply to every session. Next.js version-specific notes
+(bundled docs in `node_modules/next/dist/docs/`) are in @AGENTS.md.
 
 ---
 
