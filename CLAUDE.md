@@ -98,6 +98,9 @@ examples in `docs/SPEC.md` → Pricing.
 - DB changes only through SQL files in `supabase/migrations/` (numbered). Never edit an
   applied migration — add a new one.
 - Cart state: Zustand with `persist` (localStorage). Cart stores IDs and choices, not prices.
+- Product photos are 4:5. Customiser overlays are % of the photo (`left` = centre,
+  `top` = top edge, `fontSize` = % of photo width), so admin uploads must be 4:5 (pad/crop
+  in the browser compressor) or the print won't line up.
 - Fonts via `next/font/google`: Roboto (UI), Bebas Neue + Oswald (jersey name/number).
 - Commit after each working feature with a clear message. Don't commit `.env.local` or `.dev.vars`.
 - When a task needs the owner to do something outside the code (dashboard setting,
@@ -141,8 +144,12 @@ secrets: Cloudflare dashboard → Workers → Settings → Variables and Secrets
 - [x] **Phase 2 — Catalogue & product pages** (done 2026-09-25)
   - [x] Homepage collection rows, `/catalogue` (URL filters + sort, filtered in the browser from one static page), `/jersey/[slug]` (gallery, sizes, sale price, sticky mobile bar)
   - [x] All store pages statically generated, `revalidate = 300`; filter logic in `lib/catalogue.ts` with tests
-- [ ] **Phase 3 — Customiser** ← NEXT
-- [ ] Phase 4 — Cart, checkout, Paystack
+- [x] **Phase 3 — Customiser** (built + deployed 2026-09-25)
+  - [x] Live name/number/badge overlays (% positions, `cqw` text, long names shrink to fit), Front/Back toggle, plain option, live price, sticky mobile preview
+  - [x] `lib/customizer.ts`, `lib/validation.ts` (`cartLineSchema` for checkout), `lineUnitPrice` in `lib/pricing.ts`, with tests
+  - [x] Migration 0004 (sample products' overlay positions) applied
+  - [ ] Owner: check customisation on a real phone for 3+ products (verified in a 375px emulator on 4)
+- [ ] **Phase 4 — Cart, checkout, Paystack** ← NEXT
 - [ ] Phase 5 — Notifications & newsletter
 - [ ] Phase 6 — Admin
 - [ ] Phase 7 — Legal pages, SEO, launch
@@ -168,3 +175,9 @@ Update this checklist at the end of every session, and add a one-line note under
   `ProductPurchase.tsx`, which Phase 3 extends with the customiser. Phase 6 admin saves
   must call `revalidatePath` for `/`, `/catalogue` and `/jersey/[slug]`. Verified at 375px
   in preview and live. Next: Phase 3.
+- 2026-09-25 — Phase 3: `JerseyCustomizer` (replaces ProductPurchase) with live overlays
+  (`JerseyOverlay.tsx`), badges + name/number fee loaded at build time
+  (`getProductBadges`, `getStoreSettings`). On phones, scroll-padding keeps focused inputs
+  out from under the sticky preview/bar. Checkout (Phase 4) must validate lines with
+  `cartLineSchema` and price them with `lineUnitPrice` from DB values. Verified at 375px
+  in preview and live on 4 products. Next: owner real-phone check, then Phase 4.
