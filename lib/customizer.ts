@@ -10,7 +10,6 @@
 import type { BadgePosition, CustomizerConfig, OverlayBox } from "@/types";
 
 export const NAME_MAX_LENGTH = 12;
-export const NUMBER_MAX = 99;
 
 /** Used when a product has no (or partial) customiser config. */
 export const DEFAULT_CUSTOMIZER: Required<CustomizerConfig> & {
@@ -77,14 +76,17 @@ export function sanitizeNumberInput(raw: string): string {
   return raw.replace(/\D/g, "").slice(0, 2);
 }
 
-/** "07" → "7"; "" stays "". */
+/**
+ * Final form of the number: kept exactly as typed, so "01" and "07" stay two digits
+ * (customers ask for them). "" stays "".
+ */
 export function normalizeNumber(raw: string): string {
-  const digits = sanitizeNumberInput(raw);
-  return digits === "" ? "" : String(Number(digits));
+  return sanitizeNumberInput(raw);
 }
 
+/** One or two digits: 0–99, plus zero-padded forms like "00", "01", "07". */
 export function isValidNumber(n: string): boolean {
-  return /^\d{1,2}$/.test(n) && Number(n) <= NUMBER_MAX && String(Number(n)) === n;
+  return /^\d{1,2}$/.test(n);
 }
 
 // ---------------------------------------------------------------------------

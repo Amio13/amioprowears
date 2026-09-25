@@ -48,14 +48,16 @@ describe("number input", () => {
     expect(sanitizeNumberInput("123")).toBe("12");
   });
 
-  it("normalises leading zeros and validates 0–99", () => {
-    expect(normalizeNumber("07")).toBe("7");
-    expect(normalizeNumber("00")).toBe("0");
+  it("keeps leading zeros (customers want 01, 07) and validates 1–2 digits", () => {
+    expect(normalizeNumber("07")).toBe("07");
+    expect(normalizeNumber("01")).toBe("01");
+    expect(normalizeNumber("00")).toBe("00");
     expect(normalizeNumber("")).toBe("");
     expect(isValidNumber("0")).toBe(true);
+    expect(isValidNumber("07")).toBe(true);
     expect(isValidNumber("99")).toBe(true);
-    expect(isValidNumber("07")).toBe(false);
     expect(isValidNumber("100")).toBe(false);
+    expect(isValidNumber("")).toBe(false);
   });
 });
 
@@ -71,7 +73,8 @@ describe("zod schemas (server-side check)", () => {
 
   it("customNumber: 0–99 only", () => {
     expect(customNumberSchema.parse("10")).toBe("10");
-    expect(customNumberSchema.parse("07")).toBe("7");
+    expect(customNumberSchema.parse("07")).toBe("07");
+    expect(customNumberSchema.parse(" 3 ")).toBe("3");
     expect(customNumberSchema.parse("")).toBeUndefined();
     expect(customNumberSchema.safeParse("100").success).toBe(false);
     expect(customNumberSchema.safeParse("1a").success).toBe(false);

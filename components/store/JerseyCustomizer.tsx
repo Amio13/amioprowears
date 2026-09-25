@@ -227,7 +227,7 @@ export function JerseyCustomizer({
                           pattern="[0-9]*"
                           autoComplete="off"
                           placeholder="10"
-                          hint="0–99"
+                          hint="e.g. 7 or 07"
                         />
                       </div>
                       <p className="text-sm text-muted">

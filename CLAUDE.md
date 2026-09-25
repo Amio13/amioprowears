@@ -144,11 +144,11 @@ secrets: Cloudflare dashboard → Workers → Settings → Variables and Secrets
 - [x] **Phase 2 — Catalogue & product pages** (done 2026-09-25)
   - [x] Homepage collection rows, `/catalogue` (URL filters + sort, filtered in the browser from one static page), `/jersey/[slug]` (gallery, sizes, sale price, sticky mobile bar)
   - [x] All store pages statically generated, `revalidate = 300`; filter logic in `lib/catalogue.ts` with tests
-- [x] **Phase 3 — Customiser** (built + deployed 2026-09-25)
+- [x] **Phase 3 — Customiser** (done 2026-09-25)
   - [x] Live name/number/badge overlays (% positions, `cqw` text, long names shrink to fit), Front/Back toggle, plain option, live price, sticky mobile preview
   - [x] `lib/customizer.ts`, `lib/validation.ts` (`cartLineSchema` for checkout), `lineUnitPrice` in `lib/pricing.ts`, with tests
   - [x] Migration 0004 (sample products' overlay positions) applied
-  - [ ] Owner: check customisation on a real phone for 3+ products (verified in a 375px emulator on 4)
+  - [x] Owner checked customisation on a real phone (numbers like "01" now kept as typed)
 - [ ] **Phase 4 — Cart, checkout, Paystack** ← NEXT
 - [ ] Phase 5 — Notifications & newsletter
 - [ ] Phase 6 — Admin

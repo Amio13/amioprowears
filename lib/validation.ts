@@ -12,7 +12,7 @@ export const customNameSchema = z
   })
   .transform((v) => v || undefined);
 
-/** Optional printed number 0–99. "07" → "7". "" → undefined. */
+/** Optional printed number: 1–2 digits, kept as typed ("7", "07", "99"). "" → undefined. */
 export const customNumberSchema = z
   .string()
   .max(5, "Number is too long.")

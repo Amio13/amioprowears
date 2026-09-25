@@ -81,7 +81,7 @@ RLS, and server-side price calculation.
 ### 3.2 Real-time customiser
 - Flat-lay jersey photo with Front / Back toggle.
 - Name (max 12 chars, letters/spaces/hyphen, auto uppercase) renders on the back in real
-  time; Number (0–99, digits only) renders below it.
+  time; Number (1–2 digits: 0–99, and "01"/"07" kept as typed) renders below it.
 - Badge picker (badges allowed for that product) renders on the front at the badge's position.
 - Implementation: CSS absolute positioning over the image, positions in **percentages**
   from `products.customizer` JSON so it scales with the image. Text scales with container
