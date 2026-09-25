@@ -18,5 +18,35 @@
 			"binding": "WORKER_SELF_REFERENCE",
 			"service": "amioprowears"
 		}
+	],
+	// Next.js cache (ISR): page HTML/data in R2, revalidation tags in D1, and a
+	// Durable Object queue that refreshes stale pages in the background.
+	// See https://opennext.js.org/cloudflare/caching
+	"r2_buckets": [
+		{
+			"binding": "NEXT_INC_CACHE_R2_BUCKET",
+			"bucket_name": "amioprowears-cache"
+		}
+	],
+	"d1_databases": [
+		{
+			"binding": "NEXT_TAG_CACHE_D1",
+			"database_name": "amioprowears-tag-cache",
+			"database_id": "bc14efb9-2ea5-4372-b592-632ef070c665"
+		}
+	],
+	"durable_objects": {
+		"bindings": [
+			{
+				"name": "NEXT_CACHE_DO_QUEUE",
+				"class_name": "DOQueueHandler"
+			}
+		]
+	},
+	"migrations": [
+		{
+			"tag": "v1",
+			"new_sqlite_classes": ["DOQueueHandler"]
+		}
 	]
 }

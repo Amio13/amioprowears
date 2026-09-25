@@ -138,7 +138,7 @@ secrets: Cloudflare dashboard → Workers → Settings → Variables and Secrets
   - [x] First deploy: https://amioprowears.amioyeko13.workers.dev
   - [x] Supabase keys set, migrations 0001–0003 applied, `npm run db:check` passes
   - [x] GitHub connected to Workers Builds — every push to `main` auto-deploys
-- [ ] **Phase 2 — Catalogue & product pages** ← NEXT (decide ISR cache backend first)
+- [ ] **Phase 2 — Catalogue & product pages** ← NEXT
 - [ ] Phase 3 — Customiser
 - [ ] Phase 4 — Cart, checkout, Paystack
 - [ ] Phase 5 — Notifications & newsletter
@@ -154,8 +154,8 @@ Update this checklist at the end of every session, and add a one-line note under
 - 2026-09-25 — Phase 1 build: scaffolded app, core libs + tests, Supabase clients/types,
   migrations 0001–0003 (added: `redeem_voucher` is idempotent per order and not callable by
   anon; order-number sequence revoked from API roles), design system + store layout, first
-  deploy to workers.dev. Open decision for Phase 2: ISR cache backend (R2 needs a card on
-  file even on the free tier; alternatives are KV or static-assets cache). Next: owner applies
+  deploy to workers.dev. Next: owner applies
   migrations + connects Workers Builds, then Phase 2.
 - 2026-09-25 — Migrations applied (db:check passes), Workers Builds connected and first
-  auto-deploy succeeded. Phase 1 complete. Next: Phase 2.
+  auto-deploy succeeded. Phase 1 complete. ISR cache set up: R2 bucket `amioprowears-cache`,
+  D1 tag cache `amioprowears-tag-cache`, Durable Object revalidation queue. Next: Phase 2.
