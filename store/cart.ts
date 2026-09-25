@@ -69,3 +69,20 @@ export const useCart = create<CartState>()(
 );
 
 export const selectCartCount = (s: CartState) => s.items.reduce((n, i) => n + i.quantity, 0);
+
+/** Cart lines as the API expects them (drops the local-only `key`). */
+export const toApiLines = (items: CartItem[]) =>
+  items.map(({ productId, size, customName, customNumber, badgeId, quantity }) => ({
+    productId,
+    size,
+    customName,
+    customNumber,
+    badgeId,
+    quantity,
+  }));
+
+/** Slide-in cart drawer, opened after "Add to cart". */
+export const useCartDrawer = create<{ open: boolean; setOpen: (open: boolean) => void }>()((set) => ({
+  open: false,
+  setOpen: (open) => set({ open }),
+}));

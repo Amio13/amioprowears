@@ -1,3 +1,4 @@
+import { CartDrawer } from "@/components/cart/CartDrawer";
 import { CartHydrator } from "@/components/store/CartHydrator";
 import { Footer } from "@/components/store/Footer";
 import { Header } from "@/components/store/Header";
@@ -19,6 +20,7 @@ export default function StoreLayout({ children }: LayoutProps<"/">) {
       <Footer />
       <LayoutChatButton />
       <CartHydrator />
+      <CartDrawer />
     </>
   );
 }

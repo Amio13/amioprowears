@@ -15,7 +15,7 @@ import {
 } from "@/lib/customizer";
 import { formatNaira } from "@/lib/format";
 import { effectivePrice, lineUnitPrice } from "@/lib/pricing";
-import { useCart } from "@/store/cart";
+import { useCart, useCartDrawer } from "@/store/cart";
 import type { Badge, BadgePosition, Product } from "@/types";
 import { BadgeOverlay, NameNumberOverlay } from "./JerseyOverlay";
 import { ProductGallery, type GalleryImage } from "./ProductGallery";
@@ -131,6 +131,7 @@ export function JerseyCustomizer({
       tone: "ok",
       text: `Added to your cart: size ${size}${extras.length ? `, ${extras.join(", ")}` : ""}.`,
     });
+    useCartDrawer.getState().setOpen(true);
   }
 
   const addButton = (

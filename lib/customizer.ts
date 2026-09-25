@@ -105,3 +105,10 @@ export function fitFontSize(text: string, box: Required<OverlayBox>, font: "beba
   const fitting = box.width / (text.length * GLYPH_WIDTH[font]);
   return Math.min(box.fontSize, Math.round(fitting * 100) / 100);
 }
+
+/** "OKOCHA · #07 · AFCON badge" for carts, orders and emails. "" if plain. */
+export function describeCustomisation(l: { customName?: string | null; customNumber?: string | null; badgeName?: string | null }): string {
+  return [l.customName, l.customNumber ? `#${l.customNumber}` : null, l.badgeName ? `${l.badgeName} badge` : null]
+    .filter(Boolean)
+    .join(" · ");
+}
