@@ -136,7 +136,7 @@ secrets: Cloudflare dashboard → Workers → Settings → Variables and Secrets
   - [x] Migrations 0001–0003 written and dry-run tested (PGlite)
   - [x] Fonts, tokens, UI kit, store layout, chat button, `.env.example`
   - [x] First deploy: https://amioprowears.amioyeko13.workers.dev
-  - [ ] Owner: Supabase keys in `.env.local`/`.dev.vars`, apply migrations, `npm run db:check` passes
+  - [x] Supabase keys set, migrations 0001–0003 applied, `npm run db:check` passes
   - [ ] Push to GitHub + connect Workers Builds (build variables)
 - [ ] Phase 2 — Catalogue & product pages
 - [ ] Phase 3 — Customiser
