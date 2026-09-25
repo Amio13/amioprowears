@@ -1,7 +1,7 @@
 import { CartHydrator } from "@/components/store/CartHydrator";
-import { ChatButton } from "@/components/store/ChatButton";
 import { Footer } from "@/components/store/Footer";
 import { Header } from "@/components/store/Header";
+import { LayoutChatButton } from "@/components/store/LayoutChatButton";
 
 export default function StoreLayout({ children }: LayoutProps<"/">) {
   return (
@@ -17,7 +17,7 @@ export default function StoreLayout({ children }: LayoutProps<"/">) {
         {children}
       </main>
       <Footer />
-      <ChatButton />
+      <LayoutChatButton />
       <CartHydrator />
     </>
   );

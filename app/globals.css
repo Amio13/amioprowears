@@ -39,6 +39,13 @@ body {
   outline-offset: 2px;
 }
 
+/* Pages with the mobile sticky "Add to cart" bar: keep the footer clear of it. */
+@media (width < 48rem) {
+  body:has([data-sticky-bar]) {
+    padding-bottom: calc(4.75rem + env(safe-area-inset-bottom));
+  }
+}
+
 dialog::backdrop {
   background: rgb(0 0 0 / 0.4);
 }
