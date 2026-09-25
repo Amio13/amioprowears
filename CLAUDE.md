@@ -109,9 +109,14 @@ examples in `docs/SPEC.md` → Pricing.
 npm run dev        # Next.js dev server (fast iteration)
 npm run preview    # build + run in workerd locally (test here before deploying)
 npm run deploy     # build + deploy to Cloudflare
-npm run typecheck  # tsc --noEmit
+npm run typecheck  # next typegen + tsc --noEmit
 npm run lint
+npm test           # vitest (tests/)
+npm run db:check   # verify the live Supabase project (keys, migrations, RLS) using .env.local
 ```
+
+Node 22 is required (`.nvmrc`). On this WSL machine it's installed with nvm; the Windows
+`npm` under `/mnt/c/...` must not be used.
 
 Local secrets: `.env.local` (for `next dev`) and `.dev.vars` (for `preview`). Production
 secrets: Cloudflare dashboard → Workers → Settings → Variables and Secrets. See
@@ -123,8 +128,16 @@ secrets: Cloudflare dashboard → Workers → Settings → Variables and Secrets
 
 - [x] Spec finalised (v2: Cloudflare hosting, no paid WhatsApp, Telegram alerts, fee-inclusive pricing, crypto-ready payments)
 - [x] Most accounts created (Supabase, Paystack, Brevo, Zoho, GitHub, domain)
-- [ ] Confirm: Cloudflare account, Telegram bot token + chat ID, Paystack test keys
-- [ ] **Phase 1 — Foundation** ← START HERE
+- [x] Cloudflare account + wrangler login (workers.dev subdomain: `amioyeko13`)
+- [ ] Confirm: Telegram bot token + chat ID, Paystack test keys
+- [ ] **Phase 1 — Foundation** ← IN PROGRESS (code done and deployed; owner steps left)
+  - [x] Scaffold (Next 16.3 + @opennextjs/cloudflare 1.20), strict TS, Tailwind v4, vitest, zod, zustand, @supabase/ssr
+  - [x] `lib/pricing.ts`, `lib/delivery-zones.ts`, `lib/format.ts` + 91 passing tests
+  - [x] Migrations 0001–0003 written and dry-run tested (PGlite)
+  - [x] Fonts, tokens, UI kit, store layout, chat button, `.env.example`
+  - [x] First deploy: https://amioprowears.amioyeko13.workers.dev
+  - [ ] Owner: Supabase keys in `.env.local`/`.dev.vars`, apply migrations, `npm run db:check` passes
+  - [ ] Push to GitHub + connect Workers Builds (build variables)
 - [ ] Phase 2 — Catalogue & product pages
 - [ ] Phase 3 — Customiser
 - [ ] Phase 4 — Cart, checkout, Paystack
@@ -138,4 +151,9 @@ Update this checklist at the end of every session, and add a one-line note under
 
 ## Session log
 
-- (empty)
+- 2026-09-25 — Phase 1 build: scaffolded app, core libs + tests, Supabase clients/types,
+  migrations 0001–0003 (added: `redeem_voucher` is idempotent per order and not callable by
+  anon; order-number sequence revoked from API roles), design system + store layout, first
+  deploy to workers.dev. Open decision for Phase 2: ISR cache backend (R2 needs a card on
+  file even on the free tier; alternatives are KV or static-assets cache). Next: owner applies
+  migrations + connects Workers Builds, then Phase 2.
