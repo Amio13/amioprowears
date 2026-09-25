@@ -134,6 +134,12 @@ secrets: Cloudflare dashboard → Workers → Settings → Variables and Secrets
 - [x] Cloudflare account + wrangler login (workers.dev subdomain: `amioyeko13`)
 - [x] Paystack test keys (local + Cloudflare runtime secrets); test webhook URL set in Paystack
 - [ ] Confirm: Telegram bot token + chat ID
+- [ ] Email setup (owner, in progress — full guide was given in chat 2026-09-25):
+  - [x] Part 1: DNS moved to Cloudflare — nameservers `ashley`/`kipp.ns.cloudflare.com` live; waiting for Cloudflare to show "Active"
+  - [ ] Part 2: Zoho — verify domain (TXT), mailbox `admin@`, aliases `support@` + `orders@`, MX/SPF/DKIM in Cloudflare DNS
+  - [ ] Part 3: Brevo — authenticate domain (brevo-code TXT, DKIM CNAMEs, one `_dmarc`), sender `orders@`, API key, turn off Authorised IPs blocking, "Newsletter" list ID
+  - [ ] Part 4: `BREVO_*`, `OWNER_EMAIL`, `NEXT_PUBLIC_SUPPORT_EMAIL` in `.env.local` + `.dev.vars`
+  - Note: support@ doesn't receive mail until Part 2 is done (the footer already shows it). Only ONE `v=spf1` and ONE `_dmarc` record — merge, don't duplicate.
 - [x] **Phase 1 — Foundation** (done 2026-09-25)
   - [x] Scaffold (Next 16.3 + @opennextjs/cloudflare 1.20), strict TS, Tailwind v4, vitest, zod, zustand, @supabase/ssr
   - [x] `lib/pricing.ts`, `lib/delivery-zones.ts`, `lib/format.ts` + 91 passing tests
@@ -195,3 +201,7 @@ Update this checklist at the end of every session, and add a one-line note under
   orders APW-1001–1011 and voucher TEST-ONCE (delete before launch; payments/items cascade,
   delete voucher_redemptions first). Phase 5 fills `lib/notify/index.ts` (`notifyOrderPaid`,
   claim `notified_at` first). Next: Phase 5.
+- 2026-09-25 — Owner started email setup: DNS moved from Namecheap to Cloudflare
+  (nameservers already public). Next session: confirm Cloudflare shows Active, then help with
+  Zoho (Part 2) and Brevo (Part 3) and check records with `dig`; Phase 5 can start as soon as
+  the Telegram bot token is available.
