@@ -13,7 +13,8 @@
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "db:check": "node --env-file=.env.local scripts/check-db.mjs"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "^1.20.6",
