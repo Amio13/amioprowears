@@ -130,15 +130,15 @@ secrets: Cloudflare dashboard → Workers → Settings → Variables and Secrets
 - [x] Most accounts created (Supabase, Paystack, Brevo, Zoho, GitHub, domain)
 - [x] Cloudflare account + wrangler login (workers.dev subdomain: `amioyeko13`)
 - [ ] Confirm: Telegram bot token + chat ID, Paystack test keys
-- [ ] **Phase 1 — Foundation** ← IN PROGRESS (code done and deployed; owner steps left)
+- [x] **Phase 1 — Foundation** (done 2026-09-25)
   - [x] Scaffold (Next 16.3 + @opennextjs/cloudflare 1.20), strict TS, Tailwind v4, vitest, zod, zustand, @supabase/ssr
   - [x] `lib/pricing.ts`, `lib/delivery-zones.ts`, `lib/format.ts` + 91 passing tests
   - [x] Migrations 0001–0003 written and dry-run tested (PGlite)
   - [x] Fonts, tokens, UI kit, store layout, chat button, `.env.example`
   - [x] First deploy: https://amioprowears.amioyeko13.workers.dev
   - [x] Supabase keys set, migrations 0001–0003 applied, `npm run db:check` passes
-  - [ ] Push to GitHub + connect Workers Builds (build variables)
-- [ ] Phase 2 — Catalogue & product pages
+  - [x] GitHub connected to Workers Builds — every push to `main` auto-deploys
+- [ ] **Phase 2 — Catalogue & product pages** ← NEXT (decide ISR cache backend first)
 - [ ] Phase 3 — Customiser
 - [ ] Phase 4 — Cart, checkout, Paystack
 - [ ] Phase 5 — Notifications & newsletter
@@ -157,3 +157,5 @@ Update this checklist at the end of every session, and add a one-line note under
   deploy to workers.dev. Open decision for Phase 2: ISR cache backend (R2 needs a card on
   file even on the free tier; alternatives are KV or static-assets cache). Next: owner applies
   migrations + connects Workers Builds, then Phase 2.
+- 2026-09-25 — Migrations applied (db:check passes), Workers Builds connected and first
+  auto-deploy succeeded. Phase 1 complete. Next: Phase 2.
