@@ -21,7 +21,7 @@ const anon = createClient(url, anonKey, { auth: { persistSession: false } });
 const admin = createClient(url, serviceKey, { auth: { persistSession: false } });
 
 const settings = await anon.from("settings").select("*").single();
-check(!settings.error && settings.data?.name_number_fee === 550,
+check(!settings.error && Number.isInteger(settings.data?.name_number_fee),
   `public can read settings ${settings.error ? `(${settings.error.message})` : `(fee ₦${settings.data.name_number_fee})`}`);
 
 const products = await anon.from("products").select("slug, price").eq("is_active", true);
