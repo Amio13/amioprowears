@@ -2,6 +2,7 @@ import { CircleCheck, Printer, RotateCcw, TriangleAlert } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ActionButton } from "@/components/admin/ActionButton";
+import { OrderItemPrint } from "@/components/admin/OrderItemPrint";
 import { OrderStatusForm } from "@/components/admin/OrderStatusForm";
 import { BackLink, Card, OrderStatusBadge, PageHeader, PaymentStatusBadge } from "@/components/admin/ui";
 import { buttonClasses } from "@/components/ui/Button";
@@ -79,6 +80,7 @@ export default async function OrderPage({ params }: PageProps<"/admin/orders/[id
                       </p>
                       <p className="text-muted">Size {item.size}</p>
                       {custom && <p className="font-medium text-brand">Print: {custom}</p>}
+                      <OrderItemPrint item={item} />
                     </div>
                     <p className="whitespace-nowrap">{formatNaira(item.item_total)}</p>
                   </li>

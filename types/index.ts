@@ -1,3 +1,5 @@
+import type { JerseyFont } from "@/lib/jersey-fonts";
+
 /** Shared types. Money is always integer naira. Mirrors supabase/migrations/0001_schema.sql. */
 
 export type Gender = "male" | "female" | "kids";
@@ -18,12 +20,38 @@ export interface OverlayBox {
   fontSize?: number;
 }
 
+/** How much the printed name arches (lib/customizer.ts → NAME_CURVES). */
+export type NameCurve = "none" | "slight" | "strong";
+
+/** Per-jersey print settings. Badges aren't drawn on the photo, so they have no position here. */
 export interface CustomizerConfig {
   name?: OverlayBox;
   number?: OverlayBox;
-  badges?: Partial<Record<BadgePosition, OverlayBox>>;
   textColor?: string;
-  font?: "bebas" | "oswald";
+  font?: JerseyFont;
+  curve?: NameCurve;
+}
+
+/**
+ * What an order item was printed with, saved at checkout so the admin order page shows
+ * exactly what the customer saw, even if the jersey's settings change later.
+ */
+export interface PrintSnapshot {
+  font: JerseyFont;
+  curve: NameCurve;
+  textColor: string;
+  name: Required<OverlayBox>;
+  number: Required<OverlayBox>;
+  /** Back photo the preview was drawn on (null if the jersey had none). */
+  imageBack: string | null;
+}
+
+/** A badge as saved on an order item. */
+export interface OrderBadge {
+  id: string;
+  name: string;
+  price: number;
+  image_url: string;
 }
 
 export interface Settings {
@@ -123,8 +151,14 @@ export interface OrderItem {
   size: string;
   custom_name: string | null;
   custom_number: string | null;
+  /** First badge only — older orders. Use `badges` for the full list. */
   badge_id: string | null;
+  /** All badge names joined with " + " (kept for emails, tracking and older orders). */
   badge_name: string | null;
+  /** Every badge chosen (migration 0010). Empty on older orders. */
+  badges: OrderBadge[];
+  /** Print settings at checkout (migration 0010). Null on older orders. */
+  print_style: PrintSnapshot | null;
   unit_price: number;
   customization_fee: number;
   badge_price: number;

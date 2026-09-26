@@ -11,7 +11,6 @@ import { Select } from "@/components/ui/Select";
 import { Spinner } from "@/components/ui/Spinner";
 import type { ActionResult } from "@/lib/admin/action";
 import { deleteProduct, saveProduct } from "@/lib/admin/actions/products";
-import { BADGE_POSITION_LABELS } from "@/lib/admin/labels";
 import type { ProductInput } from "@/lib/admin/schemas";
 import { AUTO_COLLECTIONS, COLLECTION_LABELS, ERA_LABELS, GENDER_LABELS, isManualCollection, MANUAL_COLLECTIONS, productCollections, slugify, TYPE_LABELS } from "@/lib/catalogue";
 import { DEFAULT_CUSTOMIZER } from "@/lib/customizer";
@@ -105,7 +104,6 @@ export function ProductForm({
   const set = <K extends keyof Form>(key: K, value: Form[K]) => setForm((f) => ({ ...f, [key]: value }));
   const toggle = <T,>(list: T[], v: T) => (list.includes(v) ? list.filter((x) => x !== v) : [...list, v]);
   const fields = result && !result.ok ? result.fields : undefined;
-  const chosenBadges = badges.filter((b) => form.badge_ids.includes(b.id));
 
   async function addGalleryPhotos(files: FileList | null) {
     if (!files?.length) return;
@@ -341,17 +339,17 @@ export function ProductForm({
                   checked={form.badge_ids.includes(b.id)}
                   onChange={() => set("badge_ids", toggle(form.badge_ids, b.id))}
                   label={`${b.name}${b.is_active ? "" : " (hidden)"}`}
-                  hint={`${BADGE_POSITION_LABELS[b.position]} · ${formatNaira(b.price)}`}
+                  hint={formatNaira(b.price)}
                 />
               ))}
             </div>
           )}
         </fieldset>
 
-        <h3 className="mb-2 mt-4 text-sm font-bold">Print positions</h3>
+        <h3 className="mb-2 mt-4 text-sm font-bold">Name & number print style</h3>
         {copySources.length > 0 && (
           <Select
-            label="Copy positions from another jersey"
+            label="Copy print style from another jersey"
             className="mb-3 max-w-sm"
             placeholder="Choose a jersey…"
             value=""
@@ -362,14 +360,11 @@ export function ProductForm({
             options={copySources.map((c) => ({ value: c.id, label: c.name }))}
           />
         )}
-        <CustomizerPositionEditor
-          value={form.customizer}
-          onChange={(c) => set("customizer", c)}
-          imageFront={form.image_front || null}
-          imageBack={form.image_back}
-          badges={chosenBadges}
-          allowNameNumber={form.allow_name_number}
-        />
+        {form.allow_name_number ? (
+          <CustomizerPositionEditor value={form.customizer} onChange={(c) => set("customizer", c)} imageBack={form.image_back} />
+        ) : (
+          <p className="text-sm text-muted">Tick “Customers can add a name and number” to set the print style.</p>
+        )}
       </Card>
 
       <Card title="Visibility">

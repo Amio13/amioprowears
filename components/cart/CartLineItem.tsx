@@ -34,7 +34,7 @@ export function CartLineItem({
   const custom = describeCustomisation({
     customName: item.customName,
     customNumber: item.customNumber,
-    badgeName: priced?.badgeName ?? (item.badgeId ? "Badge" : null),
+    badgeName: priced?.badgeName ?? (item.badgeIds?.length ? "Badge" : null),
   });
   const name = priced?.productName ?? "Jersey";
 
@@ -64,6 +64,15 @@ export function CartLineItem({
           {custom && ` · ${custom}`}
           {!editable && ` · Qty ${item.quantity}`}
         </p>
+        {priced && priced.badges.length > 0 && (
+          <ul className="flex flex-wrap gap-1" aria-label="Badges">
+            {priced.badges.map((b) => (
+              <li key={b.id}>
+                <Image src={b.image_url} alt={b.name} title={b.name} width={28} height={28} className="size-7 rounded bg-surface object-contain p-0.5" unoptimized />
+              </li>
+            ))}
+          </ul>
+        )}
         {priced && item.quantity > 1 && (
           <p className="text-xs text-muted">{formatNaira(priced.lineTotal / priced.quantity)} each</p>
         )}

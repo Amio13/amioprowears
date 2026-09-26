@@ -5,6 +5,7 @@
 import { z } from "zod";
 import { COLLECTION_LABELS, isManualCollection } from "@/lib/catalogue";
 import { normalizeNigerianPhone } from "@/lib/format";
+import { JERSEY_FONT_IDS } from "@/lib/jersey-fonts";
 import type { CollectionSlug } from "@/types";
 
 const money = (label: string, min = 0) =>
@@ -41,14 +42,12 @@ const overlayBox = z.object({
 export const customizerSchema = z.object({
   name: overlayBox.optional(),
   number: overlayBox.optional(),
-  badges: z
-    .object({ left_chest: overlayBox.optional(), right_chest: overlayBox.optional(), sleeve: overlayBox.optional() })
-    .optional(),
   textColor: z
     .string()
     .regex(/^#[0-9a-fA-F]{6}$/, "Pick a text colour.")
     .optional(),
-  font: z.enum(["bebas", "oswald"]).optional(),
+  font: z.enum(JERSEY_FONT_IDS).optional(),
+  curve: z.enum(["none", "slight", "strong"]).optional(),
 });
 
 const COLLECTIONS = Object.keys(COLLECTION_LABELS) as [CollectionSlug, ...CollectionSlug[]];
@@ -105,7 +104,7 @@ export const badgeInputSchema = z.object({
   name: z.string().trim().min(2, "Enter the badge name.").max(60),
   image_url: imageUrl,
   price: money("the price"),
-  position: z.enum(["left_chest", "right_chest", "sleeve"]),
+  // No position: badges aren't drawn on the jersey photo; the owner places them when printing.
   is_active: z.boolean(),
 });
 export type BadgeInput = z.input<typeof badgeInputSchema>;

@@ -50,7 +50,7 @@ export function CartContents({ variant, onNavigate }: { variant: "page" | "drawe
       p.size === item.size &&
       (p.customName ?? "") === (item.customName ?? "") &&
       (p.customNumber ?? "") === (item.customNumber ?? "") &&
-      (p.badgeId ?? "") === (item.badgeId ?? "")
+      p.badges.map((b) => b.id).join("+") === (item.badgeIds ?? []).join("+")
       ? p
       : undefined;
   };

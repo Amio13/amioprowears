@@ -4,10 +4,11 @@
  * Pure — the DB loading lives in lib/checkout.ts — so it's fully unit-tested.
  */
 import { cheapestDeliveryFee, getDeliveryForState, type DeliveryFees, type DeliveryZoneId } from "./delivery-zones";
+import { joinBadgeNames, printSnapshot } from "./customizer";
 import { effectivePrice, lineUnitPrice } from "./pricing";
 import type { CartLineInput } from "./validation";
 import { computeVoucherDiscount, type VoucherResult, type VoucherRules } from "./vouchers";
-import type { Badge, Product } from "@/types";
+import type { Badge, OrderBadge, PrintSnapshot, Product } from "@/types";
 
 export type PricingProduct = Pick<
   Product,
@@ -21,11 +22,13 @@ export type PricingProduct = Pick<
   | "allow_name_number"
   | "is_active"
   | "image_front"
+  | "image_back"
+  | "customizer"
 >;
-export type PricingBadge = Pick<Badge, "id" | "name" | "price" | "is_active">;
+export type PricingBadge = Pick<Badge, "id" | "name" | "price" | "is_active" | "image_url">;
 
 export const PRICING_PRODUCT_COLUMNS =
-  "id, slug, name, price, sale_price, sizes, out_of_stock_sizes, allow_name_number, is_active, image_front";
+  "id, slug, name, price, sale_price, sizes, out_of_stock_sizes, allow_name_number, is_active, image_front, image_back, customizer";
 
 export interface PricingData {
   products: Map<string, PricingProduct>;
@@ -46,11 +49,16 @@ export interface PricedLine {
   size: string;
   customName?: string;
   customNumber?: string;
-  badgeId?: string;
+  /** Badges chosen, sorted by id (the cart sends them sorted). */
+  badges: OrderBadge[];
+  /** All badge names as one string ("AFCON + Premier League"), or undefined. */
   badgeName?: string;
+  /** Font/curve/colour to print with — only when there's a name or number. */
+  printStyle: PrintSnapshot | null;
   /** Jersey price used (sale price if on sale). */
   unitPrice: number;
   customizationFee: number;
+  /** Total of all badges on one jersey. */
   badgePrice: number;
   quantity: number;
   lineTotal: number;
@@ -81,16 +89,17 @@ export function priceLines(
       return fail("Name and number printing isn't available for this jersey.");
     }
 
-    let badge: PricingBadge | undefined;
-    if (line.badgeId) {
-      badge = data.badges.get(line.badgeId);
+    const badges: OrderBadge[] = [];
+    for (const id of line.badgeIds) {
+      const badge = data.badges.get(id);
       if (!badge || !badge.is_active || !data.allowedBadges.has(`${product.id}:${badge.id}`)) {
-        return fail("That badge isn't available for this jersey. Please remove it.");
+        return fail(`${badge?.name ?? "A badge"} isn't available for this jersey any more. Please remove it and add the jersey again.`);
       }
+      badges.push({ id: badge.id, name: badge.name, price: badge.price, image_url: badge.image_url });
     }
 
     const customizationFee = hasNameOrNumber ? data.nameNumberFee : 0;
-    const badgePrice = badge?.price ?? 0;
+    const badgePrice = badges.reduce((n, b) => n + b.price, 0);
     const each = lineUnitPrice({ product, nameNumberFee: data.nameNumberFee, hasNameOrNumber, badgePrice });
 
     priced.push({
@@ -102,8 +111,9 @@ export function priceLines(
       size: line.size,
       customName: line.customName,
       customNumber: line.customNumber,
-      badgeId: badge?.id,
-      badgeName: badge?.name,
+      badges,
+      badgeName: joinBadgeNames(badges.map((b) => b.name)) ?? undefined,
+      printStyle: hasNameOrNumber ? printSnapshot(product.customizer, product.image_back) : null,
       unitPrice: effectivePrice(product),
       customizationFee,
       badgePrice,

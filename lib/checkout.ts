@@ -17,12 +17,12 @@ import { normalizeVoucherCode, VOUCHER_COLUMNS, type VoucherRules } from "./vouc
 export async function loadPricingData(lines: CartLineInput[]): Promise<PricingData> {
   const db = createPublicClient(); // public data; RLS hides inactive rows, which then count as unavailable
   const productIds = [...new Set(lines.map((l) => l.productId))];
-  const badgeIds = [...new Set(lines.flatMap((l) => (l.badgeId ? [l.badgeId] : [])))];
+  const badgeIds = [...new Set(lines.flatMap((l) => l.badgeIds))];
 
   const [products, badges, links, settings] = await Promise.all([
     db.from("products").select(PRICING_PRODUCT_COLUMNS).in("id", productIds).returns<PricingProduct[]>(),
     badgeIds.length
-      ? db.from("badges").select("id, name, price, is_active").in("id", badgeIds).returns<PricingBadge[]>()
+      ? db.from("badges").select("id, name, price, is_active, image_url").in("id", badgeIds).returns<PricingBadge[]>()
       : Promise.resolve({ data: [] as PricingBadge[], error: null }),
     badgeIds.length
       ? db
@@ -140,8 +140,10 @@ export async function createCheckout(input: CheckoutInput, origin: string): Prom
         size: l.size,
         custom_name: l.customName ?? null,
         custom_number: l.customNumber ?? null,
-        badge_id: l.badgeId ?? null,
+        badge_id: l.badges[0]?.id ?? null,
         badge_name: l.badgeName ?? null,
+        badges: l.badges,
+        print_style: l.printStyle,
         unit_price: l.unitPrice,
         customization_fee: l.customizationFee,
         badge_price: l.badgePrice,

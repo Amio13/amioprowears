@@ -12,7 +12,8 @@ export interface CartItem {
   size: string;
   customName?: string;
   customNumber?: string;
-  badgeId?: string;
+  /** Sorted, so the same badges in any order make the same line. */
+  badgeIds?: string[];
   quantity: number;
 }
 
@@ -21,7 +22,9 @@ export type NewCartItem = Omit<CartItem, "key" | "quantity"> & { quantity?: numb
 export const MAX_QUANTITY_PER_LINE = 20;
 
 export const cartItemKey = (i: Omit<CartItem, "key" | "quantity">) =>
-  [i.productId, i.size, i.customName ?? "", i.customNumber ?? "", i.badgeId ?? ""].join("|");
+  [i.productId, i.size, i.customName ?? "", i.customNumber ?? "", (i.badgeIds ?? []).join("+")].join("|");
+
+const sortedBadges = (ids?: string[]) => (ids?.length ? [...new Set(ids)].sort() : undefined);
 
 interface CartState {
   items: CartItem[];
@@ -37,8 +40,9 @@ export const useCart = create<CartState>()(
   persist(
     (set) => ({
       items: [],
-      add: ({ quantity = 1, ...item }) =>
+      add: ({ quantity = 1, ...raw }) =>
         set((s) => {
+          const item = { ...raw, badgeIds: sortedBadges(raw.badgeIds) };
           const key = cartItemKey(item);
           const existing = s.items.find((i) => i.key === key);
           if (existing) {
@@ -59,7 +63,18 @@ export const useCart = create<CartState>()(
     }),
     {
       name: "apw-cart",
-      version: 1,
+      version: 2,
+      // v1 lines had one `badgeId`; v2 has `badgeIds`.
+      migrate: (persisted, version) => {
+        const state = persisted as { items?: (CartItem & { badgeId?: string })[] };
+        if (version < 2 && state.items) {
+          state.items = state.items.map(({ badgeId, ...i }) => {
+            const item = { ...i, badgeIds: badgeId ? [badgeId] : undefined };
+            return { ...item, key: cartItemKey(item) };
+          });
+        }
+        return state as CartState;
+      },
       storage: createJSONStorage(() => localStorage),
       // Loaded from localStorage after mount by <CartHydrator />, so the server
       // HTML and the first client render match (both show an empty cart).
@@ -72,12 +87,12 @@ export const selectCartCount = (s: CartState) => s.items.reduce((n, i) => n + i.
 
 /** Cart lines as the API expects them (drops the local-only `key`). */
 export const toApiLines = (items: CartItem[]) =>
-  items.map(({ productId, size, customName, customNumber, badgeId, quantity }) => ({
+  items.map(({ productId, size, customName, customNumber, badgeIds, quantity }) => ({
     productId,
     size,
     customName,
     customNumber,
-    badgeId,
+    badgeIds,
     quantity,
   }));
 

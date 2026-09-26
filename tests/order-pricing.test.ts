@@ -7,6 +7,7 @@ const P1 = "11111111-1111-4111-8111-111111111111"; // ₦15,350, allows name/num
 const P2 = "22222222-2222-4222-8222-222222222222"; // on sale ₦13,850, no name/number, XS sold out
 const B1 = "b0000000-0000-4000-8000-000000000001"; // ₦1,050, allowed on P1 only
 const B2 = "b0000000-0000-4000-8000-000000000002"; // inactive
+const B3 = "b0000000-0000-4000-8000-000000000003"; // ₦1,550, allowed on P1
 
 const product = (o: Partial<PricingProduct> & Pick<PricingProduct, "id">): PricingProduct => ({
   slug: o.id,
@@ -18,6 +19,8 @@ const product = (o: Partial<PricingProduct> & Pick<PricingProduct, "id">): Prici
   allow_name_number: true,
   is_active: true,
   image_front: "/f.svg",
+  image_back: "/b.svg",
+  customizer: { font: "anton", curve: "slight" },
   ...o,
 });
 
@@ -27,15 +30,16 @@ const data: PricingData = {
     [P2, product({ id: P2, sale_price: 13850, allow_name_number: false, out_of_stock_sizes: ["XS"] })],
   ]),
   badges: new Map([
-    [B1, { id: B1, name: "AFCON", price: 1050, is_active: true }],
-    [B2, { id: B2, name: "Old", price: 500, is_active: false }],
+    [B1, { id: B1, name: "AFCON", price: 1050, is_active: true, image_url: "/afcon.png" }],
+    [B2, { id: B2, name: "Old", price: 500, is_active: false, image_url: "/old.png" }],
+    [B3, { id: B3, name: "Premier League", price: 1550, is_active: true, image_url: "/pl.png" }],
   ]),
-  allowedBadges: new Set([`${P1}:${B1}`, `${P1}:${B2}`]),
+  allowedBadges: new Set([`${P1}:${B1}`, `${P1}:${B2}`, `${P1}:${B3}`]),
   nameNumberFee: 550,
   deliveryFees: DEFAULT_DELIVERY_FEES, // A ₦2,050, B ₦3,050, C ₦4,100
 };
 
-const line = (o: Partial<CartLineInput> = {}): CartLineInput => ({ productId: P1, size: "M", quantity: 1, ...o });
+const line = (o: Partial<CartLineInput> = {}): CartLineInput => ({ productId: P1, size: "M", quantity: 1, badgeIds: [], ...o });
 
 describe("priceOrder", () => {
   it("SPEC 3.3 whole-order example: ₦15,350 + ₦550 name/number + Zone B = ₦18,950", () => {
@@ -48,7 +52,7 @@ describe("priceOrder", () => {
 
   it("badge + quantity + sale price; delivery charged once", () => {
     const q = priceOrder({
-      lines: [line({ customNumber: "07", badgeId: B1, quantity: 2 }), line({ productId: P2, size: "S" })],
+      lines: [line({ customNumber: "07", badgeIds: [B1], quantity: 2 }), line({ productId: P2, size: "S" })],
       data,
       state: "Enugu",
     });
@@ -73,8 +77,8 @@ describe("priceOrder", () => {
         line({ productId: P2, size: "XS" }), // sold out
         line({ size: "XXL" }), // not a size of this jersey
         line({ productId: P2, size: "M", customName: "ADE" }), // no name printing on P2
-        line({ badgeId: B2 }), // inactive badge
-        line({ productId: P2, size: "M", badgeId: B1 }), // badge not allowed on P2
+        line({ badgeIds: [B1, B2] }), // one inactive badge
+        line({ productId: P2, size: "M", badgeIds: [B1] }), // badge not allowed on P2
       ],
       data,
     });
@@ -123,5 +127,20 @@ describe("priceOrder", () => {
     expect(q.delivery).toEqual({ zone: "C", fee: 9000 });
     expect(q.deliveryFrom).toBe(1000);
     expect(q.total).toBe(15350 + 9000);
+  });
+
+  it("several badges: each is checked and priced, names and pictures are kept for the order", () => {
+    const q = priceOrder({ lines: [line({ customName: "OKOCHA", badgeIds: [B1, B3] })], data });
+    const l = q.lines[0]!;
+    expect(l.badgePrice).toBe(1050 + 1550);
+    expect(l.lineTotal).toBe(15350 + 550 + 2600);
+    expect(l.badgeName).toBe("AFCON + Premier League");
+    expect(l.badges.map((b) => b.image_url)).toEqual(["/afcon.png", "/pl.png"]);
+  });
+
+  it("saves the print style only when a name or number is printed", () => {
+    const [printed, plain] = priceOrder({ lines: [line({ customNumber: "9" }), line({ size: "L", badgeIds: [B1] })], data }).lines;
+    expect(printed!.printStyle).toMatchObject({ font: "anton", curve: "slight", imageBack: "/b.svg", textColor: "#FFFFFF" });
+    expect(plain!.printStyle).toBeNull();
   });
 });

@@ -24,14 +24,21 @@ export const customNumberSchema = z
   .refine((v) => v === "" || isValidNumber(v))
   .transform((v) => v || undefined);
 
+export const MAX_BADGES = 10;
+
 /** One cart line as the browser sends it: IDs and choices only, never prices. */
 export const cartLineSchema = z.object({
   productId: z.uuid("Unknown product."),
   size: z.string().trim().min(1, "Choose a size.").max(10),
   customName: customNameSchema.optional(),
   customNumber: customNumberSchema.optional(),
+  badgeIds: z.array(z.uuid("Unknown badge.")).max(MAX_BADGES, `Up to ${MAX_BADGES} badges per jersey.`).optional(),
+  /** Older carts (one badge). Merged into badgeIds. */
   badgeId: z.uuid("Unknown badge.").optional(),
   quantity: z.int().min(1).max(20, "You can order up to 20 of the same jersey."),
+}).transform(({ badgeId, badgeIds, ...l }) => {
+  const ids = [...new Set([...(badgeIds ?? []), ...(badgeId ? [badgeId] : [])])].sort();
+  return { ...l, badgeIds: ids };
 });
 export type CartLineInput = z.infer<typeof cartLineSchema>;
 

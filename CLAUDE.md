@@ -106,7 +106,8 @@ examples in `docs/SPEC.md` → Pricing.
   in the browser compressor) or the print won't line up.
 - Icons: import from `lucide-react`; don't hand-draw SVGs or use text symbols (← ✓ ×). Inside `Button`/`buttonClasses`
   an icon is sized automatically — just put `<Plus />` before the label.
-- Fonts via `next/font/google`: Roboto (UI), Bebas Neue + Oswald (jersey name/number).
+- Fonts via `next/font/google`, all declared in `app/fonts.ts` (literal options on every call — no spread):
+  Roboto (UI), Bebas Neue (headings), plus 16 jersey print fonts listed in `lib/jersey-fonts.ts` (not preloaded).
 - Commit after each working feature with a clear message. Don't commit `.env.local` or `.dev.vars`.
 - When a task needs the owner to do something outside the code (dashboard setting,
   secret, DNS), stop and give exact click-by-click steps.
@@ -207,6 +208,8 @@ secrets: Cloudflare dashboard → Workers → Settings → Variables and Secrets
 - [x] Delivery fees editable in admin → Settings (migration 0008 applied, live 2026-09-26)
 - [x] Collections/menu: Top clubs, National teams, Females, Kids, Vintage — live, migration 0009 applied. Females/Kids/Vintage
   are automatic from gender/era (`productCollections()` in `lib/catalogue.ts`)
+- [ ] Badges + print styles (code done, NOT pushed): any number of badges per jersey shown as picture cards (not drawn on
+  the photo), 16 fonts + name curve per jersey, order page shows print preview + badge pictures. Owner runs migration 0010.
 - [ ] Post-launch — customer accounts (email magic link, then sync favourites), crypto
 - [ ] Owner's list for AFTER the phases (owner wants to finish all phases first, then add/remove things
   based on customer feedback):
@@ -305,3 +308,6 @@ Update this checklist at the end of every session, and add a one-line note under
   (data: tags + homepage rows) must run right AFTER the push. Committed locally, not pushed.
 - 2026-09-26 — Pushed delivery fees + collections; live. 0009's homepage-rows update didn't take when the owner ran it, so the
   rows were set directly (service role, rows only). Live homepage shows Top clubs, National teams, Females, Kids, Vintage.
+- 2026-09-26 — Badges/fonts/curve: cart lines carry `badgeIds` (cart persist v2 migrates old `badgeId`), server prices every
+  badge; order_items get `badges` + `print_style` snapshots (migration 0010, new create_order). Badge position removed from
+  admin (column kept). Name curve drawn as SVG textPath. Glyph widths measured in Chromium. Worker 2.19 MB gzip. Not pushed.

@@ -87,7 +87,8 @@ describe("zod schemas (server-side check)", () => {
       size: "M",
       customName: "okocha",
       customNumber: "10",
-      badgeId: "b0000000-0000-4000-8000-000000000003",
+      badgeIds: ["b0000000-0000-4000-8000-000000000009", "b0000000-0000-4000-8000-000000000003"],
+      badgeId: "b0000000-0000-4000-8000-000000000003", // older cart format, merged in
       quantity: 2,
       price: 1, // tampered — must not survive parsing
     });
@@ -96,7 +97,7 @@ describe("zod schemas (server-side check)", () => {
       size: "M",
       customName: "OKOCHA",
       customNumber: "10",
-      badgeId: "b0000000-0000-4000-8000-000000000003",
+      badgeIds: ["b0000000-0000-4000-8000-000000000003", "b0000000-0000-4000-8000-000000000009"], // unique, sorted
       quantity: 2,
     });
     expect(cartLineSchema.safeParse({ productId: "x", size: "M", quantity: 1 }).success).toBe(false);
@@ -127,9 +128,13 @@ describe("overlay config", () => {
     const c = resolveCustomizer({ name: { top: 10, left: 50, width: 60 }, font: "oswald" });
     expect(c.name).toEqual({ top: 10, left: 50, width: 60, fontSize: 9 });
     expect(c.number).toEqual(DEFAULT_CUSTOMIZER.number);
-    expect(c.badges.sleeve).toEqual(DEFAULT_CUSTOMIZER.badges.sleeve);
     expect(c.font).toBe("oswald");
+    expect(c.curve).toBe("none");
     expect(resolveCustomizer(null).textColor).toBe("#FFFFFF");
+    // Old saved configs: badge positions dropped, unknown font/curve → defaults.
+    const old = resolveCustomizer({ font: "comic" as never, curve: "wavy" as never, badges: {} } as never);
+    expect(old).not.toHaveProperty("badges");
+    expect([old.font, old.curve]).toEqual(["bebas", "none"]);
   });
 
   it("fitFontSize keeps short names at full size and shrinks long ones to fit", () => {
@@ -137,6 +142,6 @@ describe("overlay config", () => {
     expect(fitFontSize("ADE", box, "bebas")).toBe(9);
     const long = fitFontSize("NWANKWO-KANU", box, "oswald");
     expect(long).toBeLessThan(9);
-    expect(long * 12 * 0.58).toBeLessThanOrEqual(box.width + 0.01);
+    expect(long * 12 * 0.6).toBeLessThanOrEqual(box.width + 0.01);
   });
 });

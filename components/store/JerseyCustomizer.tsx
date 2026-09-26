@@ -1,6 +1,6 @@
 "use client";
 
-import { Award, CircleAlert, CircleCheck, PenLine, Shirt, ShoppingBag } from "lucide-react";
+import { Award, Check, CircleAlert, CircleCheck, PenLine, Shirt, ShoppingBag } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
 import { Button } from "@/components/ui/Button";
@@ -17,8 +17,8 @@ import {
 import { formatNaira } from "@/lib/format";
 import { effectivePrice, lineUnitPrice } from "@/lib/pricing";
 import { useCart, useCartDrawer } from "@/store/cart";
-import type { Badge, BadgePosition, Product } from "@/types";
-import { BadgeOverlay, NameNumberOverlay } from "./JerseyOverlay";
+import type { Badge, Product } from "@/types";
+import { NameNumberOverlay } from "./JerseyOverlay";
 import { ProductGallery, type GalleryImage } from "./ProductGallery";
 
 type CustomizerProduct = Pick<
@@ -36,17 +36,13 @@ type CustomizerProduct = Pick<
   | "gallery"
 >;
 
-const POSITION_LABELS: Record<BadgePosition, string> = {
-  left_chest: "Chest",
-  right_chest: "Chest",
-  sleeve: "Sleeve",
-};
-
 const FRONT = 0;
 const BACK = 1;
 
 /**
- * Product photos + live customiser (name, number, badge) + size + "Add to cart".
+ * Product photos + live customiser (name, number, badges) + size + "Add to cart".
+ * Name and number are drawn on the back photo; badges are shown as pictures in the
+ * picker only (the owner places them when printing).
  * Mobile: while customising, the preview sticks under the header and the options
  * scroll beneath it; "Add to cart" lives in a sticky bottom bar. Desktop: two
  * columns, preview left (sticky), options right.
@@ -81,7 +77,7 @@ export function JerseyCustomizer({
   const [customising, setCustomising] = useState(false);
   const [name, setName] = useState("");
   const [number, setNumber] = useState("");
-  const [badgeId, setBadgeId] = useState<string | null>(null);
+  const [badgeIds, setBadgeIds] = useState<string[]>([]);
   const [jump, setJump] = useState<{ index: number; key: number }>();
   const [message, setMessage] = useState<{ tone: "error" | "ok"; text: string } | null>(null);
   const add = useCart((s) => s.add);
@@ -91,9 +87,11 @@ export function JerseyCustomizer({
   // What actually gets printed: nothing unless "Customise" is chosen.
   const printName = customising && product.allow_name_number ? normalizeName(name) : "";
   const printNumber = customising && product.allow_name_number ? normalizeNumber(number) : "";
-  const badge = customising ? (badges.find((b) => b.id === badgeId) ?? null) : null;
+  const chosenBadges = customising ? badges.filter((b) => badgeIds.includes(b.id)) : [];
   const hasNameOrNumber = Boolean(printName || printNumber);
-  const total = lineUnitPrice({ product, nameNumberFee, hasNameOrNumber, badgePrice: badge?.price ?? 0 });
+  const badgePrice = chosenBadges.reduce((n, b) => n + b.price, 0);
+  const total = lineUnitPrice({ product, nameNumberFee, hasNameOrNumber, badgePrice });
+  const badgeText = chosenBadges.length ? `${chosenBadges.map((b) => b.name).join(" + ")} ${chosenBadges.length > 1 ? "badges" : "badge"}` : "";
 
   const show = (index: number) => setJump({ index, key: Date.now() });
 
@@ -102,7 +100,6 @@ export function JerseyCustomizer({
       src: product.image_front,
       alt: `${product.name}, front view`,
       label: "Front",
-      overlay: <BadgeOverlay config={config} badge={badge} />,
     },
     ...(product.image_back
       ? [
@@ -128,9 +125,9 @@ export function JerseyCustomizer({
       size,
       customName: printName || undefined,
       customNumber: printNumber || undefined,
-      badgeId: badge?.id,
+      badgeIds: chosenBadges.map((b) => b.id),
     });
-    const extras = [printName, printNumber && `#${printNumber}`, badge && `${badge.name} badge`].filter(Boolean);
+    const extras = [printName, printNumber && `#${printNumber}`, badgeText].filter(Boolean);
     setMessage({
       tone: "ok",
       text: `Added to your cart: size ${size}${extras.length ? `, ${extras.join(", ")}` : ""}.`,
@@ -168,8 +165,8 @@ export function JerseyCustomizer({
             <ProductGallery images={images} jumpTo={jump} corner={photoCorner} />
           </div>
           <p className="sr-only" aria-live="polite">
-            {hasNameOrNumber || badge
-              ? `Preview: ${[printName && `name ${printName}`, printNumber && `number ${printNumber}`, badge && `${badge.name} badge`].filter(Boolean).join(", ")}.`
+            {hasNameOrNumber || badgeText
+              ? `Preview: ${[printName && `name ${printName}`, printNumber && `number ${printNumber}`, badgeText].filter(Boolean).join(", ")}.`
               : ""}
           </p>
         </div>
@@ -246,25 +243,17 @@ export function JerseyCustomizer({
 
                   {badges.length > 0 && (
                     <fieldset>
-                      <legend className="mb-2 text-sm font-medium">Badge</legend>
-                      <div className="space-y-2">
-                        <BadgeOption
-                          checked={badgeId === null}
-                          onChange={() => setBadgeId(null)}
-                          title="No badge"
-                        />
+                      <legend className="mb-1 text-sm font-medium">Badges (optional)</legend>
+                      <p className="mb-2 text-sm text-muted">Tap to add as many as you like. We print them in their official spots.</p>
+                      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                         {badges.map((b) => (
                           <BadgeOption
                             key={b.id}
-                            checked={badgeId === b.id}
-                            onChange={() => {
-                              setBadgeId(b.id);
-                              show(FRONT);
-                            }}
-                            title={b.name}
-                            subtitle={POSITION_LABELS[b.position]}
-                            price={b.price}
-                            image={b.image_url}
+                            checked={badgeIds.includes(b.id)}
+                            onChange={() =>
+                              setBadgeIds((ids) => (ids.includes(b.id) ? ids.filter((id) => id !== b.id) : [...ids, b.id]))
+                            }
+                            badge={b}
                           />
                         ))}
                       </div>
@@ -275,7 +264,7 @@ export function JerseyCustomizer({
             </fieldset>
           )}
 
-          {(hasNameOrNumber || badge) && (
+          {(hasNameOrNumber || chosenBadges.length > 0) && (
             <dl className="space-y-1 border-t border-line pt-4 text-sm">
               <SummaryRow term="Jersey" value={effectivePrice(product)} />
               {hasNameOrNumber && (
@@ -284,7 +273,9 @@ export function JerseyCustomizer({
                   value={nameNumberFee}
                 />
               )}
-              {badge && <SummaryRow term={`${badge.name} badge`} value={badge.price} />}
+              {chosenBadges.map((b) => (
+                <SummaryRow key={b.id} term={`${b.name} badge`} value={b.price} />
+              ))}
               <SummaryRow term="Total" value={total} strong />
             </dl>
           )}
@@ -430,36 +421,33 @@ function ChoiceButton({
   );
 }
 
-function BadgeOption({
-  checked,
-  onChange,
-  title,
-  subtitle,
-  price,
-  image,
-}: {
-  checked: boolean;
-  onChange: () => void;
-  title: string;
-  subtitle?: string;
-  price?: number;
-  image?: string;
-}) {
+/** A badge as a big picture card, so customers see exactly what gets printed. Tap to add/remove. */
+function BadgeOption({ checked, onChange, badge }: { checked: boolean; onChange: () => void; badge: Badge }) {
   return (
     <label
       className={cn(
-        "flex min-h-14 cursor-pointer items-center gap-3 rounded-lg border bg-white px-3 py-2",
+        "relative flex cursor-pointer flex-col overflow-hidden rounded-lg border bg-white",
         "has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-brand",
-        checked ? "border-ink ring-1 ring-ink" : "border-line hover:border-ink",
+        checked ? "border-ink ring-2 ring-ink" : "border-line hover:border-ink",
       )}
     >
-      <input type="radio" name="badge" checked={checked} onChange={onChange} className="size-5 shrink-0 accent-brand" />
-      {image && <Image src={image} alt="" width={36} height={36} className="size-9 shrink-0" unoptimized />}
-      <span className="flex-1 text-sm">
-        <span className="block font-medium">{title}</span>
-        {subtitle && <span className="block text-xs text-muted">{subtitle}</span>}
+      <input type="checkbox" checked={checked} onChange={onChange} className="sr-only" />
+      <span className="relative block aspect-square bg-surface">
+        <Image src={badge.image_url} alt={`${badge.name} badge`} fill sizes="(min-width: 640px) 160px, 45vw" className="object-contain p-3" unoptimized />
       </span>
-      {price !== undefined && <span className="text-sm font-medium">+{formatNaira(price)}</span>}
+      <span className="flex flex-1 flex-col px-2 py-2 text-sm">
+        <span className="font-medium leading-tight">{badge.name}</span>
+        <span className="text-muted">+{formatNaira(badge.price)}</span>
+      </span>
+      <span
+        aria-hidden="true"
+        className={cn(
+          "absolute right-2 top-2 flex size-7 items-center justify-center rounded-full border-2",
+          checked ? "border-ink bg-ink text-white" : "border-line bg-white text-transparent",
+        )}
+      >
+        <Check className="size-4" strokeWidth={3} />
+      </span>
     </label>
   );
 }

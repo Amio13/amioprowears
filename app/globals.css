@@ -4,8 +4,6 @@
 @theme inline {
   --font-sans: var(--font-roboto), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-bebas), var(--font-oswald), ui-sans-serif, sans-serif;
-  --font-jersey-bebas: var(--font-bebas), sans-serif;
-  --font-jersey-oswald: var(--font-oswald), sans-serif;
 }
 
 /*

@@ -5,7 +5,6 @@ import { Card, Empty, PageHeader } from "@/components/admin/ui";
 import { Badge as Pill } from "@/components/ui/Badge";
 import { requireAdmin } from "@/lib/admin/auth";
 import { loadAllBadges } from "@/lib/admin/catalogue";
-import { BADGE_POSITION_LABELS } from "@/lib/admin/labels";
 import { formatNaira } from "@/lib/format";
 
 export const metadata = { title: "Badges" };
@@ -31,9 +30,7 @@ export default async function BadgesPage() {
                   <Image src={b.image_url} alt="" width={48} height={48} className="size-12 object-contain" unoptimized />
                   <span className="min-w-0 flex-1">
                     <span className="block font-bold">{b.name}</span>
-                    <span className="text-sm text-muted">
-                      {BADGE_POSITION_LABELS[b.position]} · {formatNaira(b.price)}
-                    </span>
+                    <span className="text-sm text-muted">{formatNaira(b.price)}</span>
                   </span>
                   {!b.is_active && <Pill>Hidden</Pill>}
                   <span className="inline-flex items-center gap-1 text-sm font-medium">

@@ -1,4 +1,4 @@
-import type { BadgePosition, OrderStatus, PaymentStatus } from "@/types";
+import type { OrderStatus, PaymentStatus } from "@/types";
 
 type Tone = "neutral" | "brand" | "success" | "warning" | "info";
 
@@ -16,12 +16,6 @@ export const PAYMENT_STATUS: Record<PaymentStatus, { label: string; tone: Tone }
   failed: { label: "Failed", tone: "neutral" },
   amount_mismatch: { label: "Amount mismatch", tone: "brand" },
   refunded: { label: "Refunded", tone: "neutral" },
-};
-
-export const BADGE_POSITION_LABELS: Record<BadgePosition, string> = {
-  left_chest: "Left chest",
-  right_chest: "Right chest",
-  sleeve: "Sleeve",
 };
 
 /** "10% off (max ₦2,000)" or "₦1,000 off". */
