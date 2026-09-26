@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { POLICIES_UPDATED, STORE } from "@/lib/store-info";
+import { ADDRESS, POLICIES_UPDATED, POLICY, STORE } from "@/lib/store-info";
 
 export const metadata: Metadata = {
   title: "Terms of service",
@@ -26,6 +26,9 @@ export default function TermsPage() {
           refund.
         </li>
         <li>You must give a correct name, phone number, email and motor park so we can deliver your order.</li>
+        <li>
+          You can cancel for a full refund within {POLICY.cancelWindow} of paying (see our <Link href="/returns">returns policy</Link>).
+        </li>
       </ul>
 
       <h2>Prices and payment</h2>
@@ -39,7 +42,8 @@ export default function TermsPage() {
       <h2>Customisation</h2>
       <ul>
         <li>We print the name and number exactly as you type them. Please check spelling and sizes before paying.</li>
-        <li>The preview shows how your jersey will look; small differences in colour and position are normal.</li>
+        <li>The preview shows how your name and number will look; small differences in colour and position are normal.</li>
+        <li>Badges are shown as pictures when you choose them. We apply them in their standard official positions.</li>
         <li>
           We may refuse to print text that is offensive or infringes someone else&apos;s rights, and refund you if so.
         </li>
@@ -59,8 +63,9 @@ export default function TermsPage() {
 
       <h2>Our responsibility</h2>
       <p>
-        We&apos;re responsible for delivering the order you paid for as described. We&apos;re not responsible for delays caused by
-        logistics companies, motor parks or events outside our control, but we&apos;ll help you sort them out. As far as the law allows,
+        We&apos;re responsible for delivering the order you paid for as described. If a parcel is lost or damaged before you collect it,
+        we&apos;ll replace it or refund you in full. We&apos;re not responsible for delays caused by logistics companies, motor parks or
+        events outside our control, but we&apos;ll help you sort them out. As far as the law allows,
         our total responsibility for an order is limited to the amount you paid for it. Nothing in these terms limits your rights under
         Nigerian consumer protection law.
       </p>
@@ -68,9 +73,16 @@ export default function TermsPage() {
       <h2>Law</h2>
       <p>These terms are governed by the laws of the Federal Republic of Nigeria.</p>
 
+      <h2>Complaints</h2>
+      <p>
+        If something goes wrong, please <Link href="/contact">contact us</Link> first — we&apos;ll do our best to put it right quickly. If we
+        can&apos;t resolve it, you can contact the Federal Competition and Consumer Protection Commission (FCCPC).
+      </p>
+
       <h2>Contact</h2>
       <p>
-        Questions about these terms? Email <a href={`mailto:${STORE.supportEmail}`}>{STORE.supportEmail}</a>.
+        Questions about these terms? Email <a href={`mailto:${STORE.supportEmail}`}>{STORE.supportEmail}</a>, or visit us at{" "}
+        {ADDRESS.lines.slice(1).join(", ")}.
       </p>
     </>
   );

@@ -16,7 +16,7 @@ export default function AboutPage() {
         the right badges.
       </p>
       <p>
-        Pick a jersey, customise it and see exactly how it will look before you pay. We print it, pack it and send it to the motor park
+        Pick a jersey, see your name and number on it before you pay, and choose your badges from clear pictures. We print it, pack it and send it to the motor park
         nearest to you, anywhere in Nigeria.
       </p>
       <h2>Why shop with us</h2>

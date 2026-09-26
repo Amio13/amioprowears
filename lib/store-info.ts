@@ -37,4 +37,9 @@ export const POLICY = {
   dispatchDays: "1–3 working days",
   transitDays: "1–3 days",
   exchangeWindow: "24 hours",
+  /** Full-refund cancellation, counted from payment. */
+  cancelWindow: "2 hours",
+  /** When we start an approved refund, and how long banks usually take after that. */
+  refundStart: "2 working days",
+  refundBank: "5–10 working days",
 };

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { POLICIES_UPDATED, STORE } from "@/lib/store-info";
+import { ADDRESS, POLICIES_UPDATED, STORE } from "@/lib/store-info";
 
 export const metadata: Metadata = {
   title: "Privacy policy",
@@ -15,7 +15,7 @@ export default function PrivacyPage() {
       <p>
         This policy explains what personal data {STORE.name} (&quot;we&quot;, &quot;us&quot;) collects when you use {STORE.siteUrl.replace(/^https?:\/\//, "")},
         why, and your rights. We follow the Nigeria Data Protection Act 2023 (NDPA). {STORE.name} is the data controller. Contact us about
-        your data at {email}.
+        your data at {email}, or write to us at {ADDRESS.lines.slice(1).join(", ")}.
       </p>
 
       <h2>What we collect</h2>
@@ -55,6 +55,7 @@ export default function PrivacyPage() {
         <li>Cloudflare — hosts this website.</li>
         <li>Brevo — sends order emails and the newsletter.</li>
         <li>Telegram and Zoho Mail — alert us to new orders and handle our email.</li>
+        <li>WhatsApp (Meta) — if you chat with us there.</li>
       </ul>
       <p>
         Some of these providers store data outside Nigeria. Where they do, we rely on the safeguards the NDPA allows, such as the
@@ -70,8 +71,8 @@ export default function PrivacyPage() {
 
       <h2>Cookies and storage</h2>
       <p>
-        We don&apos;t use advertising or tracking cookies. Your cart is saved in your browser&apos;s local storage so it&apos;s still there
-        when you come back. Our payment provider may set cookies needed to take your payment securely.
+        We don&apos;t use advertising or tracking cookies. Your cart and favourites are saved in your browser&apos;s local storage so
+        they&apos;re still there when you come back. They stay on your device and aren&apos;t sent to us until you check out. Our payment provider may set cookies needed to take your payment securely.
       </p>
 
       <h2>Your rights</h2>

@@ -4,6 +4,7 @@
  * HTML that reads well on a phone, plus a plain-text version.
  */
 import { formatNaira, formatPhoneForDisplay, whatsappLink } from "@/lib/format";
+import { POLICY } from "@/lib/store-info";
 import type { Order, OrderItem } from "@/types";
 
 export type NotifyOrder = Pick<
@@ -201,7 +202,7 @@ export type CustomerStatus = (typeof CUSTOMER_STATUSES)[number];
 export function orderStatusEmail(o: NotifyOrder, status: CustomerStatus, ctx: StoreContext): RenderedEmail {
   if (status === "cancelled") {
     const intro = `Hi ${firstName(o.customer_name)}, order ${o.order_number} has been cancelled.`;
-    const refund = "If you already paid, we'll refund you in full — refunds usually reach your bank within a few working days.";
+    const refund = `If you already paid, we'll refund you in full. We start the refund within ${POLICY.refundStart}, and your bank usually shows it within ${POLICY.refundBank} after that.`;
     const html = layout(
       ctx,
       `<h1 style="margin:0 0 8px;font-size:22px">Your order has been cancelled</h1>

@@ -195,7 +195,8 @@ secrets: Cloudflare dashboard → Workers → Settings → Variables and Secrets
     opengraph-image.tsx — `next/og` adds ~800 KiB to the Worker; bundle is ~1.98 MB gzip vs 3 MB Free
     limit), `sitemap.ts` (hourly), `robots.ts`, product JSON-LD, `error.tsx` + `global-error.tsx`
     (this Next version's error prop is `retry`, not `reset`)
-  - [ ] Owner to confirm: cancellation wording on /returns ("until we start printing") and About text
+  - [x] Policy review (2026-09-26): cancel within 2 h of paying (full refund); faults/exchanges 24 h from pickup; lost/damaged
+    before collection → replace or refund; approved refunds started within 2 working days (bank 5–10). Values in `POLICY`.
   - [x] Test data deleted 2026-09-26 (orders APW-1001–1012 + items/payments, voucher TEST-ONCE,
     test subscriber). Order numbers continue from APW-1013 unless the sequence is reset.
   - [x] amioprowears.com connected to the Worker (Custom domain), `NEXT_PUBLIC_SITE_URL` build var set;
@@ -316,3 +317,5 @@ Update this checklist at the end of every session, and add a one-line note under
   images, sets fonts/curves per jersey; www domain; Paystack live keys.
 - 2026-09-26 — Homepage hero buttons side by side on phones. www fixed via DNS record + Cloudflare Redirect Rule (checked:
   301 to the apex, path/query kept). Next: Paystack live keys, one real order + refund.
+- 2026-09-26 — Policy pages reviewed against FCCPA/NDPA/Paystack norms: accurate badge wording, address in privacy/terms,
+  FCCPC complaints line, WhatsApp + favourites in privacy, owner's cancel/refund/lost-parcel rules; cancelled email matches.

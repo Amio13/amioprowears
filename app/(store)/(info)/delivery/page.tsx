@@ -59,6 +59,10 @@ export default async function DeliveryPage() {
         parcel comes back to us because it wasn&apos;t collected, we&apos;ll send it again once you pay the new delivery fee.
       </p>
       <p>
+        If your parcel is lost or damaged on the way, before you collect it, we&apos;ll send a replacement or give you a full refund — we
+        sort it out with the logistics company, not you.
+      </p>
+      <p>
         Please make sure your phone number and motor park are correct at checkout. If you spot a mistake, <Link href="/contact">contact us</Link>{" "}
         straight away — before we dispatch, we can change it at no cost.
       </p>

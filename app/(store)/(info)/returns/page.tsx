@@ -13,7 +13,7 @@ export default function ReturnsPage() {
       <h1>Returns &amp; exchanges</h1>
       <p className="text-sm text-muted">Last updated {POLICIES_UPDATED}</p>
 
-      <h2>If we made a mistake</h2>
+      <h2>If we made a mistake, or your parcel is lost</h2>
       <p>
         If you receive the wrong jersey, the wrong size, a misprinted name or number, or a damaged item, we&apos;ll make it right at no
         cost to you — a replacement, or a full refund if we can&apos;t replace it. We pay the delivery both ways.
@@ -21,6 +21,9 @@ export default function ReturnsPage() {
       <p>
         Please <Link href="/contact">contact us</Link> within <strong>{POLICY.exchangeWindow} of picking up</strong> your order, with your
         order number and clear photos of the problem.
+      </p>
+      <p>
+        If your parcel is lost or damaged before you collect it from the motor park, just let us know and we&apos;ll send a replacement or refund you in full.
       </p>
 
       <h2>Custom (printed) jerseys</h2>
@@ -44,14 +47,15 @@ export default function ReturnsPage() {
 
       <h2>Refunds</h2>
       <p>
-        Refunds go back to the card or account you paid with through Paystack. Once we approve a refund it usually reaches you within a few
-        working days, depending on your bank.
+        Refunds go back to the card or account you paid with through Paystack. We start an approved refund within{" "}
+        <strong>{POLICY.refundStart}</strong>; your bank usually shows it within {POLICY.refundBank} after that.
       </p>
 
       <h2>Cancelling an order</h2>
       <p>
-        You can cancel for a full refund until we start printing — usually the same day you order. Contact us as soon as possible. Once
-        printing has started, the order can&apos;t be cancelled.
+        You can cancel any order for a full refund within <strong>{POLICY.cancelWindow} of paying</strong>. Message us on WhatsApp or{" "}
+        <Link href="/contact">contact us</Link> with your order number — the time we receive your message counts. After{" "}
+        {POLICY.cancelWindow} we may already be preparing your order, so it can&apos;t be cancelled.
       </p>
     </>
   );
