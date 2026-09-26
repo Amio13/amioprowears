@@ -133,12 +133,12 @@ secrets: Cloudflare dashboard → Workers → Settings → Variables and Secrets
 - [x] Most accounts created (Supabase, Paystack, Brevo, Zoho, GitHub, domain)
 - [x] Cloudflare account + wrangler login (workers.dev subdomain: `amioyeko13`)
 - [x] Paystack test keys (local + Cloudflare runtime secrets); test webhook URL set in Paystack
-- [x] Telegram bot `@Amioprowears_orders_bot` + chat ID (local files; still to add in Cloudflare secrets)
+- [x] Telegram bot `@Amioprowears_orders_bot` + chat ID (local files + Cloudflare secret; chat ID in `wrangler.jsonc` vars)
 - [ ] Email setup (owner, in progress — full guide was given in chat 2026-09-25):
   - [x] Part 1: DNS moved to Cloudflare — nameservers `ashley`/`kipp.ns.cloudflare.com` live; waiting for Cloudflare to show "Active"
   - [x] Part 2: Zoho (verified 2026-09-26: MX, SPF, DKIM `zmail` all live) — verify domain (TXT), mailbox `admin@`, aliases `support@` + `orders@`, MX/SPF/DKIM in Cloudflare DNS
   - [x] Part 3: Brevo — domain authenticated, sender `orders@` active, API key + list ID 3 ("Newsletter") work; test email sent 2026-09-26
-  - [x] Part 4: Brevo/Telegram/owner vars in `.env.local` + `.dev.vars` (Cloudflare production secrets still to add)
+  - [x] Part 4: Brevo/Telegram/owner vars in `.env.local` + `.dev.vars` + Cloudflare (secrets in dashboard, non-secret values in `wrangler.jsonc` `vars` — dashboard text vars are wiped on deploy)
   - Note: support@ doesn't receive mail until Part 2 is done (the footer already shows it). Only ONE `v=spf1` and ONE `_dmarc` record — merge, don't duplicate.
 - [x] **Phase 1 — Foundation** (done 2026-09-25)
   - [x] Scaffold (Next 16.3 + @opennextjs/cloudflare 1.20), strict TS, Tailwind v4, vitest, zod, zustand, @supabase/ssr
@@ -162,11 +162,11 @@ secrets: Cloudflare dashboard → Workers → Settings → Variables and Secrets
   - [x] Cart page + drawer, checkout, order confirmation, `/track`; all API routes
   - [x] All 5 test-card scenarios passed on the live site (APW-1007 success, 1008 declined, 1011 webhook confirmed before the redirect, 1010 voucher then "already used", tampered price ignored)
   - [x] Workers plan decided: staying on Free (checkout uses 13–90 ms CPU vs 10 ms; bursts tolerated so far)
-- [ ] **Phase 5 — Notifications & newsletter** ← IN PROGRESS
+- [x] **Phase 5 — Notifications & newsletter** (done 2026-09-26)
   - [x] Code: `lib/notify/` (Brevo, Telegram, templates, exactly-once `run.ts`), `lib/newsletter.ts`, `/api/newsletter`, 11 tests
-  - [ ] Live test once Telegram + Brevo keys are in: one test order → 1 customer email, 1 Telegram alert, 1 owner email
+  - [x] Live test APW-1012: verify + webhook in the same second, notified once; customer email, Telegram, owner email and newsletter sync all arrived once
   - Decision: owner stays on Workers **Free** plan (keep server CPU low; upgrade only if customers hit error 1102)
-- [ ] Phase 6 — Admin
+- [ ] Phase 6 — Admin ← NEXT
 - [ ] Phase 7 — Legal pages, SEO, launch
 - [ ] Post-launch — customer accounts (email magic link), wishlist, crypto
 
@@ -216,3 +216,9 @@ Update this checklist at the end of every session, and add a one-line note under
   tested in preview. Note: test orders APW-1001–1011 have `notified_at` empty, so opening their
   confirmation pages will send real notifications. Next: owner does Telegram → Zoho → Brevo steps,
   then a live test order.
+- 2026-09-26 — Email setup finished (Zoho MX/SPF/DKIM, Brevo domain auto-authenticated, sender
+  `orders@`, list 3), Telegram connected. Non-secret runtime vars moved to `wrangler.jsonc`.
+  Live test APW-1012 passed: every notification once. Suggested owner add a `news@` alias + Brevo
+  sender for campaigns. Test data to delete before launch now also includes APW-1012 and the
+  owner's checkout newsletter subscriber. Next: Phase 6 (admin) — must call
+  `sendOrderStatusEmail` on dispatched/delivered and offer "Sync to Brevo" for unsynced subscribers.
