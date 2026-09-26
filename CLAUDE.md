@@ -180,13 +180,17 @@ secrets: Cloudflare dashboard → Workers → Settings → Variables and Secrets
   - [x] Deployed live 2026-09-26 (`/admin` redirects to login; store pages still 200)
   - [x] Admin → Homepage: headline, subtext, 3 top pictures (jersey + front/back, empty = automatic),
     collection rows on/off + order, "How it works" steps (`lib/homepage.ts`, `settings.homepage`)
-  - [ ] Owner: apply migration 0007 (homepage settings) — until then the homepage shows the defaults
+  - [x] Migration 0007 applied (homepage settings)
   - [x] Owner added a real jersey and checked the admin on a phone ("everything works")
 - [ ] Phase 7 — Legal pages, SEO, launch ← NEXT
   - [ ] Delete test data in Supabase: orders APW-1001–1012 (their payments + items delete with them;
     delete `voucher_redemptions` rows first), voucher `TEST-ONCE`, and test newsletter subscribers.
     Until then, opening an old confirmation page for APW-1001–1011 sends a real alert (never notified).
 - [ ] Post-launch — customer accounts (email magic link), wishlist, crypto
+- [ ] Owner's list for AFTER the phases (owner wants to finish all phases first, then add/remove things
+  based on customer feedback):
+  - [ ] Social media icons + links in the footer (owner to give the handles)
+  - [ ] Business location address in the footer
 
 Update this checklist at the end of every session, and add a one-line note under
 "Session log" describing what was done and what's next.
