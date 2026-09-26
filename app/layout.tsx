@@ -26,6 +26,8 @@ export const metadata: Metadata = {
   title: { default: `${storeName} — Custom football jerseys in Nigeria`, template: `%s | ${storeName}` },
   description:
     "Club and national team jerseys with your name, number and badges. Delivered to your nearest motor park anywhere in Nigeria.",
+  openGraph: { siteName: storeName, locale: "en_NG", type: "website" },
+  twitter: { card: "summary_large_image" },
 };
 
 export const viewport: Viewport = {

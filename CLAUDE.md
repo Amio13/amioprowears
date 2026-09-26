@@ -182,7 +182,16 @@ secrets: Cloudflare dashboard → Workers → Settings → Variables and Secrets
     collection rows on/off + order, "How it works" steps (`lib/homepage.ts`, `settings.homepage`)
   - [x] Migration 0007 applied (homepage settings)
   - [x] Owner added a real jersey and checked the admin on a phone ("everything works")
-- [ ] Phase 7 — Legal pages, SEO, launch ← NEXT
+- [ ] **Phase 7 — Legal pages, SEO, launch** ← IN PROGRESS
+  - [x] Info pages: about, contact, delivery (zone table from `lib/delivery-zones.ts`), returns, privacy
+    (NDPA 2023), terms — rules in `lib/store-info.ts` (`POLICY`, `POLICIES_UPDATED`). Owner's choices:
+    printed jerseys returnable only if faulty; plain exchanges within 24 h of pickup (faulty reports
+    also 24 h, with photos); customer pays delivery for own-mistake exchanges; dispatch 1–3 working days
+  - [x] SEO: default Open Graph/Twitter tags, static `app/opengraph-image.png` (NOT a generated
+    opengraph-image.tsx — `next/og` adds ~800 KiB to the Worker; bundle is ~1.98 MB gzip vs 3 MB Free
+    limit), `sitemap.ts` (hourly), `robots.ts`, product JSON-LD, `error.tsx` + `global-error.tsx`
+    (this Next version's error prop is `retry`, not `reset`)
+  - [ ] Owner to confirm: cancellation wording on /returns ("until we start printing") and About text
   - [ ] Delete test data in Supabase: orders APW-1001–1012 (their payments + items delete with them;
     delete `voucher_redemptions` rows first), voucher `TEST-ONCE`, and test newsletter subscribers.
     Until then, opening an old confirmation page for APW-1001–1011 sends a real alert (never notified).

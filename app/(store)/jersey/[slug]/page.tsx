@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { STORE } from "@/lib/store-info";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChatButton } from "@/components/store/ChatButton";
@@ -28,7 +29,7 @@ export async function generateMetadata({ params }: PageProps<"/jersey/[slug]">):
     title: product.name,
     description:
       product.description ?? `${product.name} — add your name, number and badges. Delivered to your nearest motor park.`,
-    openGraph: { images: [{ url: product.image_front, alt: `${product.name}, front view` }] },
+    openGraph: { siteName: STORE.name, type: "website", images: [{ url: product.image_front, alt: `${product.name}, front view` }] },
   };
 }
 
@@ -56,6 +57,29 @@ export default async function JerseyPage({ params }: PageProps<"/jersey/[slug]">
   return (
     // Lifts this page's chat button above the mobile sticky "Add to cart" bar.
     <div className="[--sticky-bar-height:4.75rem] md:[--sticky-bar-height:0px]">
+      {/* Product details for Google (price, stock). "<" is escaped so the JSON can't break out of the tag. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Product",
+            name: product.name,
+            image: [product.image_front, ...(product.image_back ? [product.image_back] : [])],
+            description: product.description ?? undefined,
+            brand: { "@type": "Brand", name: product.club },
+            offers: {
+              "@type": "Offer",
+              url: `${STORE.siteUrl}/jersey/${product.slug}`,
+              priceCurrency: "NGN",
+              price: effectivePrice(product),
+              availability: product.sizes.some((s) => !product.out_of_stock_sizes.includes(s))
+                ? "https://schema.org/InStock"
+                : "https://schema.org/OutOfStock",
+            },
+          }).replace(/</g, "\\u003c"),
+        }}
+      />
       <div className="mx-auto max-w-7xl px-4 py-4 md:py-10">
         <nav aria-label="Breadcrumb" className="mb-4 text-sm text-muted">
           <ol className="flex flex-wrap items-center gap-1">
