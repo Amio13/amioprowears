@@ -47,6 +47,9 @@ const bulk = await anon.rpc("admin_set_product_prices", { p_updates: [] });
 check(bulk.error && bulk.error.code !== "PGRST202",
   `migration 0006 applied, public cannot bulk-update prices ${bulk.error?.code === "PGRST202" ? "(0006_admin.sql not applied yet)" : ""}`);
 
+const home = await anon.from("settings").select("homepage").single();
+check(!home.error, `migration 0007 applied (homepage settings) ${home.error ? "(0007_homepage.sql not applied yet)" : ""}`);
+
 const orders = await admin.from("orders").select("id", { count: "exact", head: true });
 check(!orders.error, `service role can read orders ${orders.error ? `(${orders.error.message})` : ""}`);
 

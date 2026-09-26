@@ -3,29 +3,23 @@ import Link from "next/link";
 import { JerseyCard } from "@/components/store/JerseyCard";
 import { buttonClasses } from "@/components/ui/Button";
 import { COLLECTION_LABELS, sortProducts } from "@/lib/catalogue";
-import { getActiveProducts } from "@/lib/products";
-import type { CollectionSlug } from "@/types";
+import { pickHeroTiles } from "@/lib/homepage";
+import { getActiveProducts, getHomepageConfig } from "@/lib/products";
 
 // Static, refreshed at most every 5 minutes (and on demand when admin saves a product).
 export const revalidate = 300;
 
-const STEPS = [
-  { title: "Pick your jersey", body: "Club, country or vintage — in men's, women's and kids' sizes." },
-  { title: "Make it yours", body: "Add your name, number and badges and see it live before you pay." },
-  { title: "Collect at the park", body: "We send it to the motor park you choose, anywhere in Nigeria." },
-];
-
-/** Homepage rows, in display order. Empty collections are skipped. */
-const HOME_COLLECTIONS: CollectionSlug[] = ["new-arrivals", "super-eagles", "champions-league", "female-kits", "vintage"];
 const ROW_LIMIT = 8;
 
+/** Content (headline, top pictures, rows, steps) is set in admin → Homepage. */
 export default async function HomePage() {
-  const products = await getActiveProducts(); // ordered by sort_order
-  const featured = products.filter((p) => p.is_featured);
-  const hero = (featured.length >= 3 ? featured : products).slice(0, 3);
+  const [products, home] = await Promise.all([getActiveProducts(), getHomepageConfig()]); // products in sort order
+  const hero = pickHeroTiles(home.hero, products);
   const newest = sortProducts(products, "newest");
+  const headline = home.headline.split("\n");
 
-  const rows = HOME_COLLECTIONS.map((slug) => ({
+  // Rows in the owner's order; empty collections are skipped.
+  const rows = home.rows.map((slug) => ({
     slug,
     title: COLLECTION_LABELS[slug],
     // New arrivals: newest first. Other collections: the owner's sort order.
@@ -37,16 +31,13 @@ export default async function HomePage() {
       <section className="mx-auto grid max-w-7xl items-center gap-8 px-4 py-10 md:grid-cols-2 md:py-20">
         <div className="space-y-6">
           <h1 className="font-display text-6xl leading-[0.9] tracking-wide md:text-8xl">
-            Your name.
-            <br />
-            Your number.
-            <br />
-            <span className="text-brand">Your team.</span>
+            {headline.map((line, i) => (
+              <span key={i} className={i === headline.length - 1 && headline.length > 1 ? "block text-brand" : "block"}>
+                {line}
+              </span>
+            ))}
           </h1>
-          <p className="max-w-md text-lg text-muted">
-            Custom football jerseys printed with your name, number and badges — delivered to
-            your nearest motor park.
-          </p>
+          {home.subtext && <p className="max-w-md text-lg text-muted">{home.subtext}</p>}
           <div className="flex flex-wrap gap-3">
             <Link href="/catalogue" className={buttonClasses({ size: "lg" })}>
               Shop jerseys
@@ -58,16 +49,15 @@ export default async function HomePage() {
         </div>
         {hero.length > 0 && (
           <div className="grid grid-cols-3 gap-2 sm:gap-4">
-            {hero.map((p, i) => (
+            {hero.map(({ product: p, side }, i) => (
               <Link
                 key={p.id}
                 href={`/jersey/${p.slug}`}
                 className={`overflow-hidden rounded-2xl bg-surface transition-transform hover:-translate-y-1 ${i === 1 ? "translate-y-6 hover:translate-y-5" : ""}`}
               >
                 <Image
-                  // Middle tile shows the back (name + number) to hint at customisation.
-                  src={(i === 1 && p.image_back) || p.image_front}
-                  alt={`${p.name}, ${i === 1 && p.image_back ? "back" : "front"} view`}
+                  src={(side === "back" && p.image_back) || p.image_front}
+                  alt={`${p.name}, ${side === "back" && p.image_back ? "back" : "front"} view`}
                   width={400}
                   height={500}
                   priority={i === 0}
@@ -103,22 +93,24 @@ export default async function HomePage() {
         </section>
       ))}
 
-      <section aria-labelledby="how-it-works" className="mt-8 bg-surface">
-        <div className="mx-auto max-w-7xl px-4 py-12">
-          <h2 id="how-it-works" className="mb-8 font-display text-4xl tracking-wide">
-            How it works
-          </h2>
-          <ol className="grid gap-6 md:grid-cols-3">
-            {STEPS.map((s, i) => (
-              <li key={s.title} className="rounded-2xl bg-white p-6">
-                <span className="font-display text-5xl text-brand">{i + 1}</span>
-                <h3 className="mt-2 text-lg font-bold">{s.title}</h3>
-                <p className="mt-1 text-muted">{s.body}</p>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
+      {home.showSteps && (
+        <section aria-labelledby="how-it-works" className="mt-8 bg-surface">
+          <div className="mx-auto max-w-7xl px-4 py-12">
+            <h2 id="how-it-works" className="mb-8 font-display text-4xl tracking-wide">
+              How it works
+            </h2>
+            <ol className="grid gap-6 md:grid-cols-3">
+              {home.steps.map((s, i) => (
+                <li key={i} className="rounded-2xl bg-white p-6">
+                  <span className="font-display text-5xl text-brand">{i + 1}</span>
+                  <h3 className="mt-2 text-lg font-bold">{s.title}</h3>
+                  <p className="mt-1 text-muted">{s.body}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+      )}
     </>
   );
 }

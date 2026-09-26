@@ -32,6 +32,8 @@ export interface Settings {
   name_number_fee: number;
   store_open: boolean;
   announcement: string | null;
+  /** Homepage content (lib/homepage.ts → resolveHomepage). */
+  homepage: unknown;
   updated_at: string;
 }
 

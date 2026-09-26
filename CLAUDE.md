@@ -178,7 +178,10 @@ secrets: Cloudflare dashboard → Workers → Settings → Variables and Secrets
   - [x] Migration 0006 applied (`npm run db:check` passes)
   - [x] Owner admin login `admin@amioprowears.com` created and in `admin_users`
   - [x] Deployed live 2026-09-26 (`/admin` redirects to login; store pages still 200)
-  - [ ] Owner: add a real jersey from a phone and fulfil a test order end to end (the "done when")
+  - [x] Admin → Homepage: headline, subtext, 3 top pictures (jersey + front/back, empty = automatic),
+    collection rows on/off + order, "How it works" steps (`lib/homepage.ts`, `settings.homepage`)
+  - [ ] Owner: apply migration 0007 (homepage settings) — until then the homepage shows the defaults
+  - [x] Owner added a real jersey and checked the admin on a phone ("everything works")
 - [ ] Phase 7 — Legal pages, SEO, launch ← NEXT
   - [ ] Delete test data in Supabase: orders APW-1001–1012 (their payments + items delete with them;
     delete `voucher_redemptions` rows first), voucher `TEST-ONCE`, and test newsletter subscribers.
@@ -245,3 +248,8 @@ Update this checklist at the end of every session, and add a one-line note under
   compressed in the browser and uploaded straight to Storage (Safari falls back to JPEG/PNG). Old
   images are not deleted from Storage when replaced. Next: owner applies 0006 + creates admin
   login, real-phone test, then Phase 7.
+- 2026-09-26 — Owner reported the homepage pictures kept changing (they were picked automatically
+  from featured/sort order). Added admin → Homepage (migration 0007 `settings.homepage` jsonb). The
+  store reads it via `getHomepageConfig()`, which falls back to defaults if the column is missing, so
+  deploys never break the homepage. Owner plans more changes after rigorous customer feedback.
+  Next: owner applies 0007, sets the homepage, then Phase 7.

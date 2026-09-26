@@ -1,6 +1,7 @@
 import "server-only";
 import { cache } from "react";
 import { CATALOGUE_PRODUCT_COLUMNS, type CatalogueProduct } from "./catalogue";
+import { resolveHomepage, type HomepageConfig } from "./homepage";
 import { createPublicClient } from "./supabase/public";
 import type { Badge, Product, Settings } from "@/types";
 
@@ -57,4 +58,19 @@ export const getStoreSettings = cache(async (): Promise<Pick<Settings, "name_num
     .single<Pick<Settings, "name_number_fee" | "store_open" | "announcement">>();
   if (error) throw new Error(`Loading settings failed: ${error.message}`);
   return data;
+});
+
+/**
+ * Homepage content from admin → Homepage. Falls back to the defaults if migration
+ * 0007 hasn't been applied yet (column missing), so a deploy never breaks the homepage.
+ */
+export const getHomepageConfig = cache(async (): Promise<HomepageConfig> => {
+  const { data, error } = await createPublicClient()
+    .from("settings")
+    .select("homepage")
+    .eq("id", 1)
+    .single<{ homepage: unknown }>();
+  if (error?.code === "42703") return resolveHomepage({});
+  if (error) throw new Error(`Loading homepage settings failed: ${error.message}`);
+  return resolveHomepage(data.homepage);
 });
