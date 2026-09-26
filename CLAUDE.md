@@ -209,6 +209,7 @@ secrets: Cloudflare dashboard → Workers → Settings → Variables and Secrets
   based on customer feedback):
   - [x] Icon library (`lucide-react`) across store + admin; favourites
   - [x] Social media icons + links in the footer and /contact (Instagram, TikTok, X — `SOCIALS` in `lib/store-info.ts`)
+  - [x] Logo image (`public/logo.webp`, 29 KB, cut from the owner's 2.6 MB SVG) replaces the text wordmark in header, footer, admin
   - [ ] Business location address in the footer
 
 Update this checklist at the end of every session, and add a one-line note under
@@ -286,3 +287,6 @@ Update this checklist at the end of every session, and add a one-line note under
   (store pages; admin checked by typecheck only, not logged in). Next: footer business address, www domain, Paystack live keys.
 - 2026-09-26 — Footer: newsletter moved to its own band at the top; added "Your favourites" link. 404/error pages
   use the back arrow. Crawled every internal link on the store + info pages in preview: all 200, every collection link has jerseys.
+- 2026-09-26 — Replaced the AMIOPROWEARS text wordmark with the owner's logo: the SVG was a 2.6 MB wrapped PNG, so
+  the visible part was cropped, cleaned and saved as `public/logo.webp` (506×160, 29 KB); `Logo`/`LogoImage` in
+  `components/store/Logo.tsx` used in header, footer, admin login and admin nav. Checked in preview. Next: footer address, www domain, Paystack live keys.

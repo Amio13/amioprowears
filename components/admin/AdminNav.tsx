@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { cn } from "@/components/ui/cn";
 import { Sheet } from "@/components/ui/Sheet";
+import { LogoImage } from "@/components/store/Logo";
 import { signOut } from "@/lib/admin/actions/auth";
 
 const LINKS = [
@@ -64,8 +65,9 @@ function NavLinks({ onNavigate, email }: { onNavigate?: () => void; email: strin
 export function AdminNav({ email }: { email: string }) {
   const [open, setOpen] = useState(false);
   const title = (
-    <span className="font-display text-2xl leading-none tracking-wide">
-      <span className="text-brand">AMIO</span>ADMIN
+    <span className="flex items-center gap-2">
+      <LogoImage className="h-8" />
+      <span className="font-display text-xl leading-none tracking-wide text-muted">ADMIN</span>
     </span>
   );
   return (
