@@ -210,7 +210,7 @@ secrets: Cloudflare dashboard → Workers → Settings → Variables and Secrets
   - [x] Icon library (`lucide-react`) across store + admin; favourites
   - [x] Social media icons + links in the footer and /contact (Instagram, TikTok, X — `SOCIALS` in `lib/store-info.ts`)
   - [x] Logo image (`public/logo.webp`, 29 KB, cut from the owner's 2.6 MB SVG) replaces the text wordmark in header, footer, admin
-  - [ ] Business location address in the footer
+  - [x] Business location address (`ADDRESS` in `lib/store-info.ts`) in the footer and /contact, with a Google Maps "Get directions" link
 
 Update this checklist at the end of every session, and add a one-line note under
 "Session log" describing what was done and what's next.
@@ -290,3 +290,5 @@ Update this checklist at the end of every session, and add a one-line note under
 - 2026-09-26 — Replaced the AMIOPROWEARS text wordmark with the owner's logo: the SVG was a 2.6 MB wrapped PNG, so
   the visible part was cropped, cleaned and saved as `public/logo.webp` (506×160, 29 KB); `Logo`/`LogoImage` in
   `components/store/Logo.tsx` used in header, footer, admin login and admin nav. Checked in preview. Next: footer address, www domain, Paystack live keys.
+- 2026-09-26 — Shop address (Young Shall Grow Plaza, Main Market, Onitsha) added to the footer and /contact with a
+  directions link; checked in preview at 375px. Next: www domain, Paystack live keys, owner's wording confirmations.

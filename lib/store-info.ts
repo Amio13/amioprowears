@@ -7,6 +7,19 @@ export const STORE = {
   whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_CHAT_NUMBER || null, // 234XXXXXXXXXX
 };
 
+/** Physical shop, shown in the footer and on /contact. One entry per line. */
+export const ADDRESS = {
+  lines: [
+    "@mekusstandard",
+    "Shop GFD/36, State Line",
+    "Young Shall Grow Plaza",
+    "Main Market, Onitsha, Anambra State",
+  ],
+  mapUrl:
+    "https://www.google.com/maps/search/?api=1&query=" +
+    encodeURIComponent("Young Shall Grow Plaza, Main Market, Onitsha, Anambra State"),
+} as const;
+
 /** Social media profiles, shown in the footer and on /contact. */
 export const SOCIALS = [
   { name: "Instagram", handle: "@amioprowears", url: "https://instagram.com/amioprowears" },

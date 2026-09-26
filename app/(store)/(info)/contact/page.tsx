@@ -1,10 +1,10 @@
-import { Mail, Phone } from "lucide-react";
+import { Mail, MapPin, Phone } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { buttonClasses } from "@/components/ui/Button";
 import { formatPhoneForDisplay, whatsappLink } from "@/lib/format";
 import { SocialIcon } from "@/components/store/SocialIcon";
-import { SOCIALS, STORE } from "@/lib/store-info";
+import { ADDRESS, SOCIALS, STORE } from "@/lib/store-info";
 
 export const metadata: Metadata = {
   title: "Contact us",
@@ -46,6 +46,20 @@ export default function ContactPage() {
           </li>
         )}
       </ul>
+      <h2>Visit our shop</h2>
+      <address className="flex gap-2 not-italic">
+        <MapPin className="mt-1 size-5 shrink-0" />
+        <span>
+          {ADDRESS.lines.map((line) => (
+            <span key={line} className="block">
+              {line}
+            </span>
+          ))}
+          <a href={ADDRESS.mapUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center">
+            Get directions
+          </a>
+        </span>
+      </address>
       <h2>Follow us</h2>
       <p>See new kits and deals as they drop.</p>
       <ul className="!list-none !pl-0">

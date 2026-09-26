@@ -1,9 +1,9 @@
-import { Mail, Send } from "lucide-react";
+import { Mail, MapPin, Send } from "lucide-react";
 import Link from "next/link";
 import { Logo } from "./Logo";
 import { NewsletterSignup } from "./NewsletterSignup";
 import { SocialIcon } from "./SocialIcon";
-import { SOCIALS } from "@/lib/store-info";
+import { ADDRESS, SOCIALS } from "@/lib/store-info";
 
 const LINK_GROUPS = [
   {
@@ -57,6 +57,24 @@ export function Footer() {
           <p className="max-w-xs text-sm text-muted">
             Custom football jerseys, delivered to your nearest motor park anywhere in Nigeria.
           </p>
+          <address className="flex gap-2 text-sm not-italic">
+            <MapPin className="mt-0.5 size-4 shrink-0" />
+            <span>
+              {ADDRESS.lines.map((line) => (
+                <span key={line} className="block">
+                  {line}
+                </span>
+              ))}
+              <a
+                href={ADDRESS.mapUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-11 items-center underline underline-offset-4 hover:text-brand sm:min-h-8"
+              >
+                Get directions
+              </a>
+            </span>
+          </address>
           {supportEmail && (
             <p className="text-sm">
               <a href={`mailto:${supportEmail}`} className="inline-flex items-center gap-2 underline underline-offset-4 hover:text-brand">
