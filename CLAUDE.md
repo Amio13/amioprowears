@@ -192,9 +192,11 @@ secrets: Cloudflare dashboard → Workers → Settings → Variables and Secrets
     limit), `sitemap.ts` (hourly), `robots.ts`, product JSON-LD, `error.tsx` + `global-error.tsx`
     (this Next version's error prop is `retry`, not `reset`)
   - [ ] Owner to confirm: cancellation wording on /returns ("until we start printing") and About text
-  - [ ] Delete test data in Supabase: orders APW-1001–1012 (their payments + items delete with them;
-    delete `voucher_redemptions` rows first), voucher `TEST-ONCE`, and test newsletter subscribers.
-    Until then, opening an old confirmation page for APW-1001–1011 sends a real alert (never notified).
+  - [x] Test data deleted 2026-09-26 (orders APW-1001–1012 + items/payments, voucher TEST-ONCE,
+    test subscriber). Order numbers continue from APW-1013 unless the sequence is reset.
+  - [ ] Owner: connect amioprowears.com to the Worker + set `NEXT_PUBLIC_SITE_URL` build variable
+  - [ ] Paystack LIVE keys + live webhook — waiting for Paystack to verify the business
+  - [ ] One real order on the live domain, then refund it
 - [ ] Post-launch — customer accounts (email magic link), wishlist, crypto
 - [ ] Owner's list for AFTER the phases (owner wants to finish all phases first, then add/remove things
   based on customer feedback):
@@ -266,3 +268,6 @@ Update this checklist at the end of every session, and add a one-line note under
   store reads it via `getHomepageConfig()`, which falls back to defaults if the column is missing, so
   deploys never break the homepage. Owner plans more changes after rigorous customer feedback.
   Next: owner applies 0007, sets the homepage, then Phase 7.
+- 2026-09-26 — Phase 7 code done (info/policy pages, SEO, error pages); test data deleted; pushed.
+  Paystack live keys pending verification. Owner wants to move on to the "adding and upgrading" stage
+  (footer socials + address first) while waiting; domain connection is an owner dashboard step.
