@@ -14,7 +14,7 @@ const FONT_FAMILY = {
   oswald: "var(--font-oswald), sans-serif",
 } as const;
 
-function boxStyle(box: OverlayBox): CSSProperties {
+export function boxStyle(box: OverlayBox): CSSProperties {
   return {
     position: "absolute",
     top: `${box.top}%`,

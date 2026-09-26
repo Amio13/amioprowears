@@ -194,9 +194,27 @@ ${button(trackUrl(o, ctx), "Track your order")}`,
   return { subject: `Order ${o.order_number} confirmed — ${ctx.storeName}`, html, text };
 }
 
-export type CustomerStatus = "dispatched" | "delivered";
+/** Statuses the customer can be emailed about. ("Processing" is covered by the confirmation email.) */
+export const CUSTOMER_STATUSES = ["dispatched", "delivered", "cancelled"] as const;
+export type CustomerStatus = (typeof CUSTOMER_STATUSES)[number];
 
 export function orderStatusEmail(o: NotifyOrder, status: CustomerStatus, ctx: StoreContext): RenderedEmail {
+  if (status === "cancelled") {
+    const intro = `Hi ${firstName(o.customer_name)}, order ${o.order_number} has been cancelled.`;
+    const refund = "If you already paid, we'll refund you in full — refunds usually reach your bank within a few working days.";
+    const html = layout(
+      ctx,
+      `<h1 style="margin:0 0 8px;font-size:22px">Your order has been cancelled</h1>
+<p style="margin:0 0 16px">${escapeHtml(intro)}</p>
+${o.dispatch_note ? `<p style="margin:0 0 16px"><strong>Note:</strong> ${escapeHtml(o.dispatch_note)}</p>` : ""}
+<p style="margin:0">${escapeHtml(refund)} If you have any questions, just reply to this email.</p>`,
+    );
+    const text = [intro, o.dispatch_note ? `Note: ${o.dispatch_note}` : "", "", refund, "", contactText(ctx)]
+      .filter((l, i, all) => l !== "" || all[i - 1] !== "")
+      .join("\n");
+    return { subject: `Order ${o.order_number} cancelled`, html, text };
+  }
+
   if (status === "dispatched") {
     const where = `${o.motor_park}, ${o.city}, ${o.state}`;
     const logistics = [o.logistics_name, o.logistics_phone ? formatPhoneForDisplay(o.logistics_phone) : null].filter(Boolean).join(" · ");

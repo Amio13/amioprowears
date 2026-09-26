@@ -106,6 +106,14 @@ describe("templates", () => {
     expect(done.subject).toContain("delivered");
     expect(done.html).toContain("https://amioprowears.com/catalogue");
   });
+
+  it("cancelled email mentions the refund and the note", () => {
+    const off = orderStatusEmail({ ...order, dispatch_note: "Size out of stock" }, "cancelled", ctx);
+    expect(off.subject).toContain("cancelled");
+    expect(off.text).toContain("refund");
+    expect(off.text).toContain("Note: Size out of stock");
+    expect(orderStatusEmail({ ...order, dispatch_note: null }, "cancelled", ctx).text).not.toMatch(/\n\n\n/);
+  });
 });
 
 // ---------------------------------------------------------------------------

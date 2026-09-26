@@ -103,6 +103,8 @@ export interface Order {
   dispatch_note: string | null;
   paid_at: string | null;
   notified_at: string | null;
+  /** Why the owner should look at this order (voucher ran out, amount mismatch, failed alert). */
+  attention_note: string | null;
   created_at: string;
   updated_at: string;
 }

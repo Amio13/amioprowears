@@ -42,6 +42,11 @@ const redeem = await anon.rpc("redeem_voucher", {
 });
 check(Boolean(redeem.error), "public cannot call redeem_voucher()");
 
+// 0006: the function exists (anon gets "permission denied", not "function not found").
+const bulk = await anon.rpc("admin_set_product_prices", { p_updates: [] });
+check(bulk.error && bulk.error.code !== "PGRST202",
+  `migration 0006 applied, public cannot bulk-update prices ${bulk.error?.code === "PGRST202" ? "(0006_admin.sql not applied yet)" : ""}`);
+
 const orders = await admin.from("orders").select("id", { count: "exact", head: true });
 check(!orders.error, `service role can read orders ${orders.error ? `(${orders.error.message})` : ""}`);
 

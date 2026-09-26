@@ -39,3 +39,34 @@ export function formatPhoneForDisplay(phone: string): string {
 export function whatsappLink(number: string, text: string): string {
   return `https://wa.me/${number}?text=${encodeURIComponent(text)}`;
 }
+
+// ---------------------------------------------------------------------------
+// Dates, always shown in Nigerian time (WAT = UTC+1, no daylight saving)
+// ---------------------------------------------------------------------------
+
+export const LAGOS_OFFSET_MS = 60 * 60 * 1000;
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+/** "2026-09-26T13:05:00Z" → "26 Sep 2026" (Lagos date). */
+export function formatDate(iso: string): string {
+  const d = new Date(Date.parse(iso) + LAGOS_OFFSET_MS);
+  return `${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
+}
+
+/** "2026-09-26T13:05:00Z" → "26 Sep 2026, 14:05" (Lagos time). */
+export function formatDateTime(iso: string): string {
+  const d = new Date(Date.parse(iso) + LAGOS_OFFSET_MS);
+  const hh = String(d.getUTCHours()).padStart(2, "0");
+  const mm = String(d.getUTCMinutes()).padStart(2, "0");
+  return `${formatDate(iso)}, ${hh}:${mm}`;
+}
+
+/** A "YYYY-MM-DD" day in Lagos → the UTC instant it starts (00:00 WAT). */
+export function lagosDayStart(day: string): Date {
+  return new Date(Date.parse(`${day}T00:00:00Z`) - LAGOS_OFFSET_MS);
+}
+
+/** The Lagos calendar day of an instant, as "YYYY-MM-DD". */
+export function lagosDay(at: Date): string {
+  return new Date(at.getTime() + LAGOS_OFFSET_MS).toISOString().slice(0, 10);
+}

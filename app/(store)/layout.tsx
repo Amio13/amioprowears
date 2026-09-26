@@ -1,4 +1,5 @@
 import { CartDrawer } from "@/components/cart/CartDrawer";
+import { AnnouncementBar } from "@/components/store/AnnouncementBar";
 import { CartHydrator } from "@/components/store/CartHydrator";
 import { Footer } from "@/components/store/Footer";
 import { Header } from "@/components/store/Header";
@@ -13,6 +14,7 @@ export default function StoreLayout({ children }: LayoutProps<"/">) {
       >
         Skip to content
       </a>
+      <AnnouncementBar />
       <Header />
       <main id="main" className="flex-1">
         {children}

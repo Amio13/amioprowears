@@ -1,12 +1,14 @@
 import type { ReactNode } from "react";
 import { cn } from "./cn";
 
-type Tone = "neutral" | "brand" | "success";
+type Tone = "neutral" | "brand" | "success" | "warning" | "info";
 
 const tones: Record<Tone, string> = {
   neutral: "bg-surface-strong text-ink",
   brand: "bg-brand text-white",
   success: "bg-green-100 text-green-800",
+  warning: "bg-amber-100 text-amber-900",
+  info: "bg-sky-100 text-sky-900",
 };
 
 /** Small label pill, e.g. "Sale", "New", order status. */

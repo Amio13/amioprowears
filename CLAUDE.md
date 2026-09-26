@@ -34,8 +34,10 @@ store page. No automated WhatsApp messages are sent to anyone.
 - Free plan: 100k requests/day, ~10 ms CPU per request. Keep server work light:
   statically render or cache catalogue/product pages (ISR / `revalidate`), keep heavy
   work out of request paths. If we hit CPU limits, the fix is Workers Paid ($5/mo) — tell the owner, don't silently work around it.
-- Avoid Node-only middleware/proxy. Protect `/admin` with a server-side check in
-  `app/(admin)/admin/layout.tsx`, not middleware.
+- Avoid Node-only middleware/proxy. Protect `/admin` with a server-side check, not middleware:
+  `app/(admin)/admin/(panel)/layout.tsx` guards the panel (the login page sits outside it), and
+  because layouts don't re-run on every navigation, EVERY admin page calls `requireAdmin()` and
+  every admin server action goes through `adminAction()` (`lib/admin/`). RLS is the last lock.
 - Always test with `npm run preview` (workerd) before saying something works — `next dev` can hide Workers-only bugs.
 - Images: compress to WebP (max 1600px) in the browser before upload; serve directly from
   Supabase Storage with `unoptimized` images (Cloudflare image optimisation is not free at volume).
@@ -166,8 +168,17 @@ secrets: Cloudflare dashboard → Workers → Settings → Variables and Secrets
   - [x] Code: `lib/notify/` (Brevo, Telegram, templates, exactly-once `run.ts`), `lib/newsletter.ts`, `/api/newsletter`, 11 tests
   - [x] Live test APW-1012: verify + webhook in the same second, notified once; customer email, Telegram, owner email and newsletter sync all arrived once
   - Decision: owner stays on Workers **Free** plan (keep server CPU low; upgrade only if customers hit error 1102)
-- [ ] Phase 6 — Admin ← NEXT
-- [ ] Phase 7 — Legal pages, SEO, launch
+- [ ] **Phase 6 — Admin** (code done 2026-09-26, waiting on owner steps)
+  - [x] Login + guard, dashboard, orders (filters, detail, status + customer emails incl. new "cancelled"
+    email, mark refunded, clear attention note, waybill), products (form, browser WebP 4:5 upload,
+    net-price helper, sizes/stock, badges, position editor, copy positions, delete-or-hide), bulk
+    price, badges, vouchers (generator, bulk random codes, edit, usage), newsletter (list, CSV,
+    Brevo sync in batches of 20), analytics (Lagos time), settings + store announcement bar
+  - [x] Tested in `npm run preview` at 375px with a temporary admin (deleted afterwards)
+  - [ ] Owner: apply migration 0006 (bulk price function) — `npm run db:check` then passes
+  - [ ] Owner: create their admin login (Supabase Auth user + `admin_users` row)
+  - [ ] Owner: add a real jersey from a phone and fulfil a test order end to end (the "done when")
+- [ ] Phase 7 — Legal pages, SEO, launch ← NEXT
   - [ ] Delete test data in Supabase: orders APW-1001–1012 (their payments + items delete with them;
     delete `voucher_redemptions` rows first), voucher `TEST-ONCE`, and test newsletter subscribers.
     Until then, opening an old confirmation page for APW-1001–1011 sends a real alert (never notified).
@@ -225,3 +236,11 @@ Update this checklist at the end of every session, and add a one-line note under
   sender for campaigns. Test data to delete before launch now also includes APW-1012 and the
   owner's checkout newsletter subscriber. Next: Phase 6 (admin) — must call
   `sendOrderStatusEmail` on dispatched/delivered and offer "Sync to Brevo" for unsynced subscribers.
+- 2026-09-26 — Phase 6 admin built (see checklist). Server actions live in `lib/admin/actions/`
+  and use the admin's own Supabase session (RLS applies); `revalidateStore()` drops all cached store
+  pages after catalogue/settings saves. Migration 0006 adds `admin_set_product_prices()` so bulk
+  price is one request (Free plan = 50 outgoing requests per page load; also why newsletter sync is
+  batched). No middleware, so `SessionKeeper` (browser) refreshes the login cookie. Images are
+  compressed in the browser and uploaded straight to Storage (Safari falls back to JPEG/PNG). Old
+  images are not deleted from Storage when replaced. Next: owner applies 0006 + creates admin
+  login, real-phone test, then Phase 7.
