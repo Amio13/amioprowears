@@ -9,7 +9,7 @@ import { JerseyCard } from "@/components/store/JerseyCard";
 import { JerseyCustomizer } from "@/components/store/JerseyCustomizer";
 import { Price } from "@/components/store/Price";
 import { Badge } from "@/components/ui/Badge";
-import { ERA_LABELS, GENDER_LABELS, slugify, TYPE_LABELS, type CatalogueProduct } from "@/lib/catalogue";
+import { ERA_LABELS, GENDER_LABELS, productCollections, slugify, TYPE_LABELS, type CatalogueProduct } from "@/lib/catalogue";
 import { effectivePrice } from "@/lib/pricing";
 import { getActiveProducts, getProductBadges, getProductBySlug, getStoreSettings } from "@/lib/products";
 import type { Product } from "@/types";
@@ -167,8 +167,9 @@ export default async function JerseyPage({ params }: PageProps<"/jersey/[slug]">
 
 /** Up to 4 other jerseys: same club first, then ones sharing a collection. */
 function relatedProducts(product: Product, all: CatalogueProduct[]): CatalogueProduct[] {
+  const mine = productCollections(product);
   const score = (p: CatalogueProduct) =>
-    (p.club === product.club ? 2 : 0) + (p.collections.some((c) => product.collections.includes(c)) ? 1 : 0);
+    (p.club === product.club ? 2 : 0) + (productCollections(p).some((c) => mine.includes(c)) ? 1 : 0);
   return all
     .filter((p) => p.id !== product.id && score(p) > 0)
     .sort((a, b) => score(b) - score(a) || a.sort_order - b.sort_order)

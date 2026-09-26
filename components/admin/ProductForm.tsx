@@ -3,7 +3,7 @@
 import { ImagePlus, Plus, Save, Trash2, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useRef, useState, useTransition } from "react";
+import { useId, useRef, useState, useTransition } from "react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/components/ui/cn";
 import { Input } from "@/components/ui/Input";
@@ -13,11 +13,11 @@ import type { ActionResult } from "@/lib/admin/action";
 import { deleteProduct, saveProduct } from "@/lib/admin/actions/products";
 import { BADGE_POSITION_LABELS } from "@/lib/admin/labels";
 import type { ProductInput } from "@/lib/admin/schemas";
-import { COLLECTION_LABELS, ERA_LABELS, GENDER_LABELS, slugify, TYPE_LABELS } from "@/lib/catalogue";
+import { AUTO_COLLECTIONS, COLLECTION_LABELS, ERA_LABELS, GENDER_LABELS, isManualCollection, MANUAL_COLLECTIONS, productCollections, slugify, TYPE_LABELS } from "@/lib/catalogue";
 import { DEFAULT_CUSTOMIZER } from "@/lib/customizer";
 import { formatNaira } from "@/lib/format";
 import { PRODUCT_PHOTO } from "@/lib/image-compress";
-import type { Badge, CollectionSlug, CustomizerConfig, Product } from "@/types";
+import type { Badge, CustomizerConfig, Product } from "@/types";
 import { CustomizerPositionEditor } from "./CustomizerPositionEditor";
 import { ImageUpload, uploadImage } from "./ImageUpload";
 import { NetPriceInput } from "./NetPriceInput";
@@ -57,8 +57,9 @@ function initialForm(p?: EditableProduct): Form {
       badge_ids: [],
     };
   }
-  // Extra fields (created_at…) are dropped by the server's zod schema.
-  return { ...p };
+  // Extra fields (created_at…) are dropped by the server's zod schema. Old ticks for
+  // automatic collections (Females/Kids/Vintage) are dropped too.
+  return { ...p, collections: p.collections.filter(isManualCollection) };
 }
 
 function Chip({ on, onClick, children, tone = "default" }: { on: boolean; onClick: () => void; children: React.ReactNode; tone?: "default" | "warn" }) {
@@ -84,11 +85,15 @@ export function ProductForm({
 }: {
   product?: EditableProduct;
   badges: Badge[];
-  copySources: { id: string; name: string; customizer: CustomizerConfig }[];
+  copySources: { id: string; name: string; club: string; customizer: CustomizerConfig }[];
 }) {
+  const clubListId = useId();
+  // Existing clubs as suggestions, so "Aston Villa" isn't also typed as "Aston villa" or "Anston Villa".
+  const clubs = [...new Set([...copySources.map((p) => p.club), ...(product ? [product.club] : [])])].sort((a, b) => a.localeCompare(b));
   const router = useRouter();
   const [form, setForm] = useState<Form>(() => initialForm(product));
   const [slugTouched, setSlugTouched] = useState(Boolean(product));
+  const autoIn = productCollections({ collections: [], gender: form.gender, era: form.era });
   const [customSize, setCustomSize] = useState("");
   const [galleryBusy, setGalleryBusy] = useState(false);
   const [galleryError, setGalleryError] = useState<string | null>(null);
@@ -214,7 +219,22 @@ export function ProductForm({
             error={fields?.name}
             required
           />
-          <Input label="Club or country" value={form.club} placeholder="e.g. Arsenal" onChange={(e) => set("club", e.target.value)} error={fields?.club} required />
+          <Input
+            label="Club or country"
+            value={form.club}
+            placeholder="e.g. Arsenal"
+            list={clubListId}
+            autoComplete="off"
+            hint="Pick from the list when the club already exists. A new name adds it to the store's club filter."
+            onChange={(e) => set("club", e.target.value)}
+            error={fields?.club}
+            required
+          />
+          <datalist id={clubListId}>
+            {clubs.map((c) => (
+              <option key={c} value={c} />
+            ))}
+          </datalist>
           <Select label="For" value={form.gender} onChange={(e) => set("gender", e.target.value as Form["gender"])} options={Object.entries(GENDER_LABELS).map(([value, label]) => ({ value, label }))} />
           <Select label="Version" value={form.type} onChange={(e) => set("type", e.target.value as Form["type"])} options={Object.entries(TYPE_LABELS).map(([value, label]) => ({ value, label }))} />
           <Select label="Era" value={form.era} onChange={(e) => set("era", e.target.value as Form["era"])} options={Object.entries(ERA_LABELS).map(([value, label]) => ({ value, label }))} />
@@ -236,12 +256,22 @@ export function ProductForm({
         <fieldset className="mt-4">
           <legend className="mb-1 text-sm font-medium">Collections</legend>
           <div className="flex flex-wrap gap-2">
-            {(Object.keys(COLLECTION_LABELS) as CollectionSlug[]).map((c) => (
+            {MANUAL_COLLECTIONS.map((c) => (
               <Chip key={c} on={form.collections.includes(c)} onClick={() => set("collections", toggle(form.collections, c))}>
                 {COLLECTION_LABELS[c]}
               </Chip>
             ))}
           </div>
+          <p className="mt-2 text-sm text-muted">
+            Automatic:{" "}
+            {(Object.keys(AUTO_COLLECTIONS) as (keyof typeof AUTO_COLLECTIONS)[])
+              .map((c) => `${COLLECTION_LABELS[c]} (${AUTO_COLLECTIONS[c]})`)
+              .join(", ")}
+            .{" "}
+            {autoIn.length > 0 ? (
+              <strong className="text-ink">This jersey: {autoIn.map((c) => COLLECTION_LABELS[c]).join(", ")}.</strong>
+            ) : null}
+          </p>
         </fieldset>
       </Card>
 

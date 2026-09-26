@@ -3,7 +3,7 @@
  * the real input in the server action.
  */
 import { z } from "zod";
-import { COLLECTION_LABELS } from "@/lib/catalogue";
+import { COLLECTION_LABELS, isManualCollection } from "@/lib/catalogue";
 import { normalizeNigerianPhone } from "@/lib/format";
 import type { CollectionSlug } from "@/types";
 
@@ -94,7 +94,8 @@ export const productInputSchema = z
     ...p,
     // Only sizes the product actually has can be out of stock.
     out_of_stock_sizes: p.out_of_stock_sizes.filter((s) => p.sizes.includes(s)),
-    collections: [...new Set(p.collections)],
+    // Females/Kids/Vintage are automatic (from gender/era), so only ticked collections are stored.
+    collections: [...new Set(p.collections.filter(isManualCollection))],
     badge_ids: [...new Set(p.badge_ids)],
   }));
 export type ProductInput = z.input<typeof productInputSchema>;

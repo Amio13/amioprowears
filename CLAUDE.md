@@ -204,7 +204,9 @@ secrets: Cloudflare dashboard → Workers → Settings → Variables and Secrets
   - [ ] One real order on the live domain, then refund it
 - [x] Favourites (heart on cards + product photo, header count, `/favourites`) — saved on the device in
   `store/favourites.ts` (Zustand persist, IDs only). Move to the account once customer accounts exist.
-- [ ] Delivery fees editable in admin → Settings (code done, NOT pushed yet): owner applies migration 0008, then push
+- [ ] Delivery fees editable in admin → Settings (code done, migration 0008 applied, NOT pushed yet)
+- [ ] Collections/menu: Top clubs, National teams, Females, Kids, Vintage (code done, NOT pushed). Females/Kids/Vintage are
+  automatic from gender/era (`productCollections()` in `lib/catalogue.ts`); run migration 0009 right AFTER the push
 - [ ] Post-launch — customer accounts (email magic link, then sync favourites), crypto
 - [ ] Owner's list for AFTER the phases (owner wants to finish all phases first, then add/remove things
   based on customer feedback):
@@ -297,3 +299,7 @@ Update this checklist at the end of every session, and add a one-line note under
   edit them in admin → Settings. Migration 0008 adds `settings.delivery_fee_a/b/c`; `resolveDeliveryFees()` falls back to the
   code defaults if the column is missing. Checkout/quote, /delivery (now ISR) and the cart's "from ₦…" read the setting.
   Committed locally, NOT pushed (owner asked to hold pushes). Next: owner applies 0008, checks admin → Settings, then push.
+- 2026-09-26 — Menu + collections: Top clubs, National teams (ticked per jersey), Females, Kids, Vintage (automatic from
+  gender/era; old ticks ignored). Header link bar from 1024px (hamburger below). Club box in the jersey form suggests existing
+  clubs (club filter was already automatic). Homepage config now drops unknown rows instead of resetting. Migration 0009
+  (data: tags + homepage rows) must run right AFTER the push. Committed locally, not pushed.

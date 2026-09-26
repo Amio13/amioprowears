@@ -40,4 +40,10 @@ describe("pickHeroTiles", () => {
   it("with no picks behaves like before (featured, then sort order)", () => {
     expect(pickHeroTiles([], products).map((t) => t.product.id)).toEqual([id(2), id(1), id(3)]);
   });
+
+  it("drops unknown collection rows but keeps the rest of the owner's settings", () => {
+    const r = resolveHomepage({ headline: "Wear it.", rows: ["top-clubs", "retired-collection", "kids"] });
+    expect(r.headline).toBe("Wear it.");
+    expect(r.rows).toEqual(["top-clubs", "kids"]);
+  });
 });

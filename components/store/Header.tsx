@@ -7,11 +7,11 @@ import { MAIN_NAV } from "./nav-links";
 export function Header() {
   return (
     <header className="sticky top-0 z-30 border-b border-line bg-white/95 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-7xl items-center gap-2 px-4 md:gap-8">
+      <div className="mx-auto flex h-16 max-w-7xl items-center gap-2 px-4 lg:gap-8">
         <MobileMenu />
-        <Logo className="flex-1 justify-center md:flex-none md:justify-start" imageClassName="h-12" priority />
-        <nav aria-label="Main" className="hidden flex-1 md:block">
-          <ul className="flex gap-6 text-sm font-medium">
+        <Logo className="flex-1 justify-center lg:flex-none lg:justify-start" imageClassName="h-12" priority />
+        <nav aria-label="Main" className="hidden flex-1 lg:block">
+          <ul className="flex gap-6 whitespace-nowrap text-sm font-medium">
             {MAIN_NAV.map((l) => (
               <li key={l.href}>
                 <Link href={l.href} className="py-2 hover:text-brand">

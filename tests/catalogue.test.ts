@@ -7,6 +7,7 @@ import {
   filtersToQuery,
   getFilterOptions,
   parseFilters,
+  productCollections,
   slugify,
   toggleValue,
   type CatalogueProduct,
@@ -35,28 +36,28 @@ const product = (overrides: Partial<CatalogueProduct> & Pick<CatalogueProduct, "
 
 // Mirrors the seed data (supabase/migrations/0003_seed.sql).
 const PRODUCTS: CatalogueProduct[] = [
-  product({ slug: "ng-home", collections: ["new-arrivals", "super-eagles"], sort_order: 1 }),
+  product({ slug: "ng-home", collections: ["new-arrivals", "super-eagles", "national-teams"], sort_order: 1 }),
   product({
     slug: "ng-away-w",
     gender: "female",
-    collections: ["super-eagles", "female-kits"],
+    collections: ["super-eagles", "national-teams"], // Females is automatic (gender)
     sizes: ["XS", "S", "M", "L", "XL"],
     out_of_stock_sizes: ["XS"],
     sale_price: 13850,
     sort_order: 2,
   }),
-  product({ slug: "arsenal", club: "Arsenal", type: "player", price: 20450, collections: ["new-arrivals", "champions-league"], sort_order: 3 }),
-  product({ slug: "real", club: "Real Madrid", out_of_stock_sizes: ["XXL"], collections: ["champions-league"], sort_order: 4 }),
+  product({ slug: "arsenal", club: "Arsenal", type: "player", price: 20450, collections: ["new-arrivals", "champions-league", "top-clubs"], sort_order: 3 }),
+  product({ slug: "real", club: "Real Madrid", out_of_stock_sizes: ["XXL"], collections: ["champions-league", "top-clubs"], sort_order: 4 }),
   product({
     slug: "utd-kids",
     club: "Manchester United",
     gender: "kids",
     price: 12300,
     sizes: ["4-5Y", "6-7Y", "8-9Y", "10-11Y", "12-13Y"],
-    collections: ["new-arrivals"],
+    collections: ["new-arrivals", "top-clubs"],
     sort_order: 5,
   }),
-  product({ slug: "ng-1994", era: "vintage", price: 25500, collections: ["vintage", "super-eagles"], sort_order: 6, created_at: "2026-09-10T00:00:00Z" }),
+  product({ slug: "ng-1994", era: "vintage", price: 25500, collections: ["super-eagles", "national-teams"], sort_order: 6, created_at: "2026-09-10T00:00:00Z" }),
 ];
 
 const run = (query: string) => applyFilters(PRODUCTS, parseFilters(new URLSearchParams(query))).map((p) => p.slug);
@@ -168,5 +169,26 @@ describe("helpers", () => {
     expect(o.club.map((c) => c.label)).toEqual(["Arsenal", "Manchester United", "Nigeria", "Real Madrid"]);
     expect(o.gender.map((g) => g.value)).toEqual(["male", "female", "kids"]);
     expect(o.size[0]!.value).toBe("XS");
+  });
+
+  it("Females, Kids and Vintage come from gender and era; Top clubs/National teams from ticks", () => {
+    expect(run("collection=female-kits")).toEqual(["ng-away-w"]);
+    expect(run("collection=kids")).toEqual(["utd-kids"]);
+    expect(run("collection=vintage")).toEqual(["ng-1994"]);
+    expect(run("collection=top-clubs").sort()).toEqual(["arsenal", "real", "utd-kids"]);
+    expect(run("collection=national-teams").sort()).toEqual(["ng-1994", "ng-away-w", "ng-home"]);
+  });
+
+  it("ignores old ticks for automatic collections", () => {
+    // A men's current jersey that was once ticked "Female kits" and "Vintage".
+    const legacy = product({ slug: "old", collections: ["female-kits", "vintage", "new-arrivals"] as never });
+    expect(productCollections(legacy)).toEqual(["new-arrivals"]);
+    expect(productCollections({ collections: [], gender: "female", era: "vintage" })).toEqual(["female-kits", "vintage"]);
+  });
+
+  it("only offers collections that have jerseys, in display order", () => {
+    expect(getFilterOptions(PRODUCTS).collection.map((o) => o.value)).toEqual([
+      "top-clubs", "national-teams", "female-kits", "kids", "vintage", "new-arrivals", "super-eagles", "champions-league",
+    ]);
   });
 });

@@ -9,13 +9,13 @@ import { Select } from "@/components/ui/Select";
 import type { ActionResult } from "@/lib/admin/action";
 import { bulkUpdatePrices } from "@/lib/admin/actions/products";
 import { planBulkChange, type BulkPriceOp } from "@/lib/admin/bulk-price";
-import { COLLECTION_LABELS, GENDER_LABELS } from "@/lib/catalogue";
+import { COLLECTION_LABELS, GENDER_LABELS, productCollections } from "@/lib/catalogue";
 import { formatNaira } from "@/lib/format";
 import type { Product } from "@/types";
 import { parseNaira } from "./NetPriceInput";
 import { Card, Checkbox, FormMessage } from "./ui";
 
-export type BulkProduct = Pick<Product, "id" | "name" | "club" | "collections" | "gender" | "price" | "sale_price" | "is_active">;
+export type BulkProduct = Pick<Product, "id" | "name" | "club" | "collections" | "gender" | "era" | "price" | "sale_price" | "is_active">;
 
 const MODES = [
   { value: "amount+", label: "Increase by ₦" },
@@ -59,7 +59,7 @@ export function BulkPriceUpdate({ products }: { products: BulkProduct[] }) {
   const matching = products.filter(
     (p) =>
       (includeHidden || p.is_active) &&
-      (!collection || p.collections.includes(collection as BulkProduct["collections"][number])) &&
+      (!collection || (productCollections(p) as string[]).includes(collection)) &&
       (!club || p.club === club) &&
       (!gender || p.gender === gender),
   );

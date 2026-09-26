@@ -1,9 +1,11 @@
-import { Heart, History, type LucideIcon, Shirt, Sparkles, Star, Truck } from "lucide-react";
+import { Baby, Flag, Heart, History, type LucideIcon, Shirt, Trophy, Truck, Venus } from "lucide-react";
 
 export const MAIN_NAV: readonly { href: string; label: string; icon: LucideIcon }[] = [
   { href: "/catalogue", label: "Shop all", icon: Shirt },
-  { href: "/catalogue?collection=new-arrivals", label: "New arrivals", icon: Sparkles },
-  { href: "/catalogue?collection=super-eagles", label: "Super Eagles", icon: Star },
+  { href: "/catalogue?collection=top-clubs", label: "Top clubs", icon: Trophy },
+  { href: "/catalogue?collection=national-teams", label: "National teams", icon: Flag },
+  { href: "/catalogue?collection=female-kits", label: "Females", icon: Venus },
+  { href: "/catalogue?collection=kids", label: "Kids", icon: Baby },
   { href: "/catalogue?collection=vintage", label: "Vintage", icon: History },
   { href: "/track", label: "Track order", icon: Truck },
 ];

@@ -7,7 +7,7 @@
  * Groups combine with AND; values inside a group combine with OR.
  */
 import { effectivePrice } from "./pricing";
-import type { CollectionSlug, Era, Gender, JerseyType, Product } from "@/types";
+import type { AutoCollection, CollectionSlug, Era, Gender, JerseyType, ManualCollection, Product } from "@/types";
 
 /** The product fields the catalogue grid and cards need (keeps the page payload small). */
 export type CatalogueProduct = Pick<
@@ -36,13 +36,43 @@ export const CATALOGUE_PRODUCT_COLUMNS =
   "id, slug, name, club, gender, type, era, season, collections, sizes, out_of_stock_sizes, " +
   "price, sale_price, image_front, image_back, created_at, sort_order, is_featured";
 
+/** In display order (filter sidebar, admin lists). Slugs are in URLs, so don't rename them. */
 export const COLLECTION_LABELS: Record<CollectionSlug, string> = {
+  "top-clubs": "Top clubs",
+  "national-teams": "National teams",
+  "female-kits": "Females",
+  kids: "Kids",
+  vintage: "Vintage",
   "new-arrivals": "New arrivals",
   "super-eagles": "Super Eagles",
   "champions-league": "Champions League",
-  "female-kits": "Female kits",
-  vintage: "Vintage collection",
 };
+
+/** Collections filled from the jersey's gender/era, with the rule shown in admin. */
+export const AUTO_COLLECTIONS: Record<AutoCollection, string> = {
+  "female-kits": "Gender: Women",
+  kids: "Gender: Kids",
+  vintage: "Era: Vintage",
+};
+
+export function isManualCollection(c: string): c is ManualCollection {
+  return c in COLLECTION_LABELS && !(c in AUTO_COLLECTIONS);
+}
+
+export const MANUAL_COLLECTIONS = (Object.keys(COLLECTION_LABELS) as CollectionSlug[]).filter(isManualCollection);
+
+/**
+ * Every collection a jersey is in: the ones ticked in admin plus the automatic ones.
+ * Old ticks for automatic collections (from before they were automatic) are ignored,
+ * so a jersey is in Females/Kids/Vintage exactly when its gender/era says so.
+ */
+export function productCollections(p: Pick<Product, "collections" | "gender" | "era">): CollectionSlug[] {
+  const out: CollectionSlug[] = p.collections.filter(isManualCollection);
+  if (p.gender === "female") out.push("female-kits");
+  if (p.gender === "kids") out.push("kids");
+  if (p.era === "vintage") out.push("vintage");
+  return out;
+}
 export const GENDER_LABELS: Record<Gender, string> = { male: "Men", female: "Women", kids: "Kids" };
 export const TYPE_LABELS: Record<JerseyType, string> = { player: "Player version", fan: "Fan version" };
 export const ERA_LABELS: Record<Era, string> = { current: "Current", vintage: "Vintage" };
@@ -185,7 +215,7 @@ export function matchesFilters(p: CatalogueProduct, f: CatalogueFilters): boolea
   const stock = inStockSizes(p).map((s) => s.toUpperCase());
 
   return (
-    any(f.collection, (c) => p.collections.includes(c)) &&
+    any(f.collection, (c) => productCollections(p).includes(c)) &&
     any(f.club, (c) => c === clubSlug) &&
     any(f.gender, (g) => g === p.gender) &&
     any(f.type, (t) => t === p.type) &&
@@ -248,7 +278,7 @@ export function getFilterOptions(products: CatalogueProduct[]): Record<ListGroup
   const sizes = new Set(products.flatMap((p) => p.sizes.map((s) => s.toUpperCase())));
 
   return {
-    collection: present(COLLECTION_LABELS, new Set(products.flatMap((p) => p.collections))),
+    collection: present(COLLECTION_LABELS, new Set(products.flatMap(productCollections))),
     club: [...clubs].map(([value, label]) => ({ value, label })).sort((a, b) => a.label.localeCompare(b.label)),
     gender: present(GENDER_LABELS, new Set(products.map((p) => p.gender))),
     type: present(TYPE_LABELS, new Set(products.map((p) => p.type))),

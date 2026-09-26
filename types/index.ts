@@ -3,12 +3,11 @@
 export type Gender = "male" | "female" | "kids";
 export type JerseyType = "player" | "fan";
 export type Era = "current" | "vintage";
-export type CollectionSlug =
-  | "new-arrivals"
-  | "super-eagles"
-  | "champions-league"
-  | "female-kits"
-  | "vintage";
+/** Collections the owner ticks per jersey in admin. */
+export type ManualCollection = "top-clubs" | "national-teams" | "new-arrivals" | "super-eagles" | "champions-league";
+/** Collections filled automatically from gender and era (lib/catalogue.ts → productCollections). */
+export type AutoCollection = "female-kits" | "kids" | "vintage";
+export type CollectionSlug = ManualCollection | AutoCollection;
 export type BadgePosition = "left_chest" | "right_chest" | "sleeve";
 
 /** Overlay box, all values in % of the jersey image (fontSize in % of image width). */
@@ -51,7 +50,8 @@ export interface Product {
   type: JerseyType;
   era: Era;
   season: string | null;
-  collections: CollectionSlug[];
+  /** Ticked collections only; use productCollections() to include the automatic ones. */
+  collections: ManualCollection[];
   sizes: string[];
   out_of_stock_sizes: string[];
   price: number;

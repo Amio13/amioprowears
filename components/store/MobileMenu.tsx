@@ -14,7 +14,7 @@ export function MobileMenu() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="-ml-2 inline-flex size-11 items-center justify-center rounded-full hover:bg-surface-strong md:hidden"
+        className="-ml-2 inline-flex size-11 items-center justify-center rounded-full hover:bg-surface-strong lg:hidden"
         aria-label="Open menu"
         aria-haspopup="dialog"
       >

@@ -15,9 +15,9 @@ export async function loadAllBadges(supabase: Db): Promise<Badge[]> {
 export async function loadCopySources(supabase: Db, excludeId?: string) {
   const { data, error } = await supabase
     .from("products")
-    .select("id, name, customizer")
+    .select("id, name, club, customizer")
     .order("name")
-    .returns<{ id: string; name: string; customizer: CustomizerConfig }[]>();
+    .returns<{ id: string; name: string; club: string; customizer: CustomizerConfig }[]>();
   if (error) throw new Error(`Loading products failed: ${error.message}`);
   return data.filter((p) => p.id !== excludeId);
 }

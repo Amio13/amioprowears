@@ -8,7 +8,7 @@ export default async function BulkPricePage() {
   const { supabase } = await requireAdmin();
   const { data, error } = await supabase
     .from("products")
-    .select("id, name, club, collections, gender, price, sale_price, is_active")
+    .select("id, name, club, collections, gender, era, price, sale_price, is_active")
     .order("name")
     .returns<BulkProduct[]>();
   if (error) throw new Error(`Loading products failed: ${error.message}`);

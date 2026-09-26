@@ -31,7 +31,7 @@ export const DEFAULT_HOMEPAGE: HomepageConfig = {
   headline: "Your name.\nYour number.\nYour team.",
   subtext: "Custom football jerseys printed with your name, number and badges — delivered to your nearest motor park.",
   hero: [],
-  rows: ["new-arrivals", "super-eagles", "champions-league", "female-kits", "vintage"],
+  rows: ["top-clubs", "national-teams", "female-kits", "kids", "vintage"],
   showSteps: true,
   steps: [
     { title: "Pick your jersey", body: "Club, country or vintage — in men's, women's and kids' sizes." },
@@ -64,6 +64,8 @@ export function resolveHomepage(stored: unknown): HomepageConfig {
   const merged = {
     ...DEFAULT_HOMEPAGE,
     ...s,
+    // Drop rows for collections that no longer exist instead of rejecting the whole config.
+    rows: Array.isArray(s.rows) ? s.rows.filter((r) => (ALL_COLLECTIONS as string[]).includes(r)) : DEFAULT_HOMEPAGE.rows,
     steps: Array.isArray(s.steps) && s.steps.length === 3 ? s.steps : DEFAULT_HOMEPAGE.steps,
   };
   const parsed = homepageSchema.safeParse(merged);

@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { JerseyCard } from "@/components/store/JerseyCard";
 import { buttonClasses } from "@/components/ui/Button";
-import { COLLECTION_LABELS, sortProducts } from "@/lib/catalogue";
+import { COLLECTION_LABELS, productCollections, sortProducts } from "@/lib/catalogue";
 import { pickHeroTiles } from "@/lib/homepage";
 import { getActiveProducts, getHomepageConfig } from "@/lib/products";
 
@@ -24,7 +24,7 @@ export default async function HomePage() {
     slug,
     title: COLLECTION_LABELS[slug],
     // New arrivals: newest first. Other collections: the owner's sort order.
-    items: (slug === "new-arrivals" ? newest : products).filter((p) => p.collections.includes(slug)),
+    items: (slug === "new-arrivals" ? newest : products).filter((p) => productCollections(p).includes(slug)),
   })).filter((r) => r.items.length > 0);
 
   return (
