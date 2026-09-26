@@ -200,7 +200,8 @@ secrets: Cloudflare dashboard → Workers → Settings → Variables and Secrets
     test subscriber). Order numbers continue from APW-1013 unless the sequence is reset.
   - [x] amioprowears.com connected to the Worker (Custom domain), `NEXT_PUBLIC_SITE_URL` build var set;
     Namecheap parking A/CNAME records removed; email DNS untouched
-  - [ ] `www.amioprowears.com` custom domain (not added yet as of 2026-09-26)
+  - [x] `www.amioprowears.com`: proxied A record `192.0.2.1` + Redirect Rule (301 → https://amioprowears.com, path + query kept).
+    NOT a Worker custom domain, so there's one canonical URL.
   - [ ] Paystack LIVE keys + live webhook — waiting for Paystack to verify the business
   - [ ] One real order on the live domain, then refund it
 - [x] Favourites (heart on cards + product photo, header count, `/favourites`) — saved on the device in
@@ -313,3 +314,5 @@ Update this checklist at the end of every session, and add a one-line note under
   admin (column kept). Name curve drawn as SVG textPath. Glyph widths measured in Chromium. Worker 2.19 MB gzip. Not pushed.
 - 2026-09-26 — Migration 0010 applied, badges/fonts/curve pushed and checked live at 375px. Next: owner uploads real badge
   images, sets fonts/curves per jersey; www domain; Paystack live keys.
+- 2026-09-26 — Homepage hero buttons side by side on phones. www fixed via DNS record + Cloudflare Redirect Rule (checked:
+  301 to the apex, path/query kept). Next: Paystack live keys, one real order + refund.
