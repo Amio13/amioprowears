@@ -4,7 +4,7 @@
  * HTML that reads well on a phone, plus a plain-text version.
  */
 import { formatNaira, formatPhoneForDisplay, whatsappLink } from "@/lib/format";
-import { POLICY } from "@/lib/store-info";
+import { POLICY, SOCIALS } from "@/lib/store-info";
 import type { Order, OrderItem } from "@/types";
 
 export type NotifyOrder = Pick<
@@ -60,7 +60,7 @@ export function customLine(item: NotifyOrder["items"][number]): string {
   const parts: string[] = [];
   if (item.custom_name) parts.push(item.custom_name);
   if (item.custom_number) parts.push(`#${item.custom_number}`);
-  if (item.badge_name) parts.push(`Badge: ${item.badge_name}`);
+  if (item.badge_name) parts.push(`${item.badge_name.includes(" + ") ? "Badges" : "Badge"}: ${item.badge_name}`);
   return parts.join(" | ");
 }
 
@@ -112,6 +112,21 @@ export function ownerAlertEmail(o: NotifyOrder, ctx: StoreContext, paymentRef: s
 // Customer emails
 // ---------------------------------------------------------------------------
 
+/**
+ * Email images live in public/email/ as PNG (many email apps can't show WebP or SVG) and
+ * load from the live site. If images are blocked, the alt text (store name, network
+ * names) shows instead.
+ */
+const emailImage = (ctx: StoreContext, file: string) => `${ctx.siteUrl}/email/${file}`;
+
+function followUsHtml(ctx: StoreContext): string {
+  const links = SOCIALS.map(
+    (s) =>
+      `<a href="${escapeHtml(s.url)}" style="display:inline-block;margin:0 6px;color:${MUTED};text-decoration:none"><img src="${escapeHtml(emailImage(ctx, `${s.name.toLowerCase()}.png`))}" width="24" height="24" alt="${escapeHtml(s.name)}" style="display:block;border:0;margin:0 auto 2px"></a>`,
+  ).join("");
+  return `<tr><td align="center" style="padding:16px 24px 8px;border-top:1px solid ${LINE};font-size:13px;color:${MUTED}">Follow us for new kits and deals<br><span style="display:inline-block;margin-top:8px">${links}</span></td></tr>`;
+}
+
 function layout(ctx: StoreContext, bodyHtml: string): string {
   const contact: string[] = [];
   if (ctx.supportEmail) contact.push(`<a href="mailto:${escapeHtml(ctx.supportEmail)}" style="color:${MUTED}">${escapeHtml(ctx.supportEmail)}</a>`);
@@ -124,9 +139,10 @@ function layout(ctx: StoreContext, bodyHtml: string): string {
 <body style="margin:0;padding:0;background:#f5f5f5">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5"><tr><td align="center" style="padding:16px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border-radius:8px;font-family:Roboto,Arial,Helvetica,sans-serif;color:${INK};font-size:15px;line-height:1.5">
-<tr><td style="padding:20px 24px;border-bottom:3px solid ${BRAND}"><a href="${escapeHtml(ctx.siteUrl)}" style="font-size:24px;font-weight:700;letter-spacing:1px;color:${INK};text-decoration:none">${escapeHtml(ctx.storeName.toUpperCase())}</a></td></tr>
+<tr><td style="padding:16px 24px;border-bottom:3px solid ${BRAND}"><a href="${escapeHtml(ctx.siteUrl)}" style="font-size:24px;font-weight:700;letter-spacing:1px;color:${INK};text-decoration:none"><img src="${escapeHtml(emailImage(ctx, "logo.png"))}" width="190" height="60" alt="${escapeHtml(ctx.storeName)}" style="display:block;border:0;height:60px;width:190px"></a></td></tr>
 <tr><td style="padding:24px">${bodyHtml}</td></tr>
-<tr><td style="padding:16px 24px;border-top:1px solid ${LINE};font-size:13px;color:${MUTED}">Questions? Reply to this email${contact.length ? ` or reach us: ${contact.join(" · ")}` : ""}.</td></tr>
+${followUsHtml(ctx)}
+<tr><td style="padding:8px 24px 16px;font-size:13px;color:${MUTED}">Questions? Reply to this email${contact.length ? ` or reach us: ${contact.join(" · ")}` : ""}.</td></tr>
 </table></td></tr></table></body></html>`;
 }
 
@@ -167,7 +183,8 @@ function contactText(ctx: StoreContext): string {
   const parts: string[] = [];
   if (ctx.supportEmail) parts.push(ctx.supportEmail);
   if (ctx.supportPhone) parts.push(formatPhoneForDisplay(ctx.supportPhone));
-  return parts.length ? `Questions? Reply to this email or reach us: ${parts.join(" · ")}` : "Questions? Reply to this email.";
+  const follow = `Follow us: ${SOCIALS.map((s) => `${s.name} ${s.url}`).join(" · ")}`;
+  return `${parts.length ? `Questions? Reply to this email or reach us: ${parts.join(" · ")}` : "Questions? Reply to this email."}\n${follow}`;
 }
 
 export function orderConfirmedEmail(o: NotifyOrder, ctx: StoreContext): RenderedEmail {

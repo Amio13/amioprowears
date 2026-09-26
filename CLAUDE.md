@@ -319,3 +319,5 @@ Update this checklist at the end of every session, and add a one-line note under
   301 to the apex, path/query kept). Next: Paystack live keys, one real order + refund.
 - 2026-09-26 — Policy pages reviewed against FCCPA/NDPA/Paystack norms: accurate badge wording, address in privacy/terms,
   FCCPC complaints line, WhatsApp + favourites in privacy, owner's cancel/refund/lost-parcel rules; cancelled email matches.
+- 2026-09-26 — Emails: logo header + "Follow us" row (PNG images in `public/email/`, loaded from the live site, alt text if
+  blocked); plain-text version lists the social links. "Badges:" plural in emails.
