@@ -112,6 +112,17 @@ examples in `docs/SPEC.md` → Pricing.
 - When a task needs the owner to do something outside the code (dashboard setting,
   secret, DNS), stop and give exact click-by-click steps.
 
+## Local testing notes
+
+- Screenshots / clicking through pages: headless Chromium is installed at
+  `~/.cache/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell`
+  (use `--screenshot`, or drive it over the DevTools protocol for clicks). Playwright itself is not installed.
+- To stop the preview server use `pgrep -f "[w]orkerd|[w]rangler"` + `kill` — a plain `pkill -f wrangler` matches
+  the calling shell and kills the command itself.
+- Admin pages need the owner's login; to check an admin component visually, render it on a temporary local page
+  (never commit it).
+- A preview build fetches products from Supabase; "fetch failed" during "Collecting page data" is a network blip — rebuild.
+
 ## Commands
 
 ```bash
@@ -192,8 +203,8 @@ secrets: Cloudflare dashboard → Workers → Settings → Variables and Secrets
     printed jerseys returnable only if faulty; plain exchanges within 24 h of pickup (faulty reports
     also 24 h, with photos); customer pays delivery for own-mistake exchanges; dispatch 1–3 working days
   - [x] SEO: default Open Graph/Twitter tags, static `app/opengraph-image.png` (NOT a generated
-    opengraph-image.tsx — `next/og` adds ~800 KiB to the Worker; bundle is ~1.98 MB gzip vs 3 MB Free
-    limit), `sitemap.ts` (hourly), `robots.ts`, product JSON-LD, `error.tsx` + `global-error.tsx`
+    opengraph-image.tsx — `next/og` adds ~800 KiB to the Worker; bundle is ~2.19 MB gzip (2026-09-26) vs 3 MB
+    Free limit), `sitemap.ts` (hourly), `robots.ts`, product JSON-LD, `error.tsx` + `global-error.tsx`
     (this Next version's error prop is `retry`, not `reset`)
   - [x] Policy review (2026-09-26): cancel within 2 h of paying (full refund); faults/exchanges 24 h from pickup; lost/damaged
     before collection → replace or refund; approved refunds started within 2 working days (bank 5–10). Values in `POLICY`.
@@ -204,7 +215,10 @@ secrets: Cloudflare dashboard → Workers → Settings → Variables and Secrets
   - [x] `www.amioprowears.com`: proxied A record `192.0.2.1` + Redirect Rule (301 → https://amioprowears.com, path + query kept).
     NOT a Worker custom domain, so there's one canonical URL.
   - [ ] Paystack LIVE keys + live webhook — waiting for Paystack to verify the business
-  - [ ] One real order on the live domain, then refund it
+  - [ ] One real order on the live domain (name + number + 2 badges, to see the admin "what to produce" view), then refund it
+  - [ ] Owner, in admin: upload real badge pictures (square transparent PNG), set font + name shape per jersey, tick
+    allowed badges per jersey
+  - [ ] Optional: CAC registered name + RC number in footer/terms if the business is registered
 - [x] Favourites (heart on cards + product photo, header count, `/favourites`) — saved on the device in
   `store/favourites.ts` (Zustand persist, IDs only). Move to the account once customer accounts exist.
 - [x] Delivery fees editable in admin → Settings (migration 0008 applied, live 2026-09-26)
@@ -219,6 +233,8 @@ secrets: Cloudflare dashboard → Workers → Settings → Variables and Secrets
   - [x] Social media icons + links in the footer and /contact (Instagram, TikTok, X — `SOCIALS` in `lib/store-info.ts`)
   - [x] Logo image (`public/logo.webp`, 29 KB, cut from the owner's 2.6 MB SVG) replaces the text wordmark in header, footer, admin
   - [x] Business location address (`ADDRESS` in `lib/store-info.ts`) in the footer and /contact, with a Google Maps "Get directions" link
+  - [x] Emails carry the logo + "Follow us" social icons (`public/email/*.png` — update `logo.png` there if the logo changes)
+  - [ ] Owner has more fixes for the next session (2026-09-27)
 
 Update this checklist at the end of every session, and add a one-line note under
 "Session log" describing what was done and what's next.
@@ -321,3 +337,6 @@ Update this checklist at the end of every session, and add a one-line note under
   FCCPC complaints line, WhatsApp + favourites in privacy, owner's cancel/refund/lost-parcel rules; cancelled email matches.
 - 2026-09-26 — Emails: logo header + "Follow us" row (PNG images in `public/email/`, loaded from the live site, alt text if
   blocked); plain-text version lists the social links. "Badges:" plural in emails.
+- 2026-09-26 — END OF DAY. Everything is pushed and live; migrations 0001–0010 applied; `npm run db:check` passes.
+  Next session: owner's list of fixes. Still pending: Paystack live keys + live webhook, one real order + refund, owner's
+  admin setup (real badge pictures, fonts/curves per jersey).
