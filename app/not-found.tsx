@@ -1,4 +1,4 @@
-import { House, SearchX } from "lucide-react";
+import { ArrowLeft, SearchX } from "lucide-react";
 import Link from "next/link";
 import { buttonClasses } from "@/components/ui/Button";
 
@@ -10,7 +10,7 @@ export default function NotFound() {
       <h1 className="text-2xl font-bold">We can&apos;t find that page</h1>
       <p className="text-muted">It may have moved, or it isn&apos;t live yet.</p>
       <Link href="/" className={buttonClasses()}>
-        <House />
+        <ArrowLeft />
         Back to the store
       </Link>
     </main>

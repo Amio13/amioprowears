@@ -1,6 +1,6 @@
 "use client";
 
-import { House, RotateCcw, TriangleAlert } from "lucide-react";
+import { ArrowLeft, RotateCcw, TriangleAlert } from "lucide-react";
 import Link from "next/link";
 import { useEffect } from "react";
 import { Button, buttonClasses } from "@/components/ui/Button";
@@ -23,7 +23,7 @@ export default function ErrorPage({ error, retry }: { error: Error & { digest?: 
           Try again
         </Button>
         <Link href="/" className={buttonClasses({ variant: "secondary" })}>
-          <House />
+          <ArrowLeft />
           Back to the store
         </Link>
       </div>

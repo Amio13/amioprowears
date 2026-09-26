@@ -284,3 +284,5 @@ Update this checklist at the end of every session, and add a one-line note under
 - 2026-09-26 — Added `lucide-react` and replaced every hand-drawn SVG/text symbol, plus icons on buttons,
   menus and admin nav. Added favourites (on-device). Worker still ~2.0 MB gzip. Tested in preview at 375px
   (store pages; admin checked by typecheck only, not logged in). Next: footer business address, www domain, Paystack live keys.
+- 2026-09-26 — Footer: newsletter moved to its own band at the top; added "Your favourites" link. 404/error pages
+  use the back arrow. Crawled every internal link on the store + info pages in preview: all 200, every collection link has jerseys.
