@@ -194,7 +194,9 @@ secrets: Cloudflare dashboard → Workers → Settings → Variables and Secrets
   - [ ] Owner to confirm: cancellation wording on /returns ("until we start printing") and About text
   - [x] Test data deleted 2026-09-26 (orders APW-1001–1012 + items/payments, voucher TEST-ONCE,
     test subscriber). Order numbers continue from APW-1013 unless the sequence is reset.
-  - [ ] Owner: connect amioprowears.com to the Worker + set `NEXT_PUBLIC_SITE_URL` build variable
+  - [x] amioprowears.com connected to the Worker (Custom domain), `NEXT_PUBLIC_SITE_URL` build var set;
+    Namecheap parking A/CNAME records removed; email DNS untouched
+  - [ ] `www.amioprowears.com` custom domain (not added yet as of 2026-09-26)
   - [ ] Paystack LIVE keys + live webhook — waiting for Paystack to verify the business
   - [ ] One real order on the live domain, then refund it
 - [ ] Post-launch — customer accounts (email magic link), wishlist, crypto
