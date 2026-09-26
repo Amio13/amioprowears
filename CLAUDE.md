@@ -175,8 +175,8 @@ secrets: Cloudflare dashboard → Workers → Settings → Variables and Secrets
     price, badges, vouchers (generator, bulk random codes, edit, usage), newsletter (list, CSV,
     Brevo sync in batches of 20), analytics (Lagos time), settings + store announcement bar
   - [x] Tested in `npm run preview` at 375px with a temporary admin (deleted afterwards)
-  - [ ] Owner: apply migration 0006 (bulk price function) — `npm run db:check` then passes
-  - [ ] Owner: create their admin login (Supabase Auth user + `admin_users` row)
+  - [x] Migration 0006 applied (`npm run db:check` passes)
+  - [x] Owner admin login `admin@amioprowears.com` created and in `admin_users`
   - [ ] Owner: add a real jersey from a phone and fulfil a test order end to end (the "done when")
 - [ ] Phase 7 — Legal pages, SEO, launch ← NEXT
   - [ ] Delete test data in Supabase: orders APW-1001–1012 (their payments + items delete with them;
