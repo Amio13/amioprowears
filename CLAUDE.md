@@ -161,8 +161,11 @@ secrets: Cloudflare dashboard → Workers → Settings → Variables and Secrets
   - [x] Migration 0005 (`create_order()` transaction, `orders.attention_note`) applied
   - [x] Cart page + drawer, checkout, order confirmation, `/track`; all API routes
   - [x] All 5 test-card scenarios passed on the live site (APW-1007 success, 1008 declined, 1011 webhook confirmed before the redirect, 1010 voucher then "already used", tampered price ignored)
-  - [ ] Before launch: decide on Workers Paid ($5/mo) — checkout routes use 13–90 ms CPU vs the free plan's 10 ms (see Session log)
-- [ ] **Phase 5 — Notifications & newsletter** ← NEXT
+  - [x] Workers plan decided: staying on Free (checkout uses 13–90 ms CPU vs 10 ms; bursts tolerated so far)
+- [ ] **Phase 5 — Notifications & newsletter** ← IN PROGRESS
+  - [x] Code: `lib/notify/` (Brevo, Telegram, templates, exactly-once `run.ts`), `lib/newsletter.ts`, `/api/newsletter`, 11 tests
+  - [ ] Live test once Telegram + Brevo keys are in: one test order → 1 customer email, 1 Telegram alert, 1 owner email
+  - Decision: owner stays on Workers **Free** plan (keep server CPU low; upgrade only if customers hit error 1102)
 - [ ] Phase 6 — Admin
 - [ ] Phase 7 — Legal pages, SEO, launch
 - [ ] Post-launch — customer accounts (email magic link), wishlist, crypto
@@ -205,3 +208,11 @@ Update this checklist at the end of every session, and add a one-line note under
   (nameservers already public). Next session: confirm Cloudflare shows Active, then help with
   Zoho (Part 2) and Brevo (Part 3) and check records with `dig`; Phase 5 can start as soon as
   the Telegram bot token is available.
+- 2026-09-26 — Checked status: DNS on Cloudflare is live; MX still Namecheap email-forwarding
+  (Zoho not started). Owner stays on Workers Free. Phase 5 code written: `notifyOrderPaid` claims
+  `notified_at` in one conditional UPDATE then sends customer email + Telegram + owner email
+  (+ newsletter if opted in) independently; failures add an attention note.
+  `sendOrderStatusEmail(orderId, "dispatched"|"delivered")` is ready for Phase 6. `/api/newsletter`
+  tested in preview. Note: test orders APW-1001–1011 have `notified_at` empty, so opening their
+  confirmation pages will send real notifications. Next: owner does Telegram → Zoho → Brevo steps,
+  then a live test order.

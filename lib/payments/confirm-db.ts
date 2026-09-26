@@ -1,5 +1,6 @@
 import "server-only";
 import { notifyOrderPaid } from "@/lib/notify";
+import { addAttentionNote } from "@/lib/order-notes";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { confirmPayment, type ConfirmDeps, type ConfirmOrder, type ConfirmPayment, type ConfirmResult } from "./confirm";
 import { getProvider } from "./index";
@@ -48,17 +49,7 @@ function supabaseDeps(): ConfirmDeps {
       const { error } = await db.from("orders").update({ payment_status: status }).eq("id", orderId).in("payment_status", from);
       must(error, "Updating order payment status");
     },
-    async addAttentionNote(orderId, note) {
-      const { data, error } = await db.from("orders").select("attention_note").eq("id", orderId).single<{ attention_note: string | null }>();
-      must(error, "Loading attention note");
-      const current = data?.attention_note ?? "";
-      if (current.includes(note)) return; // verify + webhook racing: don't write it twice
-      const { error: updateError } = await db
-        .from("orders")
-        .update({ attention_note: current ? `${current}\n${note}` : note })
-        .eq("id", orderId);
-      must(updateError, "Saving attention note");
-    },
+    addAttentionNote: (orderId, note) => addAttentionNote(db, orderId, note),
     async redeemVoucher(voucherId, orderId) {
       const { data, error } = await db.rpc("redeem_voucher", { p_voucher_id: voucherId, p_order_id: orderId });
       must(error, "Redeeming voucher");

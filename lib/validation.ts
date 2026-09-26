@@ -113,3 +113,14 @@ export function fieldErrors(error: z.ZodError): Record<string, string> {
   }
   return out;
 }
+
+/** POST /api/newsletter (footer form). The checkout opt-in is handled at payment. */
+export const newsletterSchema = z.object({
+  email: z.string().trim().toLowerCase().max(120, "Email is too long.").pipe(z.email("Enter a valid email address.")),
+  firstName: z
+    .string()
+    .trim()
+    .max(50, "First name is too long.")
+    .nullish()
+    .transform((v) => v || undefined),
+});
