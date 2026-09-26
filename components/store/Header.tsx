@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CartLink } from "./CartLink";
+import { CartLink, FavouritesLink } from "./CartLink";
 import { Logo } from "./Logo";
 import { MobileMenu } from "./MobileMenu";
 import { MAIN_NAV } from "./nav-links";
@@ -21,7 +21,10 @@ export function Header() {
             ))}
           </ul>
         </nav>
-        <CartLink />
+        <div className="-mr-2 flex items-center">
+          <FavouritesLink />
+          <CartLink />
+        </div>
       </div>
     </header>
   );

@@ -22,9 +22,12 @@ export interface GalleryImage {
 export function ProductGallery({
   images,
   jumpTo,
+  corner,
 }: {
   images: GalleryImage[];
   jumpTo?: { index: number; key: number };
+  /** Button floating over the top-right corner of the photos. */
+  corner?: ReactNode;
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
@@ -78,6 +81,8 @@ export function ProductGallery({
               </div>
             ))}
           </div>
+
+          {corner && <div className="absolute right-2 top-2">{corner}</div>}
 
           {images.length > 1 && (
             <div className="absolute inset-x-0 bottom-2 flex justify-center gap-1 md:hidden">

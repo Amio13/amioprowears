@@ -1,5 +1,6 @@
 "use client";
 
+import { Save } from "lucide-react";
 import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -96,6 +97,7 @@ export function OrderStatusForm({ order }: { order: Props }) {
       )}
       <div className="flex flex-wrap items-center gap-3">
         <Button type="submit" loading={pending}>
+          {!pending && <Save />}
           Save
         </Button>
         <FormMessage result={result} />

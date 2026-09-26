@@ -1,3 +1,4 @@
+import { Mail } from "lucide-react";
 import Link from "next/link";
 import { Logo } from "./Logo";
 import { NewsletterSignup } from "./NewsletterSignup";
@@ -43,7 +44,8 @@ export function Footer() {
           </p>
           {supportEmail && (
             <p className="text-sm">
-              <a href={`mailto:${supportEmail}`} className="underline underline-offset-4 hover:text-brand">
+              <a href={`mailto:${supportEmail}`} className="inline-flex items-center gap-2 underline underline-offset-4 hover:text-brand">
+                <Mail className="size-4 shrink-0" />
                 {supportEmail}
               </a>
             </p>

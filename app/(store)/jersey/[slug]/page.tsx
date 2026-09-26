@@ -1,8 +1,10 @@
+import { ChevronRight, Truck } from "lucide-react";
 import type { Metadata } from "next";
 import { STORE } from "@/lib/store-info";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChatButton } from "@/components/store/ChatButton";
+import { FavouriteButton } from "@/components/store/FavouriteButton";
 import { JerseyCard } from "@/components/store/JerseyCard";
 import { JerseyCustomizer } from "@/components/store/JerseyCustomizer";
 import { Price } from "@/components/store/Price";
@@ -88,7 +90,9 @@ export default async function JerseyPage({ params }: PageProps<"/jersey/[slug]">
                 Shop all
               </Link>
             </li>
-            <li aria-hidden="true">/</li>
+            <li>
+              <ChevronRight className="size-4" />
+            </li>
             <li>
               <Link
                 href={`/catalogue?club=${slugify(product.club)}`}
@@ -104,6 +108,7 @@ export default async function JerseyPage({ params }: PageProps<"/jersey/[slug]">
           product={product}
           badges={badges}
           nameNumberFee={settings.name_number_fee}
+          photoCorner={<FavouriteButton productId={product.id} productName={product.name} />}
           header={
             <div className="space-y-2">
               {onSale && <Badge tone="brand">Sale</Badge>}
@@ -125,7 +130,10 @@ export default async function JerseyPage({ params }: PageProps<"/jersey/[slug]">
           </dl>
 
           <div className="rounded-2xl bg-surface p-4 text-sm">
-            <h2 className="mb-1 font-bold">Motor-park delivery</h2>
+            <h2 className="mb-1 flex items-center gap-2 font-bold">
+              <Truck className="size-5 shrink-0" />
+              Motor-park delivery
+            </h2>
             <p className="text-muted">
               We send your order to the motor park you choose. The logistics company will call the phone
               number you give us when it arrives. Bring your order number and a valid ID to pick it up.{" "}

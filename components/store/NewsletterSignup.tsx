@@ -1,5 +1,6 @@
 "use client";
 
+import { CircleCheck, Send } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -35,7 +36,8 @@ export function NewsletterSignup() {
 
   if (status === "success") {
     return (
-      <p role="status" className="text-sm">
+      <p role="status" className="flex items-start gap-2 text-sm">
+        <CircleCheck className="size-5 shrink-0 text-green-700" />
         {message}
       </p>
     );
@@ -48,6 +50,7 @@ export function NewsletterSignup() {
         <Input label="Email" name="email" type="email" autoComplete="email" required />
       </div>
       <Button type="submit" loading={status === "loading"} className="w-full sm:w-auto">
+        <Send />
         Sign up
       </Button>
       {status === "error" && (

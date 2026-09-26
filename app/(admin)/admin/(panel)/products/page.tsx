@@ -1,3 +1,4 @@
+import { Plus, Search, Tags } from "lucide-react";
 import Form from "next/form";
 import Image from "next/image";
 import Link from "next/link";
@@ -38,18 +39,21 @@ export default async function ProductsPage({ searchParams }: PageProps<"/admin/p
         actions={
           <>
             <Link href="/admin/products/bulk-price" className={buttonClasses({ variant: "secondary" })}>
+              <Tags />
               Bulk price
             </Link>
             <Link href="/admin/products/new" className={buttonClasses()}>
-              + Add jersey
+              <Plus />
+              Add jersey
             </Link>
           </>
         }
       />
       <Form action="/admin/products" className="mb-4 flex max-w-md gap-2">
         <input name="q" defaultValue={q} placeholder="Search name or club" aria-label="Search products" className={fieldClasses} />
-        <button type="submit" className={buttonClasses({ variant: "secondary" })}>
-          Search
+        <button type="submit" className={buttonClasses({ variant: "secondary" })} aria-label="Search">
+          <Search />
+          <span className="max-sm:hidden">Search</span>
         </button>
       </Form>
 

@@ -1,3 +1,4 @@
+import { Pencil } from "lucide-react";
 import Image from "next/image";
 import { BadgeForm } from "@/components/admin/BadgeForm";
 import { Card, Empty, PageHeader } from "@/components/admin/ui";
@@ -35,7 +36,10 @@ export default async function BadgesPage() {
                     </span>
                   </span>
                   {!b.is_active && <Pill>Hidden</Pill>}
-                  <span className="text-sm font-medium underline">Edit</span>
+                  <span className="inline-flex items-center gap-1 text-sm font-medium">
+                    <Pencil className="size-4" />
+                    Edit
+                  </span>
                 </summary>
                 <div className="border-t border-line p-4">
                   <BadgeForm badge={b} />

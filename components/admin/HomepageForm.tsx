@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowDown, ArrowUp, ExternalLink, Save } from "lucide-react";
 import Image from "next/image";
 import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/Button";
@@ -120,11 +121,11 @@ export function HomepageForm({ config, products }: { config: HomepageConfig; pro
                 checked={r.on}
                 onChange={(e) => setRows((all) => all.map((x) => (x.slug === r.slug ? { ...x, on: e.target.checked } : x)))}
               />
-              <button type="button" onClick={() => move(i, -1)} disabled={i === 0} className="size-11 rounded-full hover:bg-surface-strong disabled:opacity-30" aria-label={`Move ${COLLECTION_LABELS[r.slug]} up`}>
-                ↑
+              <button type="button" onClick={() => move(i, -1)} disabled={i === 0} className="inline-flex size-11 items-center justify-center rounded-full hover:bg-surface-strong disabled:opacity-30" aria-label={`Move ${COLLECTION_LABELS[r.slug]} up`}>
+                <ArrowUp className="size-5" />
               </button>
-              <button type="button" onClick={() => move(i, 1)} disabled={i === rows.length - 1} className="size-11 rounded-full hover:bg-surface-strong disabled:opacity-30" aria-label={`Move ${COLLECTION_LABELS[r.slug]} down`}>
-                ↓
+              <button type="button" onClick={() => move(i, 1)} disabled={i === rows.length - 1} className="inline-flex size-11 items-center justify-center rounded-full hover:bg-surface-strong disabled:opacity-30" aria-label={`Move ${COLLECTION_LABELS[r.slug]} down`}>
+                <ArrowDown className="size-5" />
               </button>
             </li>
           ))}
@@ -158,10 +159,12 @@ export function HomepageForm({ config, products }: { config: HomepageConfig; pro
 
       <div className="flex flex-wrap items-center gap-3">
         <Button type="submit" size="lg" loading={pending}>
+          {!pending && <Save />}
           Save homepage
         </Button>
-        <a href="/" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center text-sm underline">
-          View homepage ↗
+        <a href="/" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-1.5 text-sm underline">
+          <ExternalLink className="size-4" />
+          View homepage
         </a>
         <FormMessage result={result} />
       </div>

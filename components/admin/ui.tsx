@@ -1,9 +1,21 @@
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
 import { useId, type ComponentProps, type ReactNode } from "react";
 import { Badge } from "@/components/ui/Badge";
 import { cn } from "@/components/ui/cn";
 import { fieldClasses } from "@/components/ui/Input";
 import { ORDER_STATUS, PAYMENT_STATUS } from "@/lib/admin/labels";
 import type { OrderStatus, PaymentStatus } from "@/types";
+
+/** "← Orders" style link above a page title. */
+export function BackLink({ href, children }: { href: string; children: ReactNode }) {
+  return (
+    <Link href={href} className="mb-2 inline-flex min-h-11 items-center gap-1.5 text-sm text-muted hover:text-ink print:hidden">
+      <ArrowLeft className="size-4" />
+      {children}
+    </Link>
+  );
+}
 
 /** Page title with optional actions on the right (wraps under on phones). */
 export function PageHeader({ title, description, actions }: { title: string; description?: ReactNode; actions?: ReactNode }) {

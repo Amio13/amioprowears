@@ -1,8 +1,9 @@
+import { CircleCheck, Printer, RotateCcw, TriangleAlert } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ActionButton } from "@/components/admin/ActionButton";
 import { OrderStatusForm } from "@/components/admin/OrderStatusForm";
-import { Card, OrderStatusBadge, PageHeader, PaymentStatusBadge } from "@/components/admin/ui";
+import { BackLink, Card, OrderStatusBadge, PageHeader, PaymentStatusBadge } from "@/components/admin/ui";
 import { buttonClasses } from "@/components/ui/Button";
 import { clearAttentionNote, markOrderRefunded } from "@/lib/admin/actions/orders";
 import { requireAdmin } from "@/lib/admin/auth";
@@ -31,9 +32,7 @@ export default async function OrderPage({ params }: PageProps<"/admin/orders/[id
 
   return (
     <>
-      <Link href="/admin/orders" className="mb-2 inline-flex min-h-11 items-center text-sm text-muted hover:text-ink">
-        ← Orders
-      </Link>
+      <BackLink href="/admin/orders">Orders</BackLink>
       <PageHeader
         title={order.order_number}
         description={
@@ -45,6 +44,7 @@ export default async function OrderPage({ params }: PageProps<"/admin/orders/[id
         }
         actions={
           <Link href={`/admin/orders/${order.id}/waybill`} className={buttonClasses({ variant: "secondary" })}>
+            <Printer />
             Waybill slip
           </Link>
         }
@@ -52,9 +52,12 @@ export default async function OrderPage({ params }: PageProps<"/admin/orders/[id
 
       {order.attention_note && (
         <div className="mb-4 rounded-2xl border border-amber-300 bg-amber-50 p-4">
-          <h2 className="font-bold text-amber-900">Needs your attention</h2>
+          <h2 className="flex items-center gap-2 font-bold text-amber-900">
+            <TriangleAlert className="size-5 shrink-0" />
+            Needs your attention
+          </h2>
           <p className="mt-1 whitespace-pre-line text-sm text-amber-900">{order.attention_note}</p>
-          <ActionButton action={clearAttentionNote} input={{ orderId: order.id }} label="Mark as handled" className="mt-3" />
+          <ActionButton action={clearAttentionNote} input={{ orderId: order.id }} label="Mark as handled" icon={<CircleCheck />} className="mt-3" />
         </div>
       )}
 
@@ -155,6 +158,7 @@ export default async function OrderPage({ params }: PageProps<"/admin/orders/[id
                 action={markOrderRefunded}
                 input={{ orderId: order.id }}
                 label="Mark as refunded"
+                icon={<RotateCcw />}
                 confirm="Only do this after refunding in the Paystack dashboard. Mark as refunded?"
                 className="mt-3"
               />

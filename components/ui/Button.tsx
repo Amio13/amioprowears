@@ -11,9 +11,10 @@ const variants: Record<Variant, string> = {
   ghost: "text-ink hover:bg-surface-strong",
 };
 
+// Icons placed inside a button are sized to match its text.
 const sizes: Record<Size, string> = {
-  md: "min-h-11 px-4 text-sm",
-  lg: "min-h-12 px-6 text-base",
+  md: "min-h-11 px-4 text-sm [&_svg]:size-4",
+  lg: "min-h-12 px-6 text-base [&_svg]:size-5",
 };
 
 /** Button styles, also usable on <Link> so links can look like buttons. */
@@ -23,7 +24,7 @@ export function buttonClasses({
   className,
 }: { variant?: Variant; size?: Size; className?: string } = {}) {
   return cn(
-    "inline-flex items-center justify-center gap-2 rounded-full font-medium transition-colors",
+    "inline-flex items-center justify-center gap-2 rounded-full font-medium transition-colors [&_svg]:shrink-0",
     "disabled:cursor-not-allowed disabled:opacity-50",
     variants[variant],
     sizes[size],

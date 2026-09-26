@@ -1,3 +1,4 @@
+import { CircleCheck, Download, RefreshCw } from "lucide-react";
 import { ActionButton } from "@/components/admin/ActionButton";
 import { Card, Empty, PageHeader } from "@/components/admin/ui";
 import { Badge } from "@/components/ui/Badge";
@@ -33,19 +34,23 @@ export default async function NewsletterPage() {
         description={`${total} subscriber${total === 1 ? "" : "s"}. Send campaigns from the Brevo dashboard.`}
         actions={
           <a href="/admin/newsletter/export" className={buttonClasses({ variant: "secondary" })} download>
+            <Download />
             Download CSV
           </a>
         }
       />
       <Card title="Brevo sync" className="mb-4">
         {unsynced === 0 ? (
-          <p className="text-sm text-muted">Everyone is in your Brevo list.</p>
+          <p className="flex items-center gap-2 text-sm text-muted">
+            <CircleCheck className="size-4 text-green-700" />
+            Everyone is in your Brevo list.
+          </p>
         ) : (
           <>
             <p className="mb-3 text-sm">
               {unsynced} subscriber{unsynced === 1 ? " isn't" : "s aren't"} in Brevo yet (Brevo was unreachable when they signed up).
             </p>
-            <ActionButton action={syncUnsyncedSubscribers} input={undefined} label="Sync to Brevo" variant="primary" />
+            <ActionButton action={syncUnsyncedSubscribers} input={undefined} label="Sync to Brevo" icon={<RefreshCw />} variant="primary" />
           </>
         )}
       </Card>

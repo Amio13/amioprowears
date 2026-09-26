@@ -1,7 +1,9 @@
 "use client";
 
+import { Minus, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { cn } from "@/components/ui/cn";
 import { describeCustomisation } from "@/lib/customizer";
 import { formatNaira } from "@/lib/format";
@@ -79,7 +81,7 @@ export function CartLineItem({
                 disabled={item.quantity <= 1}
                 onClick={() => setQuantity(item.key, item.quantity - 1)}
               >
-                −
+                <Minus className="size-4" />
               </StepButton>
               <span className="min-w-8 text-center text-sm font-medium" aria-live="polite">
                 {item.quantity}
@@ -89,14 +91,15 @@ export function CartLineItem({
                 disabled={item.quantity >= MAX_QUANTITY_PER_LINE}
                 onClick={() => setQuantity(item.key, item.quantity + 1)}
               >
-                +
+                <Plus className="size-4" />
               </StepButton>
             </div>
             <button
               type="button"
               onClick={() => remove(item.key)}
-              className="inline-flex min-h-11 items-center px-2 text-sm text-muted underline underline-offset-4 hover:text-brand"
+              className="inline-flex min-h-11 items-center gap-1.5 px-2 text-sm text-muted hover:text-brand"
             >
+              <Trash2 className="size-4" />
               Remove
             </button>
           </div>
@@ -115,7 +118,7 @@ function StepButton({
   label: string;
   disabled: boolean;
   onClick: () => void;
-  children: string;
+  children: ReactNode;
 }) {
   return (
     <button

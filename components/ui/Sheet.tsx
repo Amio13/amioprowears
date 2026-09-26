@@ -1,5 +1,6 @@
 "use client";
 
+import { X } from "lucide-react";
 import { useEffect, useRef, type ReactNode } from "react";
 import { cn } from "./cn";
 
@@ -55,9 +56,7 @@ export function Sheet({
             className="-mr-2 inline-flex size-11 items-center justify-center rounded-full hover:bg-surface-strong"
             aria-label="Close"
           >
-            <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-              <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
-            </svg>
+            <X className="size-5" />
           </button>
         </div>
         <div className="flex-1 p-4">{children}</div>

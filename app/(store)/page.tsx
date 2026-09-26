@@ -1,3 +1,4 @@
+import { ArrowRight, ShoppingBag, Truck } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { JerseyCard } from "@/components/store/JerseyCard";
@@ -40,9 +41,11 @@ export default async function HomePage() {
           {home.subtext && <p className="max-w-md text-lg text-muted">{home.subtext}</p>}
           <div className="flex flex-wrap gap-3">
             <Link href="/catalogue" className={buttonClasses({ size: "lg" })}>
+              <ShoppingBag />
               Shop jerseys
             </Link>
             <Link href="/track" className={buttonClasses({ size: "lg", variant: "secondary" })}>
+              <Truck />
               Track an order
             </Link>
           </div>
@@ -77,9 +80,10 @@ export default async function HomePage() {
             </h2>
             <Link
               href={`/catalogue?collection=${row.slug}`}
-              className="inline-flex min-h-11 shrink-0 items-center text-sm font-medium underline underline-offset-4 hover:text-brand"
+              className="inline-flex min-h-11 shrink-0 items-center gap-1 text-sm font-medium underline underline-offset-4 hover:text-brand"
             >
               See all<span className="sr-only"> {row.title}</span>
+              <ArrowRight className="size-4" />
             </Link>
           </div>
           {/* Phones: swipe sideways, with the next card peeking in. Desktop: 4-column grid. */}

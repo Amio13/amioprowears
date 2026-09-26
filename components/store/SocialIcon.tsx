@@ -1,7 +1,28 @@
 import type { SocialName } from "@/lib/store-info";
 
-/** Brand marks as inline SVG (no icon library needed). Colour follows the text colour. */
-export function SocialIcon({ name, className = "size-5" }: { name: SocialName; className?: string }) {
+/**
+ * Brand marks as inline SVG — lucide-react (our icon library) has no brand logos.
+ * Colour follows the text colour.
+ */
+export function SocialIcon({ name, className = "size-5" }: { name: SocialName | "WhatsApp"; className?: string }) {
+  if (name === "WhatsApp") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden className={className}>
+        <path
+          d="M12 2.5a9.5 9.5 0 0 0-8.2 14.3L2.5 21.5l4.8-1.3A9.5 9.5 0 1 0 12 2.5Z"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinejoin="round"
+        />
+        <path
+          transform="translate(6.6 6.6) scale(0.45)"
+          fill="currentColor"
+          d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"
+        />
+      </svg>
+    );
+  }
   if (name === "Instagram") {
     return (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden className={className}>

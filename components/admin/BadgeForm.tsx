@@ -1,5 +1,6 @@
 "use client";
 
+import { Plus, Save, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/Button";
@@ -68,6 +69,7 @@ export function BadgeForm({ badge }: { badge?: Badge }) {
       </div>
       <div className="flex flex-wrap items-center gap-3">
         <Button type="submit" loading={pending}>
+          {!pending && (badge ? <Save /> : <Plus />)}
           {badge ? "Save" : "Add badge"}
         </Button>
         {badge && (
@@ -82,6 +84,7 @@ export function BadgeForm({ badge }: { badge?: Badge }) {
               });
             }}
           >
+            <Trash2 />
             Delete
           </Button>
         )}

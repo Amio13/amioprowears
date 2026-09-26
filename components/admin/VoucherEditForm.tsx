@@ -1,5 +1,6 @@
 "use client";
 
+import { Save } from "lucide-react";
 import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -42,6 +43,7 @@ export function VoucherEditForm({ voucher }: { voucher: Pick<Voucher, "id" | "is
       <Input label="Note" value={note} onChange={(e) => setNote(e.target.value)} error={fields?.note} />
       <div className="flex flex-wrap items-center gap-3">
         <Button type="submit" loading={pending}>
+          {!pending && <Save />}
           Save
         </Button>
         <FormMessage result={result} />

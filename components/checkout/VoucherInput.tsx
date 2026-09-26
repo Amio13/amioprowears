@@ -1,5 +1,6 @@
 "use client";
 
+import { Tag, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { fieldClasses } from "@/components/ui/Input";
@@ -59,7 +60,10 @@ export function VoucherInput({
     return (
       <div className="flex items-center justify-between gap-3 rounded-lg border border-line p-3">
         <div className="text-sm">
-          <p className="font-medium">Voucher {applied}</p>
+          <p className="flex items-center gap-1.5 font-medium">
+            <Tag className="size-4 shrink-0" />
+            Voucher {applied}
+          </p>
           {quote?.voucher?.ok ? (
             <p className="text-green-700">−{formatNaira(quote.discount)} off your jerseys</p>
           ) : lateError ? (
@@ -69,8 +73,9 @@ export function VoucherInput({
         <button
           type="button"
           onClick={() => onApply(undefined)}
-          className="inline-flex min-h-11 items-center px-2 text-sm underline underline-offset-4 hover:text-brand"
+          className="inline-flex min-h-11 items-center gap-1 px-2 text-sm hover:text-brand"
         >
+          <X className="size-4" />
           Remove
         </button>
       </div>
@@ -102,6 +107,7 @@ export function VoucherInput({
           className={fieldClasses}
         />
         <Button variant="secondary" onClick={apply} loading={checking} className="shrink-0">
+          {!checking && <Tag />}
           Apply
         </Button>
       </div>

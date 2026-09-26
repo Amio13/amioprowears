@@ -1,5 +1,6 @@
 "use client";
 
+import { Plus } from "lucide-react";
 import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -161,6 +162,7 @@ export function VoucherForm({ products }: { products: { id: string; name: string
 
       <div className="flex flex-wrap items-center gap-3">
         <Button type="submit" loading={pending}>
+          {!pending && <Plus />}
           Create voucher{!code && quantity > 1 ? "s" : ""}
         </Button>
         <FormMessage result={result} />

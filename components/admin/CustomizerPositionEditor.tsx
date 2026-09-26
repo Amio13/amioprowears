@@ -1,5 +1,6 @@
 "use client";
 
+import { RotateCcw } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import { cn } from "@/components/ui/cn";
@@ -148,9 +149,10 @@ export function CustomizerPositionEditor({
         )}
         <button
           type="button"
-          className="min-h-11 text-sm text-muted underline"
+          className="inline-flex min-h-11 items-center gap-1.5 text-sm text-muted hover:text-ink"
           onClick={() => onChange(resolveCustomizer({ textColor: cfg.textColor, font: cfg.font, ...(side === "back" ? { badges: cfg.badges } : { name: cfg.name, number: cfg.number }) }))}
         >
+          <RotateCcw className="size-4" />
           Reset {side === "back" ? "name & number" : "badge"} positions
         </button>
       </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { RotateCcw, SlidersHorizontal, X } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
@@ -75,9 +76,7 @@ export function CatalogueView({ products, options, filters }: Props & { filters:
           className="flex-1 lg:hidden"
           aria-haspopup="dialog"
         >
-          <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-            <path d="M4 6h16M7 12h10M10 18h4" strokeLinecap="round" />
-          </svg>
+          <SlidersHorizontal />
           Filters{activeCount > 0 && ` (${activeCount})`}
         </Button>
         <Select
@@ -107,9 +106,11 @@ export function CatalogueView({ products, options, filters }: Props & { filters:
           </ul>
         ) : (
           <div className="rounded-2xl bg-surface px-6 py-16 text-center">
+            <SlidersHorizontal className="mx-auto mb-4 size-10 text-muted" strokeWidth={1.5} />
             <p className="text-lg font-bold">No jerseys match these filters</p>
             <p className="mt-1 text-muted">Try removing a filter or two.</p>
             <Button className="mt-6" onClick={() => update(EMPTY_FILTERS)}>
+              <RotateCcw />
               Clear all filters
             </Button>
           </div>
@@ -121,6 +122,7 @@ export function CatalogueView({ products, options, filters }: Props & { filters:
         <div className="sticky bottom-0 -mx-4 -mb-4 flex gap-3 border-t border-line bg-white p-4">
           {activeCount > 0 && (
             <Button variant="ghost" onClick={() => update({ ...EMPTY_FILTERS, sort: filters.sort })}>
+              <RotateCcw />
               Clear all
             </Button>
           )}
@@ -174,9 +176,7 @@ function ActiveFilterChips({
             aria-label={`Remove filter: ${c.label}`}
           >
             {c.label}
-            <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
-              <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
-            </svg>
+            <X className="size-4" strokeWidth={2.5} />
           </button>
         </li>
       ))}

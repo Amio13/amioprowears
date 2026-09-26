@@ -1,5 +1,6 @@
 "use client";
 
+import { Save } from "lucide-react";
 import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/Button";
 import type { ActionResult } from "@/lib/admin/action";
@@ -51,6 +52,7 @@ export function SettingsForm({ settings }: { settings: Pick<Settings, "name_numb
       </Card>
       <div className="flex flex-wrap items-center gap-3">
         <Button type="submit" size="lg" loading={pending}>
+          {!pending && <Save />}
           Save settings
         </Button>
         <FormMessage result={result} />

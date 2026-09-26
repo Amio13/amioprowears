@@ -1,5 +1,6 @@
 "use client";
 
+import { ImagePlus, RefreshCw, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useId, useRef, useState } from "react";
 import { cn } from "@/components/ui/cn";
@@ -82,9 +83,7 @@ export function ImageUpload({
             className="absolute inset-0 flex flex-col items-center justify-center gap-1 text-sm text-muted"
             disabled={busy}
           >
-            <svg viewBox="0 0 24 24" className="size-6" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
-              <path d="M12 16V4m0 0-4 4m4-4 4 4M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+            <ImagePlus className="size-6" strokeWidth={1.8} />
             Add photo
           </button>
         )}
@@ -104,11 +103,13 @@ export function ImageUpload({
       />
       {value && (
         <div className="mt-1 flex gap-3 text-sm">
-          <button type="button" className="min-h-11 font-medium underline" onClick={() => input.current?.click()} disabled={busy}>
+          <button type="button" className="inline-flex min-h-11 items-center gap-1.5 font-medium" onClick={() => input.current?.click()} disabled={busy}>
+            <RefreshCw className="size-4" />
             Replace
           </button>
           {!required && (
-            <button type="button" className="min-h-11 text-muted underline" onClick={() => onChange(null)} disabled={busy}>
+            <button type="button" className="inline-flex min-h-11 items-center gap-1.5 text-muted hover:text-brand" onClick={() => onChange(null)} disabled={busy}>
+              <Trash2 className="size-4" />
               Remove
             </button>
           )}

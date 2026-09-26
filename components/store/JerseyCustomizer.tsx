@@ -1,5 +1,6 @@
 "use client";
 
+import { Award, CircleAlert, CircleCheck, PenLine, Shirt, ShoppingBag } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
 import { Button } from "@/components/ui/Button";
@@ -58,6 +59,7 @@ export function JerseyCustomizer({
   badges,
   nameNumberFee,
   header,
+  photoCorner,
   children,
 }: {
   product: CustomizerProduct;
@@ -65,6 +67,8 @@ export function JerseyCustomizer({
   nameNumberFee: number;
   /** Title and base price, rendered above the options. */
   header: ReactNode;
+  /** Floats over the photo's top-right corner (the favourite heart). */
+  photoCorner?: ReactNode;
   /** Description and details, rendered below the options. */
   children: ReactNode;
 }) {
@@ -136,6 +140,7 @@ export function JerseyCustomizer({
 
   const addButton = (
     <Button size="lg" onClick={addToCart} disabled={soldOut} className="w-full">
+      {!soldOut && <ShoppingBag />}
       {soldOut ? "Sold out" : `Add to cart · ${formatNaira(total)}`}
     </Button>
   );
@@ -160,7 +165,7 @@ export function JerseyCustomizer({
                 "max-md:mx-auto max-md:max-w-[calc(36svh*0.8)] max-md:group-has-[[data-print-input]:focus]:max-w-[calc(24svh*0.8)]",
             )}
           >
-            <ProductGallery images={images} jumpTo={jump} />
+            <ProductGallery images={images} jumpTo={jump} corner={photoCorner} />
           </div>
           <p className="sr-only" aria-live="polite">
             {hasNameOrNumber || badge
@@ -188,6 +193,7 @@ export function JerseyCustomizer({
               <legend className="mb-2 text-sm font-bold">Customise</legend>
               <div className="grid grid-cols-2 gap-2">
                 <ChoiceButton selected={!customising} onClick={() => setCustomising(false)}>
+                  <Shirt className="size-4 shrink-0" />
                   Plain jersey
                 </ChoiceButton>
                 <ChoiceButton
@@ -197,6 +203,7 @@ export function JerseyCustomizer({
                     show(product.allow_name_number && product.image_back ? BACK : FRONT);
                   }}
                 >
+                  {product.allow_name_number ? <PenLine className="size-4 shrink-0" /> : <Award className="size-4 shrink-0" />}
                   {product.allow_name_number ? "Add name & number" : "Add a badge"}
                 </ChoiceButton>
               </div>
@@ -284,8 +291,14 @@ export function JerseyCustomizer({
 
           <p
             role={message?.tone === "error" ? "alert" : "status"}
-            className={cn("min-h-5 text-sm", message?.tone === "error" ? "text-brand" : "text-green-700")}
+            className={cn("flex min-h-5 items-start gap-2 text-sm", message?.tone === "error" ? "text-brand" : "text-green-700")}
           >
+            {message &&
+              (message.tone === "error" ? (
+                <CircleAlert className="mt-px size-4 shrink-0" />
+              ) : (
+                <CircleCheck className="mt-px size-4 shrink-0" />
+              ))}
             {message?.text}
           </p>
 
@@ -408,7 +421,7 @@ function ChoiceButton({
       onClick={onClick}
       aria-pressed={selected}
       className={cn(
-        "min-h-12 rounded-lg border px-3 text-sm font-medium transition-colors",
+        "flex min-h-12 items-center justify-center gap-2 rounded-lg border px-3 text-sm font-medium transition-colors",
         selected ? "border-ink bg-ink text-white" : "border-line bg-white hover:border-ink",
       )}
     >

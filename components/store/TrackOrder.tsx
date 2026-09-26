@@ -1,5 +1,6 @@
 "use client";
 
+import { Check, ClipboardCheck, PackageCheck, Search, Shirt, Truck, type LucideIcon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/Button";
@@ -23,11 +24,11 @@ interface TrackedOrder {
   }[];
 }
 
-const STEPS: { status: OrderStatus; label: string; detail: string }[] = [
-  { status: "pending", label: "Order received", detail: "We've got your order." },
-  { status: "processing", label: "Being made", detail: "Your jersey is being prepared and printed." },
-  { status: "dispatched", label: "On its way", detail: "Sent to your motor park. The logistics company will call you." },
-  { status: "delivered", label: "Collected", detail: "Enjoy your jersey!" },
+const STEPS: { status: OrderStatus; label: string; detail: string; icon: LucideIcon }[] = [
+  { status: "pending", label: "Order received", detail: "We've got your order.", icon: ClipboardCheck },
+  { status: "processing", label: "Being made", detail: "Your jersey is being prepared and printed.", icon: Shirt },
+  { status: "dispatched", label: "On its way", detail: "Sent to your motor park. The logistics company will call you.", icon: Truck },
+  { status: "delivered", label: "Collected", detail: "Enjoy your jersey!", icon: PackageCheck },
 ];
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -97,6 +98,7 @@ export function TrackOrder() {
           error={fields.phone}
         />
         <Button type="submit" size="lg" loading={loading} className="w-full sm:w-auto">
+          {!loading && <Search />}
           Track order
         </Button>
         {error && (
@@ -127,14 +129,14 @@ export function TrackOrder() {
                 <li key={step.status} className="flex gap-3">
                   <span
                     className={cn(
-                      "mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-bold",
+                      "flex size-9 shrink-0 items-center justify-center rounded-full",
                       i <= current ? "bg-brand text-white" : "bg-surface-strong text-muted",
                     )}
                     aria-hidden="true"
                   >
-                    {i < current ? "✓" : i + 1}
+                    {i < current ? <Check className="size-5" strokeWidth={3} /> : <step.icon className="size-5" />}
                   </span>
-                  <div>
+                  <div className="pt-1.5">
                     <p className={cn("font-medium", i > current && "text-muted")}>
                       {step.label}
                       {i === current && <span className="sr-only"> (current step)</span>}

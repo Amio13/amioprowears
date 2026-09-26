@@ -1,5 +1,6 @@
 "use client";
 
+import { Award, ChartColumn, ClipboardList, ExternalLink, House, LayoutDashboard, LogOut, Mail, Menu, Settings, Shirt, Ticket } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -8,15 +9,15 @@ import { Sheet } from "@/components/ui/Sheet";
 import { signOut } from "@/lib/admin/actions/auth";
 
 const LINKS = [
-  { href: "/admin", label: "Dashboard" },
-  { href: "/admin/orders", label: "Orders" },
-  { href: "/admin/products", label: "Products" },
-  { href: "/admin/homepage", label: "Homepage" },
-  { href: "/admin/badges", label: "Badges" },
-  { href: "/admin/vouchers", label: "Vouchers" },
-  { href: "/admin/newsletter", label: "Newsletter" },
-  { href: "/admin/analytics", label: "Analytics" },
-  { href: "/admin/settings", label: "Settings" },
+  { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/admin/orders", label: "Orders", icon: ClipboardList },
+  { href: "/admin/products", label: "Products", icon: Shirt },
+  { href: "/admin/homepage", label: "Homepage", icon: House },
+  { href: "/admin/badges", label: "Badges", icon: Award },
+  { href: "/admin/vouchers", label: "Vouchers", icon: Ticket },
+  { href: "/admin/newsletter", label: "Newsletter", icon: Mail },
+  { href: "/admin/analytics", label: "Analytics", icon: ChartColumn },
+  { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
 
 function NavLinks({ onNavigate, email }: { onNavigate?: () => void; email: string }) {
@@ -32,21 +33,24 @@ function NavLinks({ onNavigate, email }: { onNavigate?: () => void; email: strin
               onClick={onNavigate}
               aria-current={isActive(l.href) ? "page" : undefined}
               className={cn(
-                "flex min-h-11 items-center rounded-lg px-3 font-medium hover:bg-surface-strong",
+                "flex min-h-11 items-center gap-3 rounded-lg px-3 font-medium hover:bg-surface-strong",
                 isActive(l.href) && "bg-surface-strong text-brand",
               )}
             >
+              <l.icon className="size-5 shrink-0" />
               {l.label}
             </Link>
           </li>
         ))}
       </ul>
       <div className="mt-6 space-y-1 border-t border-line pt-4 text-sm">
-        <a href="/" target="_blank" rel="noopener noreferrer" className="flex min-h-11 items-center rounded-lg px-3 hover:bg-surface-strong">
-          View store ↗
+        <a href="/" target="_blank" rel="noopener noreferrer" className="flex min-h-11 items-center gap-3 rounded-lg px-3 hover:bg-surface-strong">
+          <ExternalLink className="size-5 shrink-0" />
+          View store
         </a>
         <form action={signOut}>
-          <button type="submit" className="flex min-h-11 w-full items-center rounded-lg px-3 text-left hover:bg-surface-strong">
+          <button type="submit" className="flex min-h-11 w-full items-center gap-3 rounded-lg px-3 text-left hover:bg-surface-strong">
+            <LogOut className="size-5 shrink-0" />
             Log out
           </button>
         </form>
@@ -74,9 +78,7 @@ export function AdminNav({ email }: { email: string }) {
           aria-label="Open admin menu"
           aria-haspopup="dialog"
         >
-          <svg viewBox="0 0 24 24" className="size-6" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-            <path d="M4 7h16M4 12h16M4 17h16" strokeLinecap="round" />
-          </svg>
+          <Menu className="size-6" />
         </button>
         <Link href="/admin">{title}</Link>
       </header>

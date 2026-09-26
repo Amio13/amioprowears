@@ -1,5 +1,6 @@
 "use client";
 
+import { ImagePlus, Plus, Save, Trash2, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useRef, useState, useTransition } from "react";
@@ -170,10 +171,10 @@ export function ProductForm({
                 <button
                   type="button"
                   onClick={() => set("gallery", form.gallery.filter((g) => g !== src))}
-                  className="absolute right-0 top-0 flex size-8 items-center justify-center rounded-bl-lg bg-white/90 text-lg"
+                  className="absolute right-0 top-0 flex size-8 items-center justify-center rounded-bl-lg bg-white/90"
                   aria-label="Remove photo"
                 >
-                  ×
+                  <X className="size-4" />
                 </button>
               </div>
             ))}
@@ -182,9 +183,16 @@ export function ProductForm({
                 type="button"
                 onClick={() => galleryInput.current?.click()}
                 disabled={galleryBusy}
-                className="flex aspect-[4/5] w-20 items-center justify-center rounded-lg border border-dashed border-line bg-surface text-sm text-muted"
+                className="flex aspect-[4/5] w-20 flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-line bg-surface text-sm text-muted"
               >
-                {galleryBusy ? <Spinner label="Uploading" /> : "+ Add"}
+                {galleryBusy ? (
+                  <Spinner label="Uploading" />
+                ) : (
+                  <>
+                    <ImagePlus className="size-5" />
+                    Add
+                  </>
+                )}
               </button>
             )}
           </div>
@@ -243,7 +251,8 @@ export function ProductForm({
           <NetPriceInput label="Sale price" kind="jersey" optional value={form.sale_price} onChange={(v) => set("sale_price", v)} error={fields?.sale_price} />
         </div>
         {form.sale_price !== null && (
-          <button type="button" className="mt-2 min-h-11 text-sm text-muted underline" onClick={() => set("sale_price", null)}>
+          <button type="button" className="mt-2 inline-flex min-h-11 items-center gap-1.5 text-sm text-muted hover:text-brand" onClick={() => set("sale_price", null)}>
+            <X className="size-4" />
             Remove sale price
           </button>
         )}
@@ -268,6 +277,7 @@ export function ProductForm({
               setCustomSize("");
             }}
           >
+            <Plus />
             Add
           </Button>
         </div>
@@ -361,6 +371,7 @@ export function ProductForm({
               });
             }}
           >
+            {!deleting && <Trash2 />}
             Delete jersey
           </Button>
         </Card>
@@ -369,6 +380,7 @@ export function ProductForm({
       {/* Save bar: sticky at the bottom on phones so it's always reachable. */}
       <div className="fixed inset-x-0 bottom-0 z-20 flex items-center gap-3 border-t border-line bg-white px-4 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] md:static md:rounded-2xl md:border-0 md:shadow-sm">
         <Button type="submit" size="lg" loading={pending} disabled={galleryBusy}>
+          {!pending && (product ? <Save /> : <Plus />)}
           {product ? "Save changes" : "Add jersey"}
         </Button>
         <div className="min-w-0 flex-1">

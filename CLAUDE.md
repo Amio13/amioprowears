@@ -16,6 +16,7 @@ This file holds the rules that apply to every session. Next.js version-specific 
 |---|---|
 | Framework | Next.js (App Router) + TypeScript (strict) — use the latest version that `@opennextjs/cloudflare` officially supports |
 | Styling | Tailwind CSS |
+| Icons | `lucide-react` (named imports only; brand logos — WhatsApp, Instagram, TikTok, X — are custom SVGs in `components/store/SocialIcon.tsx`) |
 | Hosting | Cloudflare Workers via `@opennextjs/cloudflare` (Workers Free plan) |
 | Database / Auth / Storage | Supabase (Postgres, Auth for admin, Storage for images) |
 | Payments | Paystack (live now) — crypto provider slot prepared but disabled |
@@ -103,6 +104,8 @@ examples in `docs/SPEC.md` → Pricing.
 - Product photos are 4:5. Customiser overlays are % of the photo (`left` = centre,
   `top` = top edge, `fontSize` = % of photo width), so admin uploads must be 4:5 (pad/crop
   in the browser compressor) or the print won't line up.
+- Icons: import from `lucide-react`; don't hand-draw SVGs or use text symbols (← ✓ ×). Inside `Button`/`buttonClasses`
+  an icon is sized automatically — just put `<Plus />` before the label.
 - Fonts via `next/font/google`: Roboto (UI), Bebas Neue + Oswald (jersey name/number).
 - Commit after each working feature with a clear message. Don't commit `.env.local` or `.dev.vars`.
 - When a task needs the owner to do something outside the code (dashboard setting,
@@ -199,9 +202,12 @@ secrets: Cloudflare dashboard → Workers → Settings → Variables and Secrets
   - [ ] `www.amioprowears.com` custom domain (not added yet as of 2026-09-26)
   - [ ] Paystack LIVE keys + live webhook — waiting for Paystack to verify the business
   - [ ] One real order on the live domain, then refund it
-- [ ] Post-launch — customer accounts (email magic link), wishlist, crypto
+- [x] Favourites (heart on cards + product photo, header count, `/favourites`) — saved on the device in
+  `store/favourites.ts` (Zustand persist, IDs only). Move to the account once customer accounts exist.
+- [ ] Post-launch — customer accounts (email magic link, then sync favourites), crypto
 - [ ] Owner's list for AFTER the phases (owner wants to finish all phases first, then add/remove things
   based on customer feedback):
+  - [x] Icon library (`lucide-react`) across store + admin; favourites
   - [x] Social media icons + links in the footer and /contact (Instagram, TikTok, X — `SOCIALS` in `lib/store-info.ts`)
   - [ ] Business location address in the footer
 
@@ -275,3 +281,6 @@ Update this checklist at the end of every session, and add a one-line note under
   (footer socials + address first) while waiting; domain connection is an owner dashboard step.
 - 2026-09-26 — Added Instagram/TikTok/X links (`SOCIALS` in `lib/store-info.ts`, inline-SVG `SocialIcon`)
   to the footer and /contact; checked in preview at 375px. Next: footer business address, www domain, Paystack live keys.
+- 2026-09-26 — Added `lucide-react` and replaced every hand-drawn SVG/text symbol, plus icons on buttons,
+  menus and admin nav. Added favourites (on-device). Worker still ~2.0 MB gzip. Tested in preview at 375px
+  (store pages; admin checked by typecheck only, not logged in). Next: footer business address, www domain, Paystack live keys.

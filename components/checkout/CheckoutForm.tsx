@@ -1,5 +1,6 @@
 "use client";
 
+import { ChevronDown, Lock, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { Button, buttonClasses } from "@/components/ui/Button";
@@ -122,9 +123,7 @@ export function CheckoutForm({
       <details className="group mb-6 rounded-2xl bg-surface lg:hidden">
         <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between px-4 font-medium">
           <span className="flex items-center gap-2">
-            <svg viewBox="0 0 24 24" className="size-4 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-              <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+            <ChevronDown className="size-4 transition-transform group-open:rotate-180" />
             <span className="group-open:hidden">Show order summary</span>
             <span className="hidden group-open:inline">Hide order summary</span>
           </span>
@@ -269,9 +268,11 @@ export function CheckoutForm({
 
         <div className="space-y-2">
           <Button type="submit" size="lg" className="w-full" loading={submitting} disabled={!canPay}>
+            {!submitting && <Lock />}
             {total !== null ? `Pay ${formatNaira(total)}` : "Pay"}
           </Button>
-          <p className="text-center text-xs text-muted">
+          <p className="flex items-center justify-center gap-1.5 text-center text-xs text-muted">
+            <ShieldCheck className="size-4 shrink-0" />
             {provider === "paystack"
               ? "Card, bank transfer or USSD — you'll pay securely on Paystack's page."
               : "You'll pay on the payment provider's page."}

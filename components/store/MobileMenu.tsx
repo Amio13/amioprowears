@@ -1,9 +1,10 @@
 "use client";
 
+import { Menu } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { Sheet } from "@/components/ui/Sheet";
-import { MAIN_NAV } from "./nav-links";
+import { MAIN_NAV, MOBILE_EXTRA_NAV } from "./nav-links";
 
 export function MobileMenu() {
   const [open, setOpen] = useState(false);
@@ -17,20 +18,19 @@ export function MobileMenu() {
         aria-label="Open menu"
         aria-haspopup="dialog"
       >
-        <svg viewBox="0 0 24 24" className="size-6" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-          <path d="M4 7h16M4 12h16M4 17h16" strokeLinecap="round" />
-        </svg>
+        <Menu className="size-6" />
       </button>
       <Sheet open={open} onClose={() => setOpen(false)} title="Menu" side="left">
         <nav aria-label="Main">
           <ul className="-mx-2 space-y-1">
-            {MAIN_NAV.map((l) => (
+            {[...MAIN_NAV, ...MOBILE_EXTRA_NAV].map((l) => (
               <li key={l.href}>
                 <Link
                   href={l.href}
                   onClick={() => setOpen(false)}
-                  className="flex min-h-11 items-center rounded-lg px-2 text-lg font-medium hover:bg-surface-strong"
+                  className="flex min-h-11 items-center gap-3 rounded-lg px-2 text-lg font-medium hover:bg-surface-strong"
                 >
+                  <l.icon className="size-5 text-muted" />
                   {l.label}
                 </Link>
               </li>

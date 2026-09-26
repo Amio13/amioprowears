@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowLeft, Lock, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 import { buttonClasses } from "@/components/ui/Button";
 import { cn } from "@/components/ui/cn";
@@ -30,9 +31,11 @@ export function CartContents({ variant, onNavigate }: { variant: "page" | "drawe
   if (items.length === 0) {
     return (
       <div className="py-12 text-center">
+        <ShoppingBag className="mx-auto mb-4 size-12 text-muted" strokeWidth={1.5} />
         <p className="text-lg font-bold">Your cart is empty</p>
         <p className="mt-1 text-muted">Pick a jersey and make it yours.</p>
         <Link href="/catalogue" onClick={onNavigate} className={buttonClasses({ className: "mt-6" })}>
+          <ShoppingBag />
           Shop jerseys
         </Link>
       </div>
@@ -109,15 +112,17 @@ export function CartContents({ variant, onNavigate }: { variant: "page" | "drawe
           aria-disabled={blocked}
           className={buttonClasses({ size: "lg", className: cn("w-full", blocked && "pointer-events-none opacity-50") })}
         >
-          {loading && <Spinner className="size-4" />}
+          {loading ? <Spinner className="size-4" /> : <Lock />}
           Go to checkout
         </Link>
         {variant === "drawer" ? (
           <Link href="/cart" onClick={onNavigate} className={buttonClasses({ variant: "secondary", className: "w-full" })}>
+            <ShoppingBag />
             View cart
           </Link>
         ) : (
-          <Link href="/catalogue" className="block text-center text-sm underline underline-offset-4 hover:text-brand">
+          <Link href="/catalogue" className="flex min-h-11 items-center justify-center gap-1.5 text-sm underline underline-offset-4 hover:text-brand">
+            <ArrowLeft className="size-4" />
             Continue shopping
           </Link>
         )}

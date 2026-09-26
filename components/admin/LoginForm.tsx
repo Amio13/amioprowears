@@ -1,5 +1,6 @@
 "use client";
 
+import { LogIn } from "lucide-react";
 import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -31,6 +32,7 @@ export function LoginForm({ next }: { next?: string }) {
         </p>
       )}
       <Button type="submit" size="lg" className="w-full" loading={pending}>
+        {!pending && <LogIn />}
         Log in
       </Button>
     </form>

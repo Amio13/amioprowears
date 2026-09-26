@@ -1,7 +1,7 @@
-import Link from "next/link";
+import { ExternalLink } from "lucide-react";
 import { notFound } from "next/navigation";
 import { ProductForm, type EditableProduct } from "@/components/admin/ProductForm";
-import { PageHeader } from "@/components/admin/ui";
+import { BackLink, PageHeader } from "@/components/admin/ui";
 import { requireAdmin } from "@/lib/admin/auth";
 import { loadAllBadges, loadCopySources } from "@/lib/admin/catalogue";
 import type { Product } from "@/types";
@@ -26,16 +26,15 @@ export default async function EditProductPage({ params, searchParams }: PageProp
 
   return (
     <>
-      <Link href="/admin/products" className="mb-2 inline-flex min-h-11 items-center text-sm text-muted hover:text-ink">
-        ← Products
-      </Link>
+      <BackLink href="/admin/products">Products</BackLink>
       <PageHeader
         title={editable.name}
         description={saved ? "Jersey added. It's live in the store if “Show in store” is ticked." : undefined}
         actions={
           editable.is_active ? (
-            <a href={`/jersey/${editable.slug}`} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center text-sm underline">
-              View in store ↗
+            <a href={`/jersey/${editable.slug}`} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-1.5 text-sm underline">
+              <ExternalLink className="size-4" />
+              View in store
             </a>
           ) : undefined
         }

@@ -1,3 +1,4 @@
+import { ArrowRight, CalendarDays, CircleCheck, Mail, Package, Plus, Ticket, TriangleAlert, Wallet } from "lucide-react";
 import Link from "next/link";
 import { Card, OrderStatusBadge, PageHeader } from "@/components/admin/ui";
 import { buttonClasses } from "@/components/ui/Button";
@@ -23,7 +24,12 @@ function OrderList({ orders }: { orders: Row[] }) {
             <OrderStatusBadge status={o.status} />
             <span className="w-full text-xs text-muted">
               {formatDateTime(o.created_at)}
-              {o.attention_note && <span className="text-amber-800"> · ⚠ {o.attention_note.split("\n")[0]}</span>}
+              {o.attention_note && (
+                <span className="text-amber-800">
+                  {" · "}
+                  <TriangleAlert className="inline size-3.5 align-[-2px]" /> {o.attention_note.split("\n")[0]}
+                </span>
+              )}
             </span>
           </Link>
         </li>
@@ -66,9 +72,11 @@ export default async function DashboardPage() {
         actions={
           <>
             <Link href="/admin/products/new" className={buttonClasses()}>
-              + Add jersey
+              <Plus />
+              Add jersey
             </Link>
             <Link href="/admin/vouchers" className={buttonClasses({ variant: "secondary" })}>
+              <Ticket />
               New voucher
             </Link>
           </>
@@ -77,29 +85,38 @@ export default async function DashboardPage() {
 
       <div className="mb-4 grid grid-cols-2 gap-3 md:grid-cols-3">
         <Link href="/admin/analytics?period=today" className="rounded-2xl bg-white p-4 shadow-sm">
-          <p className="text-sm text-muted">Today</p>
+          <p className="flex items-center gap-1.5 text-sm text-muted">
+            <Wallet className="size-4" />
+            Today
+          </p>
           <p className="text-xl font-bold">{formatNaira(today.revenue)}</p>
           <p className="text-sm">
             {today.orders} order{today.orders === 1 ? "" : "s"}
           </p>
         </Link>
         <Link href="/admin/analytics?period=month" className="rounded-2xl bg-white p-4 shadow-sm">
-          <p className="text-sm text-muted">This month</p>
+          <p className="flex items-center gap-1.5 text-sm text-muted">
+            <CalendarDays className="size-4" />
+            This month
+          </p>
           <p className="text-xl font-bold">{formatNaira(month.revenue)}</p>
           <p className="text-sm">
             {month.orders} order{month.orders === 1 ? "" : "s"}
           </p>
         </Link>
         <Link href="/admin/orders?status=pending" className="col-span-2 rounded-2xl bg-white p-4 shadow-sm md:col-span-1">
-          <p className="text-sm text-muted">To fulfil</p>
+          <p className="flex items-center gap-1.5 text-sm text-muted">
+            <Package className="size-4" />
+            To fulfil
+          </p>
           <p className="text-xl font-bold">{todo.count ?? 0}</p>
           <p className="text-sm">paid, not yet dispatched</p>
         </Link>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <Card title="To fulfil (oldest first)" actions={<Link href="/admin/orders" className="text-sm underline">All orders</Link>}>
-          {todo.data!.length ? <OrderList orders={todo.data!} /> : <p className="text-sm text-muted">Nothing waiting. 🎉</p>}
+        <Card title="To fulfil (oldest first)" actions={<Link href="/admin/orders" className="inline-flex items-center gap-1 text-sm underline">All orders <ArrowRight className="size-4" /></Link>}>
+          {todo.data!.length ? <OrderList orders={todo.data!} /> : <p className="flex items-center gap-2 text-sm text-muted"><CircleCheck className="size-4 text-green-700" /> Nothing waiting.</p>}
         </Card>
         <div className="space-y-4">
           {attention.data!.length > 0 && (
@@ -109,11 +126,14 @@ export default async function DashboardPage() {
           )}
           {(unsynced.count ?? 0) > 0 && (
             <Card title="Newsletter">
-              <p className="text-sm">
-                {unsynced.count} subscriber{unsynced.count === 1 ? " isn't" : "s aren't"} in Brevo yet.{" "}
-                <Link href="/admin/newsletter" className="underline">
-                  Sync now
-                </Link>
+              <p className="flex items-start gap-2 text-sm">
+                <Mail className="mt-0.5 size-4 shrink-0" />
+                <span>
+                  {unsynced.count} subscriber{unsynced.count === 1 ? " isn't" : "s aren't"} in Brevo yet.{" "}
+                  <Link href="/admin/newsletter" className="underline">
+                    Sync now
+                  </Link>
+                </span>
               </p>
             </Card>
           )}

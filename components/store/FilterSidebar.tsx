@@ -1,5 +1,6 @@
 "use client";
 
+import { Check } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/components/ui/cn";
@@ -164,6 +165,7 @@ function PriceRangeForm({
           </label>
         </div>
         <Button type="submit" variant="secondary" className="mt-3 w-full">
+          <Check />
           Apply price
         </Button>
       </fieldset>

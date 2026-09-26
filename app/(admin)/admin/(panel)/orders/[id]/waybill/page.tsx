@@ -1,3 +1,4 @@
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PrintButton } from "@/components/admin/PrintButton";
@@ -20,8 +21,9 @@ export default async function WaybillPage({ params }: PageProps<"/admin/orders/[
   return (
     <>
       <div className="mb-4 flex items-center justify-between print:hidden">
-        <Link href={`/admin/orders/${order.id}`} className="inline-flex min-h-11 items-center text-sm text-muted hover:text-ink">
-          ← Back to order
+        <Link href={`/admin/orders/${order.id}`} className="inline-flex min-h-11 items-center gap-1.5 text-sm text-muted hover:text-ink">
+          <ArrowLeft className="size-4" />
+          Back to order
         </Link>
         <PrintButton />
       </div>

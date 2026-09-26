@@ -1,3 +1,4 @@
+import { Mail, Phone } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { buttonClasses } from "@/components/ui/Button";
@@ -23,18 +24,25 @@ export default function ContactPage() {
             rel="noopener noreferrer"
             className={`${buttonClasses({ size: "lg" })} !no-underline bg-whatsapp hover:bg-whatsapp hover:!text-white`}
           >
+            <SocialIcon name="WhatsApp" />
             Chat with us on WhatsApp
           </a>
         </p>
       )}
       <h2>Other ways to reach us</h2>
-      <ul>
-        <li>
-          Email: <a href={`mailto:${STORE.supportEmail}`}>{STORE.supportEmail}</a>
+      <ul className="!list-none !pl-0">
+        <li className="flex min-h-11 items-center gap-2">
+          <Mail className="size-5 shrink-0" />
+          <span>
+            Email: <a href={`mailto:${STORE.supportEmail}`}>{STORE.supportEmail}</a>
+          </span>
         </li>
         {STORE.supportPhone && (
-          <li>
-            Phone: <a href={`tel:+${STORE.supportPhone}`}>{formatPhoneForDisplay(STORE.supportPhone)}</a>
+          <li className="flex min-h-11 items-center gap-2">
+            <Phone className="size-5 shrink-0" />
+            <span>
+              Phone: <a href={`tel:+${STORE.supportPhone}`}>{formatPhoneForDisplay(STORE.supportPhone)}</a>
+            </span>
           </li>
         )}
       </ul>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, type ReactNode } from "react";
 import { Button } from "@/components/ui/Button";
 import type { ActionResult } from "@/lib/admin/action";
 import { FormMessage } from "./ui";
@@ -10,6 +10,7 @@ export function ActionButton<I>({
   action,
   input,
   label,
+  icon,
   confirm,
   variant = "secondary",
   className,
@@ -17,6 +18,8 @@ export function ActionButton<I>({
   action: (input: I) => Promise<ActionResult<unknown>>;
   input: I;
   label: string;
+  /** e.g. <RefreshCw /> — sized by the button. */
+  icon?: ReactNode;
   confirm?: string;
   variant?: "primary" | "secondary" | "ghost";
   className?: string;
@@ -33,6 +36,7 @@ export function ActionButton<I>({
           startTransition(async () => setResult(await action(input)));
         }}
       >
+        {!pending && icon}
         {label}
       </Button>
       <div className="mt-1">

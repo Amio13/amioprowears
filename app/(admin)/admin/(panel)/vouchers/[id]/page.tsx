@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { VoucherEditForm } from "@/components/admin/VoucherEditForm";
-import { Card, OrderStatusBadge, PageHeader, PaymentStatusBadge } from "@/components/admin/ui";
+import { BackLink, Card, OrderStatusBadge, PageHeader, PaymentStatusBadge } from "@/components/admin/ui";
 import { Badge } from "@/components/ui/Badge";
 import { requireAdmin } from "@/lib/admin/auth";
 import { describeDiscount, voucherState } from "@/lib/admin/labels";
@@ -41,9 +41,7 @@ export default async function VoucherPage({ params }: PageProps<"/admin/vouchers
 
   return (
     <>
-      <Link href="/admin/vouchers" className="mb-2 inline-flex min-h-11 items-center text-sm text-muted hover:text-ink">
-        ← Vouchers
-      </Link>
+      <BackLink href="/admin/vouchers">Vouchers</BackLink>
       <PageHeader
         title={v.code}
         description={

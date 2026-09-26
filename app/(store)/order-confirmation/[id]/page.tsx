@@ -1,3 +1,4 @@
+import { ArrowLeft, CircleCheck, CircleX, Clock, ShoppingBag, TriangleAlert, Truck } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -97,6 +98,7 @@ export default async function OrderConfirmationPage({
       {status === "paid" ? (
         <>
           <ClearCartOnPaid orderId={order.id} />
+          <CircleCheck className="mb-3 size-14 text-green-700" strokeWidth={1.5} />
           <p className="font-display text-2xl tracking-wide text-brand">Payment received</p>
           <h1 className="font-display text-5xl leading-none tracking-wide">Thank you, {firstName}!</h1>
           <p className="mt-3 text-lg">
@@ -106,12 +108,14 @@ export default async function OrderConfirmationPage({
         </>
       ) : status === "pending" ? (
         <>
+          <Clock className="mb-3 size-14 text-muted" strokeWidth={1.5} />
           <h1 className="font-display text-5xl leading-none tracking-wide">Confirming your payment</h1>
           <p className="mt-3">Order {order.order_number}. This usually takes a few seconds.</p>
           <div className="mt-4">{reference && <PaymentPending reference={reference} />}</div>
         </>
       ) : status === "amount_mismatch" ? (
         <>
+          <TriangleAlert className="mb-3 size-14 text-amber-700" strokeWidth={1.5} />
           <h1 className="font-display text-5xl leading-none tracking-wide">We&apos;re checking your payment</h1>
           <p className="mt-3">
             The amount we received for order {order.order_number} doesn&apos;t match the order total. We&apos;ll contact
@@ -120,12 +124,14 @@ export default async function OrderConfirmationPage({
         </>
       ) : (
         <>
+          <CircleX className="mb-3 size-14 text-brand" strokeWidth={1.5} />
           <h1 className="font-display text-5xl leading-none tracking-wide">Payment not completed</h1>
           <p className="mt-3">
             Order {order.order_number} hasn&apos;t been paid, so it won&apos;t be processed. Your cart is still saved — you
             can try again.
           </p>
           <Link href="/checkout" className={buttonClasses({ size: "lg", className: "mt-6" })}>
+            <ArrowLeft />
             Back to checkout
           </Link>
         </>
@@ -179,9 +185,11 @@ export default async function OrderConfirmationPage({
           </p>
           <div className="flex flex-wrap gap-3 pt-2">
             <Link href={`/track?order=${order.order_number}`} className={buttonClasses({ variant: "secondary" })}>
+              <Truck />
               Track your order
             </Link>
             <Link href="/catalogue" className={buttonClasses({ variant: "ghost" })}>
+              <ShoppingBag />
               Keep shopping
             </Link>
           </div>

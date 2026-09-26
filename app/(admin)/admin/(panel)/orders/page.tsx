@@ -1,3 +1,4 @@
+import { ArrowLeft, ArrowRight, Search, TriangleAlert, X } from "lucide-react";
 import Form from "next/form";
 import Link from "next/link";
 import { Card, Empty, OrderStatusBadge, PageHeader, PaymentStatusBadge } from "@/components/admin/ui";
@@ -79,9 +80,11 @@ export default async function OrdersPage({ searchParams }: PageProps<"/admin/ord
           </label>
           <div className="col-span-2 flex gap-2 md:col-span-6">
             <button type="submit" className={buttonClasses()}>
+              <Search />
               Apply filters
             </button>
             <Link href="/admin/orders" className={buttonClasses({ variant: "ghost" })}>
+              <X />
               Clear
             </Link>
           </div>
@@ -104,8 +107,9 @@ export default async function OrdersPage({ searchParams }: PageProps<"/admin/ord
                   <OrderStatusBadge status={o.status} />
                   <PaymentStatusBadge status={o.payment_status} />
                   {o.attention_note && (
-                    <span className="text-sm font-medium text-amber-700" title={o.attention_note}>
-                      ⚠ Check
+                    <span className="inline-flex items-center gap-1 text-sm font-medium text-amber-700" title={o.attention_note}>
+                      <TriangleAlert className="size-4" />
+                      Check
                     </span>
                   )}
                   <span className="ml-auto text-xs text-muted md:ml-2 md:w-32 md:text-right">{formatDateTime(o.created_at)}</span>
@@ -120,7 +124,8 @@ export default async function OrdersPage({ searchParams }: PageProps<"/admin/ord
         <nav aria-label="Pages" className="mt-4 flex items-center justify-between text-sm">
           {f.page > 1 ? (
             <Link href={`/admin/orders${filtersToSearch(f, { page: f.page - 1 })}`} className={buttonClasses({ variant: "secondary" })}>
-              ← Newer
+              <ArrowLeft />
+              Newer
             </Link>
           ) : (
             <span />
@@ -130,7 +135,8 @@ export default async function OrdersPage({ searchParams }: PageProps<"/admin/ord
           </span>
           {f.page < pages ? (
             <Link href={`/admin/orders${filtersToSearch(f, { page: f.page + 1 })}`} className={buttonClasses({ variant: "secondary" })}>
-              Older →
+              Older
+              <ArrowRight />
             </Link>
           ) : (
             <span />

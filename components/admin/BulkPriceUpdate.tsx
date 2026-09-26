@@ -1,5 +1,6 @@
 "use client";
 
+import { Save } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMemo, useState, useTransition } from "react";
 import { Button } from "@/components/ui/Button";
@@ -152,6 +153,7 @@ export function BulkPriceUpdate({ products }: { products: BulkProduct[] }) {
             });
           }}
         >
+          {!pending && <Save />}
           Update {chosen.length} price{chosen.length === 1 ? "" : "s"}
         </Button>
         <FormMessage result={result} />
