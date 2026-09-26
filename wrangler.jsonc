@@ -7,6 +7,16 @@
 		"nodejs_compat",
 		"global_fetch_strictly_public"
 	],
+	// Non-secret runtime settings. Kept here (not only in the dashboard) because every
+	// deploy replaces dashboard text variables with this list. Secrets (API keys, bot
+	// token) stay in the dashboard as "Secret" type and are not affected.
+	"vars": {
+		"BREVO_LIST_ID": "3",
+		"BREVO_SENDER_EMAIL": "orders@amioprowears.com",
+		"BREVO_SENDER_NAME": "Amioprowears",
+		"OWNER_EMAIL": "admin@amioprowears.com",
+		"TELEGRAM_CHAT_ID": "1630983332"
+	},
 	"assets": {
 		"directory": ".open-next/assets",
 		"binding": "ASSETS"

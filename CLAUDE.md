@@ -133,12 +133,12 @@ secrets: Cloudflare dashboard → Workers → Settings → Variables and Secrets
 - [x] Most accounts created (Supabase, Paystack, Brevo, Zoho, GitHub, domain)
 - [x] Cloudflare account + wrangler login (workers.dev subdomain: `amioyeko13`)
 - [x] Paystack test keys (local + Cloudflare runtime secrets); test webhook URL set in Paystack
-- [ ] Confirm: Telegram bot token + chat ID
+- [x] Telegram bot `@Amioprowears_orders_bot` + chat ID (local files; still to add in Cloudflare secrets)
 - [ ] Email setup (owner, in progress — full guide was given in chat 2026-09-25):
   - [x] Part 1: DNS moved to Cloudflare — nameservers `ashley`/`kipp.ns.cloudflare.com` live; waiting for Cloudflare to show "Active"
-  - [ ] Part 2: Zoho — verify domain (TXT), mailbox `admin@`, aliases `support@` + `orders@`, MX/SPF/DKIM in Cloudflare DNS
-  - [ ] Part 3: Brevo — authenticate domain (brevo-code TXT, DKIM CNAMEs, one `_dmarc`), sender `orders@`, API key, turn off Authorised IPs blocking, "Newsletter" list ID
-  - [ ] Part 4: `BREVO_*`, `OWNER_EMAIL`, `NEXT_PUBLIC_SUPPORT_EMAIL` in `.env.local` + `.dev.vars`
+  - [x] Part 2: Zoho (verified 2026-09-26: MX, SPF, DKIM `zmail` all live) — verify domain (TXT), mailbox `admin@`, aliases `support@` + `orders@`, MX/SPF/DKIM in Cloudflare DNS
+  - [x] Part 3: Brevo — domain authenticated, sender `orders@` active, API key + list ID 3 ("Newsletter") work; test email sent 2026-09-26
+  - [x] Part 4: Brevo/Telegram/owner vars in `.env.local` + `.dev.vars` (Cloudflare production secrets still to add)
   - Note: support@ doesn't receive mail until Part 2 is done (the footer already shows it). Only ONE `v=spf1` and ONE `_dmarc` record — merge, don't duplicate.
 - [x] **Phase 1 — Foundation** (done 2026-09-25)
   - [x] Scaffold (Next 16.3 + @opennextjs/cloudflare 1.20), strict TS, Tailwind v4, vitest, zod, zustand, @supabase/ssr
