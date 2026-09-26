@@ -168,6 +168,9 @@ secrets: Cloudflare dashboard → Workers → Settings → Variables and Secrets
   - Decision: owner stays on Workers **Free** plan (keep server CPU low; upgrade only if customers hit error 1102)
 - [ ] Phase 6 — Admin ← NEXT
 - [ ] Phase 7 — Legal pages, SEO, launch
+  - [ ] Delete test data in Supabase: orders APW-1001–1012 (their payments + items delete with them;
+    delete `voucher_redemptions` rows first), voucher `TEST-ONCE`, and test newsletter subscribers.
+    Until then, opening an old confirmation page for APW-1001–1011 sends a real alert (never notified).
 - [ ] Post-launch — customer accounts (email magic link), wishlist, crypto
 
 Update this checklist at the end of every session, and add a one-line note under
