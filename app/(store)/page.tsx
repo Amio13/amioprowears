@@ -11,6 +11,8 @@ import { getActiveProducts, getHomepageConfig } from "@/lib/products";
 export const revalidate = 300;
 
 const ROW_LIMIT = 8;
+// Narrower padding and text on phones so both hero buttons fit on one row.
+const HERO_BUTTON = "whitespace-nowrap max-sm:px-3 max-sm:text-sm";
 
 /** Content (headline, top pictures, rows, steps) is set in admin → Homepage. */
 export default async function HomePage() {
@@ -39,12 +41,13 @@ export default async function HomePage() {
             ))}
           </h1>
           {home.subtext && <p className="max-w-md text-lg text-muted">{home.subtext}</p>}
-          <div className="flex flex-wrap gap-3">
-            <Link href="/catalogue" className={buttonClasses({ size: "lg" })}>
+          {/* Phones: two equal buttons side by side. */}
+          <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-3">
+            <Link href="/catalogue" className={buttonClasses({ size: "lg", className: HERO_BUTTON })}>
               <ShoppingBag />
               Shop jerseys
             </Link>
-            <Link href="/track" className={buttonClasses({ size: "lg", variant: "secondary" })}>
+            <Link href="/track" className={buttonClasses({ size: "lg", variant: "secondary", className: HERO_BUTTON })}>
               <Truck />
               Track an order
             </Link>
