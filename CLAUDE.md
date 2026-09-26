@@ -208,8 +208,8 @@ secrets: Cloudflare dashboard → Workers → Settings → Variables and Secrets
 - [x] Delivery fees editable in admin → Settings (migration 0008 applied, live 2026-09-26)
 - [x] Collections/menu: Top clubs, National teams, Females, Kids, Vintage — live, migration 0009 applied. Females/Kids/Vintage
   are automatic from gender/era (`productCollections()` in `lib/catalogue.ts`)
-- [ ] Badges + print styles (code done, NOT pushed): any number of badges per jersey shown as picture cards (not drawn on
-  the photo), 16 fonts + name curve per jersey, order page shows print preview + badge pictures. Owner runs migration 0010.
+- [x] Badges + print styles (live 2026-09-26, migration 0010 applied): any number of badges per jersey shown as picture cards (not drawn on
+  the photo), 16 fonts + name curve per jersey, order page shows print preview + badge pictures.
 - [ ] Post-launch — customer accounts (email magic link, then sync favourites), crypto
 - [ ] Owner's list for AFTER the phases (owner wants to finish all phases first, then add/remove things
   based on customer feedback):
@@ -311,3 +311,5 @@ Update this checklist at the end of every session, and add a one-line note under
 - 2026-09-26 — Badges/fonts/curve: cart lines carry `badgeIds` (cart persist v2 migrates old `badgeId`), server prices every
   badge; order_items get `badges` + `print_style` snapshots (migration 0010, new create_order). Badge position removed from
   admin (column kept). Name curve drawn as SVG textPath. Glyph widths measured in Chromium. Worker 2.19 MB gzip. Not pushed.
+- 2026-09-26 — Migration 0010 applied, badges/fonts/curve pushed and checked live at 375px. Next: owner uploads real badge
+  images, sets fonts/curves per jersey; www domain; Paystack live keys.
