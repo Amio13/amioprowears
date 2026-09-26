@@ -7,6 +7,15 @@ export const STORE = {
   whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_CHAT_NUMBER || null, // 234XXXXXXXXXX
 };
 
+/** Social media profiles, shown in the footer and on /contact. */
+export const SOCIALS = [
+  { name: "Instagram", handle: "@amioprowears", url: "https://instagram.com/amioprowears" },
+  { name: "TikTok", handle: "@amioprowears", url: "https://tiktok.com/@amioprowears" },
+  { name: "X", handle: "@amioprowears", url: "https://x.com/amioprowears" },
+] as const;
+
+export type SocialName = (typeof SOCIALS)[number]["name"];
+
 /** When the policy pages were last changed — update when their wording changes. */
 export const POLICIES_UPDATED = "26 September 2026";
 

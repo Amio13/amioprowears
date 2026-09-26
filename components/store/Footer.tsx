@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { Logo } from "./Logo";
 import { NewsletterSignup } from "./NewsletterSignup";
+import { SocialIcon } from "./SocialIcon";
+import { SOCIALS } from "@/lib/store-info";
 
 const LINK_GROUPS = [
   {
@@ -46,6 +48,21 @@ export function Footer() {
               </a>
             </p>
           )}
+          <ul className="-ml-3 flex gap-1" aria-label="Follow us">
+            {SOCIALS.map((s) => (
+              <li key={s.name}>
+                <a
+                  href={s.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${s.name} ${s.handle}`}
+                  className="inline-flex size-11 items-center justify-center rounded-full text-muted hover:bg-line hover:text-ink"
+                >
+                  <SocialIcon name={s.name} />
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
 
         <div className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-[repeat(3,auto)_minmax(0,1.5fr)]">

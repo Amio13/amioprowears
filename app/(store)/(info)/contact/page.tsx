@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { buttonClasses } from "@/components/ui/Button";
 import { formatPhoneForDisplay, whatsappLink } from "@/lib/format";
-import { STORE } from "@/lib/store-info";
+import { SocialIcon } from "@/components/store/SocialIcon";
+import { SOCIALS, STORE } from "@/lib/store-info";
 
 export const metadata: Metadata = {
   title: "Contact us",
@@ -36,6 +37,18 @@ export default function ContactPage() {
             Phone: <a href={`tel:+${STORE.supportPhone}`}>{formatPhoneForDisplay(STORE.supportPhone)}</a>
           </li>
         )}
+      </ul>
+      <h2>Follow us</h2>
+      <p>See new kits and deals as they drop.</p>
+      <ul className="!list-none !pl-0">
+        {SOCIALS.map((s) => (
+          <li key={s.name}>
+            <a href={s.url} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-2">
+              <SocialIcon name={s.name} className="size-5 shrink-0" />
+              {s.name} — {s.handle}
+            </a>
+          </li>
+        ))}
       </ul>
       <p>
         About an order? Include your order number (it looks like APW-1047). You can also check its status on the{" "}

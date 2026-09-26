@@ -202,7 +202,7 @@ secrets: Cloudflare dashboard → Workers → Settings → Variables and Secrets
 - [ ] Post-launch — customer accounts (email magic link), wishlist, crypto
 - [ ] Owner's list for AFTER the phases (owner wants to finish all phases first, then add/remove things
   based on customer feedback):
-  - [ ] Social media icons + links in the footer (owner to give the handles)
+  - [x] Social media icons + links in the footer and /contact (Instagram, TikTok, X — `SOCIALS` in `lib/store-info.ts`)
   - [ ] Business location address in the footer
 
 Update this checklist at the end of every session, and add a one-line note under
@@ -273,3 +273,5 @@ Update this checklist at the end of every session, and add a one-line note under
 - 2026-09-26 — Phase 7 code done (info/policy pages, SEO, error pages); test data deleted; pushed.
   Paystack live keys pending verification. Owner wants to move on to the "adding and upgrading" stage
   (footer socials + address first) while waiting; domain connection is an owner dashboard step.
+- 2026-09-26 — Added Instagram/TikTok/X links (`SOCIALS` in `lib/store-info.ts`, inline-SVG `SocialIcon`)
+  to the footer and /contact; checked in preview at 375px. Next: footer business address, www domain, Paystack live keys.
