@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { DEFAULT_DELIVERY_FEES } from "@/lib/delivery-zones";
 import { priceOrder, type PricingData, type PricingProduct } from "@/lib/order-pricing";
 import { cartLineSchema, type CartLineInput } from "@/lib/validation";
 
@@ -31,17 +32,18 @@ const data: PricingData = {
   ]),
   allowedBadges: new Set([`${P1}:${B1}`, `${P1}:${B2}`]),
   nameNumberFee: 550,
+  deliveryFees: DEFAULT_DELIVERY_FEES, // A ₦2,050, B ₦3,050, C ₦4,100
 };
 
 const line = (o: Partial<CartLineInput> = {}): CartLineInput => ({ productId: P1, size: "M", quantity: 1, ...o });
 
 describe("priceOrder", () => {
-  it("SPEC 3.3 whole-order example: ₦15,350 + ₦550 name/number + Zone B = ₦18,450", () => {
+  it("SPEC 3.3 whole-order example: ₦15,350 + ₦550 name/number + Zone B = ₦18,950", () => {
     const q = priceOrder({ lines: [line({ customName: "OKOCHA", customNumber: "10" })], data, state: "Lagos" });
     expect(q.problems).toEqual([]);
     expect(q.lines[0]).toMatchObject({ unitPrice: 15350, customizationFee: 550, badgePrice: 0, lineTotal: 15900 });
-    expect(q.delivery).toEqual({ zone: "B", fee: 2550 });
-    expect(q.total).toBe(18450);
+    expect(q.delivery).toEqual({ zone: "B", fee: 3050 });
+    expect(q.total).toBe(18950);
   });
 
   it("badge + quantity + sale price; delivery charged once", () => {
@@ -60,7 +62,7 @@ describe("priceOrder", () => {
     const tampered = cartLineSchema.parse({ productId: P1, size: "M", quantity: 1, price: 100, unitPrice: 1, total: 1 });
     const q = priceOrder({ lines: [tampered], data, state: "Lagos" });
     expect(q.lines[0]!.lineTotal).toBe(15350);
-    expect(q.total).toBe(15350 + 2550);
+    expect(q.total).toBe(15350 + 3050);
   });
 
   it("reports problems per line and leaves them out of the total", () => {
@@ -90,6 +92,7 @@ describe("priceOrder", () => {
   it("no state yet → no delivery in the total (cart page)", () => {
     const q = priceOrder({ lines: [line()], data });
     expect(q.delivery).toBeNull();
+    expect(q.deliveryFrom).toBe(2050);
     expect(q.total).toBe(15350);
   });
 
@@ -105,7 +108,7 @@ describe("priceOrder", () => {
       },
     });
     expect(q.discount).toBe(15350);
-    expect(q.total).toBe(2550);
+    expect(q.total).toBe(3050);
     expect(q.voucher).toMatchObject({ ok: true, code: "BIG" });
   });
 
@@ -113,5 +116,12 @@ describe("priceOrder", () => {
     const q = priceOrder({ lines: [line()], data, voucherCode: "NOPE", voucher: null });
     expect(q.discount).toBe(0);
     expect(q.voucher).toMatchObject({ ok: false, code: "NOPE" });
+  });
+
+  it("uses the delivery fees from admin → Settings", () => {
+    const q = priceOrder({ lines: [line()], data: { ...data, deliveryFees: { A: 1000, B: 5000, C: 9000 } }, state: "Kano" });
+    expect(q.delivery).toEqual({ zone: "C", fee: 9000 });
+    expect(q.deliveryFrom).toBe(1000);
+    expect(q.total).toBe(15350 + 9000);
   });
 });

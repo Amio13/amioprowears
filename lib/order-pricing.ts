@@ -3,7 +3,7 @@
  * choices (cartLineSchema); every price here comes from DB rows passed in `data`.
  * Pure — the DB loading lives in lib/checkout.ts — so it's fully unit-tested.
  */
-import { getDeliveryForState, type DeliveryZoneId } from "./delivery-zones";
+import { cheapestDeliveryFee, getDeliveryForState, type DeliveryFees, type DeliveryZoneId } from "./delivery-zones";
 import { effectivePrice, lineUnitPrice } from "./pricing";
 import type { CartLineInput } from "./validation";
 import { computeVoucherDiscount, type VoucherResult, type VoucherRules } from "./vouchers";
@@ -33,6 +33,7 @@ export interface PricingData {
   /** "productId:badgeId" pairs from product_badges. */
   allowedBadges: Set<string>;
   nameNumberFee: number;
+  deliveryFees: DeliveryFees;
 }
 
 export interface PricedLine {
@@ -119,6 +120,8 @@ export interface OrderQuote {
   problems: LineProblem[];
   subtotal: number;
   delivery: { zone: DeliveryZoneId; fee: number } | null;
+  /** Cheapest zone fee, for "Delivery from ₦…" before a state is chosen. */
+  deliveryFrom: number;
   /** null when no code was entered. */
   voucher: (VoucherResult & { code: string }) | null;
   discount: number;
@@ -146,7 +149,7 @@ export function priceOrder({
 }): OrderQuote {
   const { lines: priced, problems } = priceLines(lines, data);
   const subtotal = priced.reduce((n, l) => n + l.lineTotal, 0);
-  const delivery = state ? getDeliveryForState(state) : null;
+  const delivery = state ? getDeliveryForState(state, data.deliveryFees) : null;
 
   const voucherResult = voucherCode
     ? { code: voucherCode, ...computeVoucherDiscount(voucher ?? null, priced, now) }
@@ -158,6 +161,7 @@ export function priceOrder({
     problems,
     subtotal,
     delivery,
+    deliveryFrom: cheapestDeliveryFee(data.deliveryFees),
     voucher: voucherResult,
     discount,
     total: subtotal - discount + (delivery?.fee ?? 0),

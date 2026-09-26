@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { DELIVERY_ZONES, deliveryFeeForZone, type DeliveryZoneId } from "@/lib/delivery-zones";
+import { DELIVERY_ZONES, type DeliveryZoneId } from "@/lib/delivery-zones";
 import { formatNaira } from "@/lib/format";
 import { PICKUP_TEXT } from "@/lib/notify/templates";
+import { getDeliveryFees } from "@/lib/products";
 import { POLICIES_UPDATED, POLICY } from "@/lib/store-info";
 
 export const metadata: Metadata = {
@@ -10,7 +11,11 @@ export const metadata: Metadata = {
   description: "We deliver to the motor park nearest to you, anywhere in Nigeria. Delivery fees by state and how pickup works.",
 };
 
-export default function DeliveryPage() {
+// Fees come from admin → Settings; saving there refreshes this page straight away.
+export const revalidate = 300;
+
+export default async function DeliveryPage() {
+  const fees = await getDeliveryFees();
   return (
     <>
       <h1>Delivery</h1>
@@ -40,7 +45,7 @@ export default function DeliveryPage() {
         {(Object.keys(DELIVERY_ZONES) as DeliveryZoneId[]).map((zone) => (
           <div key={zone} className="rounded-2xl bg-surface p-4">
             <p className="font-bold">
-              Zone {zone} — {formatNaira(deliveryFeeForZone(zone))}
+              Zone {zone} — {formatNaira(fees[zone])}
             </p>
             <p className="!mt-1 text-sm text-muted">{DELIVERY_ZONES[zone].states.join(", ")}</p>
           </div>

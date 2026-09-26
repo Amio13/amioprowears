@@ -150,9 +150,9 @@ Worked examples (customer price rounded up to ₦50):
 | ₦35,000 jersey | ₦35,650 | ₦634.75 | ₦35,015.25 |
 | ₦500 name+number | ₦550 (or ₦510 if rounding to ₦10) | — | — |
 
-Whole-order check: ₦15,350 jersey + ₦550 name/number + ₦2,550 Zone B delivery =
-₦18,450. Fee = 1.5% × 18,450 + 100 = ₦376.75. Owner receives ₦18,073.25 against a
-target of ₦18,000. With two jerseys the ₦100 is covered twice, so you slightly
+Whole-order check: ₦15,350 jersey + ₦550 name/number + ₦3,050 Zone B delivery =
+₦18,950. Fee = 1.5% × 18,950 + 100 = ₦384.25. Owner receives ₦18,565.75 against a
+target of ₦18,500. With two jerseys the ₦100 is covered twice, so you slightly
 over-recover — that's fine.
 
 Rules:
@@ -167,13 +167,15 @@ Rules:
 
 ### 3.4 Delivery zones (motor-park pickup, not door-to-door)
 
-Customer fees already include the 1.5% Paystack share (`grossUpAddon`).
+Customer fees already include the 1.5% Paystack share (`grossUpAddon`). The fees are
+editable in admin → Settings (`settings.delivery_fee_a/b/c`, migration 0008); the table
+below is the built-in default. Which states belong to which zone stays in code.
 
 | Zone | States | Net | Customer fee |
 |---|---|---|---|
 | A | Abia, Anambra, Ebonyi, Enugu, Imo | ₦2,000 | ₦2,050 |
-| B | Lagos, Ogun, Oyo, Osun, Ondo, Ekiti, Rivers, Delta, Edo, Bayelsa, Cross River, Akwa Ibom | ₦2,500 | ₦2,550 |
-| C | FCT Abuja, Kano, Kaduna, Katsina, Sokoto, Zamfara, Jigawa, Kebbi, Niger, Plateau, Benue, Kogi, Kwara, Nasarawa, Gombe, Bauchi, Adamawa, Taraba, Borno, Yobe | ₦3,500 | ₦3,600 |
+| B | Lagos, Ogun, Oyo, Osun, Ondo, Ekiti, Rivers, Delta, Edo, Bayelsa, Cross River, Akwa Ibom | ₦3,000 | ₦3,050 |
+| C | FCT Abuja, Kano, Kaduna, Katsina, Sokoto, Zamfara, Jigawa, Kebbi, Niger, Plateau, Benue, Kogi, Kwara, Nasarawa, Gombe, Bauchi, Adamawa, Taraba, Borno, Yobe | ₦4,000 | ₦4,100 |
 
 All 36 states + FCT are covered. Defined in `lib/delivery-zones.ts` as a typed constant
 with `getZoneForState(state)` and unit tests that every state maps to exactly one zone.

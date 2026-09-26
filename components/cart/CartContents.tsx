@@ -7,12 +7,9 @@ import { cn } from "@/components/ui/cn";
 import { Spinner } from "@/components/ui/Spinner";
 import { useCartHydrated } from "@/hooks/useCartHydrated";
 import { useCartQuote } from "@/hooks/useCartQuote";
-import { deliveryFeeForZone } from "@/lib/delivery-zones";
 import { formatNaira } from "@/lib/format";
 import { useCart } from "@/store/cart";
 import { CartLineItem } from "./CartLineItem";
-
-const CHEAPEST_DELIVERY = deliveryFeeForZone("A");
 
 /** Cart lines + subtotal + checkout button. Used by /cart and the cart drawer. */
 export function CartContents({ variant, onNavigate }: { variant: "page" | "drawer"; onNavigate?: () => void }) {
@@ -87,7 +84,7 @@ export function CartContents({ variant, onNavigate }: { variant: "page" | "drawe
           </div>
           <div className="flex justify-between text-muted">
             <dt>Delivery to your motor park</dt>
-            <dd>from {formatNaira(CHEAPEST_DELIVERY)}</dd>
+            <dd>{quote ? `from ${formatNaira(quote.deliveryFrom)}` : "…"}</dd>
           </div>
         </dl>
         <p className="text-xs text-muted">Delivery depends on your state and is added at checkout.</p>

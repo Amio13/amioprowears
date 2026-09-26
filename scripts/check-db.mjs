@@ -50,6 +50,9 @@ check(bulk.error && bulk.error.code !== "PGRST202",
 const home = await anon.from("settings").select("homepage").single();
 check(!home.error, `migration 0007 applied (homepage settings) ${home.error ? "(0007_homepage.sql not applied yet)" : ""}`);
 
+const fees = await anon.from("settings").select("delivery_fee_a, delivery_fee_b, delivery_fee_c").single();
+check(!fees.error, `migration 0008 applied (delivery fees ${fees.error ? "— 0008_delivery_fees.sql not applied yet" : `₦${fees.data.delivery_fee_a} / ₦${fees.data.delivery_fee_b} / ₦${fees.data.delivery_fee_c}`})`);
+
 const orders = await admin.from("orders").select("id", { count: "exact", head: true });
 check(!orders.error, `service role can read orders ${orders.error ? `(${orders.error.message})` : ""}`);
 

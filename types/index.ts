@@ -34,6 +34,10 @@ export interface Settings {
   announcement: string | null;
   /** Homepage content (lib/homepage.ts → resolveHomepage). */
   homepage: unknown;
+  /** Customer delivery fee per zone (migration 0008, lib/delivery-zones.ts). */
+  delivery_fee_a: number;
+  delivery_fee_b: number;
+  delivery_fee_c: number;
   updated_at: string;
 }
 

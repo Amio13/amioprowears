@@ -204,6 +204,7 @@ secrets: Cloudflare dashboard → Workers → Settings → Variables and Secrets
   - [ ] One real order on the live domain, then refund it
 - [x] Favourites (heart on cards + product photo, header count, `/favourites`) — saved on the device in
   `store/favourites.ts` (Zustand persist, IDs only). Move to the account once customer accounts exist.
+- [ ] Delivery fees editable in admin → Settings (code done, NOT pushed yet): owner applies migration 0008, then push
 - [ ] Post-launch — customer accounts (email magic link, then sync favourites), crypto
 - [ ] Owner's list for AFTER the phases (owner wants to finish all phases first, then add/remove things
   based on customer feedback):
@@ -292,3 +293,7 @@ Update this checklist at the end of every session, and add a one-line note under
   `components/store/Logo.tsx` used in header, footer, admin login and admin nav. Checked in preview. Next: footer address, www domain, Paystack live keys.
 - 2026-09-26 — Shop address (Young Shall Grow Plaza, Main Market, Onitsha) added to the footer and /contact with a
   directions link; checked in preview at 375px. Next: www domain, Paystack live keys, owner's wording confirmations.
+- 2026-09-26 — Delivery fees: owner now receives ₦2,000 / ₦3,000 / ₦4,000 (customers pay ₦2,050 / ₦3,050 / ₦4,100) and can
+  edit them in admin → Settings. Migration 0008 adds `settings.delivery_fee_a/b/c`; `resolveDeliveryFees()` falls back to the
+  code defaults if the column is missing. Checkout/quote, /delivery (now ISR) and the cart's "from ₦…" read the setting.
+  Committed locally, NOT pushed (owner asked to hold pushes). Next: owner applies 0008, checks admin → Settings, then push.

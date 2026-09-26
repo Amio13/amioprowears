@@ -1,5 +1,6 @@
 import "server-only";
 import { randomBytes } from "node:crypto";
+import { resolveDeliveryFees } from "./delivery-zones";
 import { priceOrder, PRICING_PRODUCT_COLUMNS, type OrderQuote, type PricingBadge, type PricingData, type PricingProduct } from "./order-pricing";
 import { getProvider } from "./payments";
 import { createAdminClient } from "./supabase/admin";
@@ -12,7 +13,7 @@ import { normalizeVoucherCode, VOUCHER_COLUMNS, type VoucherRules } from "./vouc
  * the browser only sends IDs and choices (CLAUDE.md rule 2).
  */
 
-/** Products, badges, allowed badge links and the name/number fee needed to price these lines. */
+/** Products, badges, allowed badge links, the name/number fee and delivery fees needed to price these lines. */
 export async function loadPricingData(lines: CartLineInput[]): Promise<PricingData> {
   const db = createPublicClient(); // public data; RLS hides inactive rows, which then count as unavailable
   const productIds = [...new Set(lines.map((l) => l.productId))];
@@ -31,7 +32,9 @@ export async function loadPricingData(lines: CartLineInput[]): Promise<PricingDa
           .in("badge_id", badgeIds)
           .returns<{ product_id: string; badge_id: string }[]>()
       : Promise.resolve({ data: [] as { product_id: string; badge_id: string }[], error: null }),
-    db.from("settings").select("name_number_fee").eq("id", 1).single<{ name_number_fee: number }>(),
+    // "*" rather than named columns, so a missing delivery-fee column (migration 0008 not
+    // applied) falls back to the default fees instead of breaking checkout.
+    db.from("settings").select("*").eq("id", 1).single<{ name_number_fee: number } & Record<string, unknown>>(),
   ]);
   for (const r of [products, badges, links, settings]) {
     if (r.error) throw new Error(`Loading prices failed: ${r.error.message}`);
@@ -42,6 +45,7 @@ export async function loadPricingData(lines: CartLineInput[]): Promise<PricingDa
     badges: new Map(badges.data!.map((b) => [b.id, b])),
     allowedBadges: new Set(links.data!.map((l) => `${l.product_id}:${l.badge_id}`)),
     nameNumberFee: settings.data!.name_number_fee,
+    deliveryFees: resolveDeliveryFees(settings.data),
   };
 }
 

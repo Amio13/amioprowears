@@ -113,6 +113,9 @@ export const settingsInputSchema = z.object({
   name_number_fee: money("the name + number fee"),
   store_open: z.boolean(),
   announcement: optionalText(200),
+  delivery_fee_a: money("the Zone A delivery fee"),
+  delivery_fee_b: money("the Zone B delivery fee"),
+  delivery_fee_c: money("the Zone C delivery fee"),
 });
 export type SettingsInput = z.input<typeof settingsInputSchema>;
 

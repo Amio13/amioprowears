@@ -1,6 +1,7 @@
 import "server-only";
 import { cache } from "react";
 import { CATALOGUE_PRODUCT_COLUMNS, type CatalogueProduct } from "./catalogue";
+import { resolveDeliveryFees, type DeliveryFees } from "./delivery-zones";
 import { resolveHomepage, type HomepageConfig } from "./homepage";
 import { createPublicClient } from "./supabase/public";
 import type { Badge, Product, Settings } from "@/types";
@@ -58,6 +59,13 @@ export const getStoreSettings = cache(async (): Promise<Pick<Settings, "name_num
     .single<Pick<Settings, "name_number_fee" | "store_open" | "announcement">>();
   if (error) throw new Error(`Loading settings failed: ${error.message}`);
   return data;
+});
+
+/** Delivery fee per zone from admin → Settings (defaults if migration 0008 isn't applied). */
+export const getDeliveryFees = cache(async (): Promise<DeliveryFees> => {
+  const { data, error } = await createPublicClient().from("settings").select("*").eq("id", 1).single<Record<string, unknown>>();
+  if (error) throw new Error(`Loading delivery fees failed: ${error.message}`);
+  return resolveDeliveryFees(data);
 });
 
 /**
