@@ -177,6 +177,7 @@ secrets: Cloudflare dashboard → Workers → Settings → Variables and Secrets
   - [x] Tested in `npm run preview` at 375px with a temporary admin (deleted afterwards)
   - [x] Migration 0006 applied (`npm run db:check` passes)
   - [x] Owner admin login `admin@amioprowears.com` created and in `admin_users`
+  - [x] Deployed live 2026-09-26 (`/admin` redirects to login; store pages still 200)
   - [ ] Owner: add a real jersey from a phone and fulfil a test order end to end (the "done when")
 - [ ] Phase 7 — Legal pages, SEO, launch ← NEXT
   - [ ] Delete test data in Supabase: orders APW-1001–1012 (their payments + items delete with them;
